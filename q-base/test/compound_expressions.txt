@@ -1,0 +1,10 @@
+f1opf2@t1@f1@op=[++]@g3'
+f1opf2@t1@f2@op=[conv]:newtype=[F4]@g2'
+f1opf2@t1@f1@op=[conv]:newtype=[F4]@g1'
+f1s1opf2@t1@g1'@10@*@g11'
+f1s1opf2@t1@g2'@99@/@g22'
+f1f2opf3@t1@g11'@g2'@-@g3_yes_null
+f1f2opf3@t1@f1@g3'@*@g3_no_null
+f_to_s@t1@g3_yes_null@sum@SUM_WITH_NULL
+f_to_s@t1@g3_no_null@sum@SUM_WITHOUT_NULL
+f_to_s@t1@g22'@sum@JUNK

@@ -1,0 +1,177 @@
+\usepackage{hyperref}
+\startreport{PageFlow Funnel Analysis}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+
+\TBC
+
+\section{UI}
+This is a one-page application, broken down as follows.
+\subsection{Exploration}
+\subsubsection{Inputs}
+\be
+\item Date for which data is to be analyzed
+\item Action. This can be 
+\be
+\item Push --- increase sequence length. User must then specify which
+page to add to the sequence
+\item Pop --- reduce sequence length
+\ee
+\ee
+\subsubsection{Outputs}
+The user is provided feedback in terms of Table~\ref{tbl_funnel} and
+~\ref{tbl_next_steps}. In this example, it means that the user has
+expressed interest in the page sequence \((p_2, p_2, p_3, p_1)\) and
+the results are as explained in Table~\ref{tbl_example_1}.
+
+\subsection{Extrapolation}
+
+\subsubsection{Inputs}
+\be
+\item Date Range over which sequence chosen in Section~\ref{Exploration}
+is to be evaluated. 
+\ee
+\subsubsection{Outputs}
+See Table~\ref{tbl_extraploate}
+
+
+\newpage
+\clearpage
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|} \hline \hline 
+{\bf Sequence} & {\bf Occurrences} \\ \hline \hline
+\((p_2)\) & \(n_1\) \\ \hline
+\((p_2, p_2)\) & \(n_2\) \\ \hline
+\((p_2, p_2, p_3)\) & \(n_3\) \\ \hline
+\((p_2, p_2, p_3, p_1)\) & \(n_4\) \\ \hline \hline
+\((p_2, p_2, p_3, p_1, p_1)\) & \(m_1\) \\ \hline 
+\((p_2, p_2, p_3, p_1, p_2)\) & \(m_2\) \\ \hline 
+\((p_2, p_2, p_3, p_1, p_3)\) & \(m_3\) \\ \hline 
+\((p_2, p_2, p_3, p_1, p_4)\) & \(m_4\) \\ \hline 
+\hline
+\end{tabular}
+\caption{Explanation of Example}
+\label{tbl_example_1}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|} \hline \hline 
+{\bf Page} & {\bf Cumulative Count} \\ \hline \hline 
+\(p_2\) & \(n_1\) \\ \hline 
+\(p_2\) & \(n_2\) \\ \hline 
+\(p_3\) & \(n_3\) \\ \hline 
+\(p_1\) & \(n_4\) \\ \hline 
+\ldots & \ldots \\ \hline
+\hline
+\end{tabular}
+\caption{Funnel Analysis}
+\label{tbl_funnel}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|} \hline \hline 
+{\bf Page} & {\bf Cumulative Count} \\ \hline \hline 
+\(p_1\) & \(m_1\) \\ \hline 
+\(p_2\) & \(m_2\) \\ \hline 
+\(p_3\) & \(m_3\) \\ \hline 
+\(p_4\) & \(m_4\) \\ \hline 
+\ldots & \ldots \\ \hline
+\hline
+\end{tabular}
+\caption{Next page (ranked in terms of popularity)}
+\label{tbl_next_steps}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|l|} \hline \hline 
+{\bf Sequence} & {\bf Count for Day 1} & {\bf Count for Day 2 } &
+\ldots  \\ \hline \hline
+\(p_1\)                & \(n_{11}\) & \(n_{12}\) & \ldots \\ \hline
+\(p_1, p_2\)           & \(n_{21}\) & \(n_{22}\) & \ldots \\ \hline
+\(p_1, p_2, p_3\)      & \(n_{31}\) & \(n_{32}\) & \ldots \\ \hline
+\(p_1, p_2, p_3, p_4\) & \(n_{41}\) & \(n_{42}\) & \ldots \\ \hline
+\ldots & \ldots & \ldots & \\ \hline
+\hline
+\end{tabular}
+\caption{Example of extrapolation}
+\label{tbl_extrapolate}
+\end{table}
+
+\section{Data Model}
+
+\subsection{Sharding}
+We shard data by date, so we have several versions of table T1, named
+T1YYYYMMDD, one for each date.
+
+\subsection{T1}
+\label{T1}
+
+Fields are 
+\be
+\item mid, member ID, I4
+\item sid, session ID, I8
+\item pid, page ID, I4
+\item cnt, number of consecutive occurrences of pid for that sid
+\item \verb+same_sess_as_prev_1+ I1. True if this row and previous row
+have same sid; else, false. Created after load. 
+\ee
+
+\section{Queries}
+\label{Queries}
+
+\subsection{Query 1}
+\label{Query_1}
+
+\bi
+\item Input is pid, \(p\)
+\item Output is 
+\be
+\item number of occurrences of that pid. This is computed as follows.
+Let \(T' \subseteq T\) be the rows of \(T\) where \(pid=p\). Then, return 
+\be
+\item \(\sum T'.cnt\)
+\item \(|T'|\)
+\item \(|T|\)
+\ee
+\item for each page that occurs after \(p\), provide
+Table~\ref{Table_1}. Note that this is sorted descending on Count
+\ee
+\ei
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|} \hline \hline 
+{\bf Page ID} & {\bf Count} \\ \hline \hline 
+\(p_2\) & \(n_2\) \\ \hline 
+\(p_3\) & \(n_3\) \\ \hline 
+\ldots & \ldots \\ \hline
+\hline
+\end{tabular}
+\caption{Sample output for Query 1}
+\label{Table_1}
+\end{table}
+
+
+\subsection{Page Sequence}
+\label{Page_Sequence}
+
+\bi
+\item Input is \verb+p1:n1;p2:n2;p3:n3+, a sequence of pids and numbers.
+This can be interepreted as we are looking for cases where
+there were \(n_1\) visits to page \(p_1\) followed by 
+\(n_2\) visits to page \(p_2\) followed by 
+\(n_3\) visits to page \(p_3\).
+Constraints  are
+\be
+\item \(p_i\) must be a valid page 
+\item \(n_1\) must be a positive integer. 
+\item \(p_i \neq p_{i+1}\)
+\ee
+\item Output is \(m_1, m_2, m_3\) where \(m_i\) is the number of times
+the sub-sequence \((p_1, n_1), \ldots (p_i, n_i)\) occurred.
+\ei

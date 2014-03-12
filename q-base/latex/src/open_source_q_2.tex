@@ -1,0 +1,101 @@
+\documentclass[letterpaper]{article}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{fancyheadings}
+\usepackage{hyperref}
+\usepackage{ulem}
+\pagestyle{fancy}
+\usepackage{pmc}
+\usepackage{graphicx}
+\setlength\textwidth{6.5in}
+\setlength\textheight{8.5in}
+\input{../styles/ramesh_abbreviations}
+\begin{document}
+\title{Open-sourcing ``qtils''}
+\author{ Ramesh Subramonian }
+\maketitle
+\thispagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{{\small Decision Sciences Team}}
+\cfoot{}
+\rfoot{{\small \thepage}}
+
+\section{Response to Jim}
+
+Jim Brikman raised the following comments/questions. 
+{\it My responses are in italics.}
+\be
+\item 
+How does this relate to DataFu? Should it be another part of that project?
+
+{\it The key difference is as follows. ``DataFu is a collection of user-defined
+functions for working with large-scale data {\em in Hadoop and Pig}''. In
+contrast, Qtils operates {\em outside} of Hadoop and Pig. 
+It ingests data in the form of CSV files. These CSV files could come
+from Hadoop, Teradata, \ldots. For example, in the case of GEO
+standardization, the CSV files are purchased from an external vendor. In
+the case of EDU standardization, we get the CSV files from the government,
+Excel files from crowd-sourcing efforts using SamaSource, CrowdFlower,
+\ldots The WebHDFS client makes it easy to
+export data from Hadoop. The data is then operated on, transformed,
+analyzed.  Potentially, the results could be put back into
+Hadoop/Teradata, using the same mechanism as used to export it.
+}
+\item If this project goes on github, the standard is a README in
+markdown format. I'd recommend converting your PDF to that and
+putting it in the root folder.
+
+{\it DONE}
+
+\item It seems like all the source code is in a single folder. It
+seems like that'll make maintenance and browsing a bit hard.
+Any plans to break things up a bit?
+
+{\it I have often thought about this but backed away each time, not for
+  lack of time. There are just 2 main directories. One is \verb+src/+
+and the other is \verb+src/AUX/+. The second contains a large number of
+relatively small auxiliary functions. The first contains the driver
+code. Unlike other projects which naturally lend themselves to a
+hierarchical decomposition, the key principle in these utilities is very
+simple. There is only one data structure, a table and only 4 kinds of
+operations
+\be
+\item reading \(\geq 1\) column(s) from \(\geq 1\) table(s) and
+producing \(\geq\) 1 column(s) in a single existing table or new one
+\item Meta data operations --- show tables, describe, is sorted?
+\item Reductions: sum, min, max, \ldots
+\item Data Ingestion --- load, add field, \ldots
+\ee
+
+}
+
+\item There don't seem to many tests given the number of source
+files. How is the test coverage?
+
+{\it Adequate testing is an ongoing battle! There are three basic
+  approaches being taken
+\bd
+\item [Usage]. This consists of two approaches.
+\bd
+\item [TRIANGULATION] We do a lot of sanity checks as part
+of regular usage of the tools. For example, a sort is often followed by
+a ``head'' or ``tail'' to see whether the data is in fact sorted. 
+\item [DATA INTUITION] As data scientists, we have familiarity with the
+data. So, if a histogram of members by countries creates a table with more
+than 250 rows, we get suspicious.
+\ed
+\item [Unit tests] I have started adding a number of unit tests in the
+\verb+test/+ folder. Will add more in the immediate future.
+\item [Probabilistic testing] This is the most ambitious effort, which
+uses the formal specification to perform random probes. This has not yet
+been implemented but we hope to get started in early 2014.
+\ed
+
+}
+\ee
+
+
+\end{document}

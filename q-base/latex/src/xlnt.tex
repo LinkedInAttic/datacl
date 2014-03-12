@@ -1,0 +1,335 @@
+% \documentclass[12pt]{article}
+% \usepackage{graphicx}
+% \begin{document}
+\usepackage{hyperref}
+\startreport{The Role of Language in Analytics}
+\reportauthor{Ramesh Subramonian}
+% \title{The Role of Language in Analytics}
+% \author{Ramesh Subramonian}
+% \maketitle
+
+\section{Introduction}
+
+\begin{center}
+The limits of my language mean the limits of my world\footnote{Ludwig
+  Wittgenstein}.
+\end{center}
+
+In this short essay, I suggest that in as much as language enables our
+thinking, it limits is as well. This is not a philosophical observation
+--- it has profound implications for how we solve big data problems. 
+
+Nor is this problem a new one. The Greeks believed that numbers ruled
+the universe and the universe could be explained by rational numbers.
+Until, of course, Pythagoras came along. So shocking was what we call
+irrational numbers to their world view that the word they used for it
+was ``alogon'', meaning unutterable. 
+
+What this means is that while the short term focus should be on solving
+problems that bedevil our data scientists and product managers, the
+longer term should focus on the design of the language that hits the
+sweet spot between expressivity and efficiency. 
+
+To see why this is not a philosophical digression, note 
+the difference between Srinivas' approach (Section~\ref{Background}) and
+    mine (Section~\ref{Query_1}). They are both
+correct but, because their world view is different, they take very
+different paths to the solution.
+
+\begin{figure}
+\fbox{
+  \begin{minipage}{18 cm}
+  \centering
+  \includegraphics[width=4.5in]{alogon_origin.png}
+  \caption{The ``Unutterable''}
+  \label{alogon_origin}
+  \end{minipage}
+}
+\end{figure}
+
+\newpage
+
+
+\subsection{Background}
+\label{Background}
+Bhaskar quotes Srinivas's analysis
+
+{\it 
+XLNT needs to group by (memberid, testkey, metric, variant)  aggregate
+by date first and compute a member level sum and save the results to an
+intermediate table. You then take  the square of the member level sum,
+then aggregate by member to compute a (testkey, metric,
+variant), sum(member-level-sum),
+sum(member-level-sum*member-level-sum). 
+The issue for us of course is that the actual query
+they need completely changes the nature of the
+computation. We have a LARGE JOIN now that preserves
+member level information and this information has to be
+carried over into subsequent stages of processing. You
+aggregate across date first , take the square and then
+aggregate across member. It turns out they implemented
+a similar logic on the XD side but on a much smaller
+data set. All of a sudden, Join processing has become
+more important and we have to implement a different set
+of stages in the pipeline. The large join is also more
+resource intensive \ldots
+}
+
+and then poses the question ``How do we prioritize this need for very
+large joins in the pre-comp pipeline (and other needs from XLNT) versus
+what I see in your document. As a tech team, we need to get a holistic
+prioritized list from Jim's team.''
+
+\subsection{Recommendations}
+
+\bi
+\item I think it is far too early to be able to provide a cast-in-stone
+set of marching orders for a tech team that is chomping at the bit. In
+the above example, 
+\bi
+\item is there really a need for ``very large joins''? 
+If one machine can pre-process a day's worth of data in under a minute, 
+is it ``big''?
+\ei
+\item Let's solve problems (side by side if necessary) and let the right
+paradigm evolve from the bottom up
+\item Let's evaluate the solutions in terms of 
+\be
+\item run time efficiency
+\item machine footprint (after all, machines aren't free)
+\item coding efficiency
+\item the ease of understanding of the programming paradigm. 
+I quote Dijkstra ``Don't
+blame me for the fact that competent programming, as I view it as an
+intellectual possibility, will be too difficult for {\it the average
+programmer} --- you must not fall into the trap of rejecting a surgical
+technique because it is beyond the capabilities of the barber in his
+shop around the corner. ''
+\ee
+\ei
+
+
+
+
+\section{Data Model}
+
+\subsection{Notational Conveniences}
+
+\begin{definition}
+Let \(|T|\) be the number of rows in table \(T\)
+\end{definition}
+
+\begin{definition}
+Let \(\delta(x, y) = 1 \) if \(x = y\); else, 0
+\end{definition}
+
+\begin{definition}
+Let \(T[i].f\) be the value of the \(i^{th}\) row of column \(f\) in
+table \(T\)
+\end{definition}
+
+
+\subsection{M}
+\label{M}
+The input data is provided in this format, sharded by date. Fields are 
+\be
+\item member ID (not unique)
+\item metric name
+The distinct values of metric name in this table is a subset of the
+distinct values of description in lkp\_metricname
+(Section~\ref{lkp_metricname})
+\item metric value
+\ee
+
+\subsection{L}
+\label{L}
+The input data is provided in this format, sharded by date. Fields are 
+\be
+\item member ID (not unique)
+\item experiment
+\item treatment 
+\ee
+
+\subsection{Tuqmid}
+\label{Tuqmid}
+
+This contains all the member IDs for the loaded date ranges. It helps
+reduce the dynamic range of \(mid\)
+\be
+\item idx, primary key, values are 0, 1, \ldots
+\item mid, member ID, I4, sorted ascending
+\ee
+
+\subsection{TM}
+\label{TM}
+Transposition of Table M (Section~\ref{M}).
+\be
+\item mid, member\_id, unique, sorted ascending
+\item Tuqmid\_id, foreign key to Tuqmid (Section~\ref{Tuqmid}).
+\item \(m_0, m_1, \ldots m_{N-1}\), one for each metric i.e., one for
+each row of lkp\_metricname (Section~\ref{lkp_metricname}).
+
+To understand the transformation, for some row, \(i\), of \(TM\),
+\bi
+\item Let \(TM[i].m_k = v\). 
+\item Let \(TM[i].mid  = m\)
+\item Let \(lkp\_metricname[k].txt = x\)
+\item Then, \((m, x, v) \in M\)
+\ei
+
+\item \(l_0, l_1, \ldots l_{X-1}\), one for each testkey i.e., one for
+each row of lkp\_testkey (Section~\ref{lkp_testkey}).
+
+To understand the transformation, for some row, \(i\), of \(TM\),
+\bi
+\item Let \(TM[i].l_k = v\). 
+\item Let \(TM[i].mid  = m\)
+\item Let \(lkp\_textkey[k].txt = t\)
+\item Then, it means that member \(m\) was given treatment \(v\) for
+testkey \(t\)
+\ei
+\ee
+
+
+%----------------------------------------------------
+\subsection{Tmetricname}
+\label{Tmetricname}
+\be
+\item Tmetricname\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_metricname --- foreign key to lkp\_metricname
+Section~\ref{lkp_metricname}
+\ee
+
+\subsection{lkp\_metricname}
+\label{lkp_metricname}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{Ttestkey}
+\label{Ttestkey}
+Note that we focus on only those test keys in production. Further, for
+each test key, we assume that there is only one active experiment. 
+
+\be
+\item Ttestkey\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_testkey --- foreign key to lkp\_testkey
+Section~\ref{lkp_testkey}
+\ee
+
+\subsection{lkp\_testkey}
+\label{lkp_testkey}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+
+\section{Analysis}
+
+In some cases, we need to de-dupe using member ID.
+
+\subsection{Query 1}
+\label{Query_1}
+
+Given a testkey, \(t\),  and a metric,\(m\) and a date, \(d\), 
+create a table, \(T_Q\) with four columns. 
+Let \(T_d\) (Section~\ref{TM}) contain metric information for that date. 
+\be
+\item variant name, \(v\)
+\item count field, number of rows in \(T_d\) where member was treated with variant
+\(v\) for testkey \(t\)
+\item sum field, for each row in \(T_d\) in which member was 
+treated with variant \(v\), add up the metric field 
+\item sum squares field, for each row \(T_d\) in which member 
+was treated with variant \(v\), add up the square of the metric field 
+\ee
+Once we have this, we can create \(\sigma\), \(p\)-values and other necessary
+statistics.
+
+
+\bi
+\item Let \(d\) be a particular date 
+\item Let \(T_d\) (Section~\ref{TM}) contain metric information for that date. 
+\item Let \(x\) be the column in \(TM_d\) that contains information 
+about desired experiment. 
+\item Let \(m\) be the column in \(TM_d\) that contains information 
+about desired metric. 
+\item Let \(v\) be a particular variant for desired experiment
+\ei
+Then, 
+\bi
+\item \(T_Q[v].cnt \leftarrow \sum_{i=1}^{i=|TM_d|} 
+( \delta(v, x[i])  ) \)
+\item \(T_Q[v].sum \leftarrow \sum_{i=1}^{i=|TM_d|} 
+( \delta(v, x[i]) \times m[i] ) \)
+\item \(T_Q[v].sum\_sqr \leftarrow \sum_{i=1}^{i=|TM_d|} 
+( \delta(v, x[i]) \times m[i] \times m[i] ) \)
+  \ei
+
+The Q code that implements the above looks like
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+if [ $# != 3 ]; then echo FAILURE; exit 1; fi
+testkey=$1
+metricname=$2
+date=$3
+# For unit testing, set parameters as shown below 
+testkey="search-voltron-use"
+metricname="Total_Pageviews"
+date=20130501
+#----
+mtbl=TM$date
+#-----------------------------------------------------
+# Find lkp_idx for this testkey and thence field in TM
+q regex_match lkp_testkey txt "$testkey" exact x
+fk_lkp_testkey=`q pr_fld lkp_testkey idx 'cond=[x]' | sed s'/"//'g` 
+tkfld=fk_lkp_treatment_$fk_lkp_testkey
+#-----------------------------------------------------
+# Find lkp_idx for this metricname and thence field in TM
+q regex_match lkp_metricname txt $metricname exact x
+fk_lkp_metricname=`q pr_fld lkp_metricname idx 'cond=[x]' | sed s'/"//'g`
+mfld=m$fk_lkp_metricname
+#-----------------------------------------------------
+q f1opf2   $mtbl $mfld     'op=[conv]:newtype=[I8]' l_$mfld
+q f1f2opf3 $mtbl l_$mfld   l_$mfld "*" sqr_$mfld
+
+q count    $mtbl $tkfld           "" lkp_treatment sum_cnt
+q countf   $mtbl $mfld     $tkfld "" lkp_treatment sum_val
+q countf   $mtbl sqr_$mfld $tkfld "" lkp_treatment sum_sqr_val
+
+q delete   $mtbl l_$mfld:sqr_$mfld
+\end{verbatim}
+
+% \subsection{Query 2}
+% 
+% Some times we need to de-duplicate member IDs across dates before we
+% compute metrics. This is handled as follows. \TBC
+
+%% \subsubsection{Unique metrics}
+%% 
+%% This situation is a bit more complicated since the repeat occurrence
+%% of a member in a different date should not be double-counuted unless
+%% the second occurrence was treated differently from the first. We
+%% formalize this below. Its easier to write an algorithm than a
+%% specification. 
+%% 
+%% \begin{tabbing}\hspace*{0.25in} \= \hspace*{0.25in} \= \kill
+%% Let \(V\) contain treatments for this experiment \\
+%% Let \(m_i\) be the desired metric \\ 
+%% Let \(D\) contain desired dates  \\
+%% \(\forall m' \in Tuqmid.mid, v \in V, Done(m, v) \leftarrow false\) \\ 
+%% {\bf for} \(d \in D\) {\bf do} \+ \\
+%%   {\bf for} each row, \(i\), of \(TM_d\) {\bf do} \+ \\
+%%   \(v \leftarrow TM_d[i].x\) \\ 
+%%   \(m' \leftarrow TM_d[i].mid\) \\ 
+%% {\bf if} 
+%% 
+%% {\bf endfor} \\
+%% 
+%% \end{tabbing}
+%% 
+%% 
+

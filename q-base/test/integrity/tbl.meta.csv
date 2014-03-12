@@ -1,0 +1,6 @@
+tbl_id,int,4
+nR,long long,8
+is_lkp,bool,1
+is_map,bool,1
+name,char string,0
+dispname,char string,0

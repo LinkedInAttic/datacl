@@ -1,0 +1,10 @@
+mid,I4,
+t,I8,
+fld_device_type,SV,'is_dict_old=[false]:dict=[lkp_device_type]'
+junk1,I8,'is_load=[false]'
+junk2,I8,'is_load=[false]'
+fld_log_source,SV,'is_dict_old=[false]:dict=[lkp_log_source]'
+fld_action,SV,'is_dict_old=[false]:dict=[lkp_action]'
+junk3,I8,'is_load=[false]'
+fld_user_name,SV,'is_dict_old=[false]:dict=[lkp_user_name]'
+version_SV,SV,'is_dict_old=[false]:dict=[lkp_version]'

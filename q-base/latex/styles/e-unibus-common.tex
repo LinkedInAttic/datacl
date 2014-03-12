@@ -1,0 +1,79 @@
+% -*- latex -*-
+
+
+\usepackage[left=1in, right=1in]{geometry}
+\usepackage{times}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{fancybox}
+\usepackage{pstricks}
+\usepackage{color}
+\usepackage{sectsty}
+\usepackage{makeidx}
+\usepackage{tabularx}
+\usepackage{ifthen}
+\usepackage[pdftex,colorlinks,linkcolor=blue]{hyperref}
+\usepackage{boxedminipage}
+%% BELOW FROM RAMESH
+\usepackage{supertabular}
+\usepackage{verbatim}
+\usepackage{ifthen}
+\usepackage{tabularx}
+\usepackage{afterpage}
+\usepackage{soul}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%% ABOVE FROM RAMESH
+
+\input{Config}
+
+\makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Special types of chapters
+\newcommand{\specialchapter}[1]{\chapter*{#1}\markboth{#1}{}\addcontentsline{toc}{chapter}{#1}}
+
+\newcommand{\acknowledgements}{\specialchapter{Acknowledgements}}
+\newcommand{\introduction}{\specialchapter{Introduction}}
+\newcommand{\preface}{\specialchapter{Preface}}
+  \newcommand{\prefaceauthor}[1]{{\par\itshape \raggedleft    #1 \par}}
+  \newcommand{\prefacewhere}[1]{{\par\itshape \raggedleft #1 \par}}
+\newcommand{\acronyms}{\specialchapter{Acronyms}}
+  \newcommand{\acro}[2]{\textsf{#1} --- #2 \par}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Page and headings layout
+\pagestyle{fancy}
+
+\addtolength{\headwidth}{\marginparwidth}
+
+\newcommand{\myhf}{
+  \fancyhead{}
+  \renewcommand{\headrulewidth}{1pt}
+  \renewcommand{\footrulewidth}{1pt}
+
+%  \fancyhead[R]{\rightmark{}\rule{1cm}{0pt}\includegraphics{logo}}
+%  \fancyhead[R]{\rightmark{}{\hspace{0.2ex} \Ovalbox{LinkedIn}}}
+  \fancyhead[L]{\leftmark{}}
+%  \fancyhead[C]{v. \docversion{}, \docpublishingdate{}}
+  \fancyhead[C]{\docpublishingdate{}}
+%  \fancyfoot[L]{LinkedIn Proprietary and Confidential}
+}
+
+\myhf
+\fancypagestyle{plain}{\myhf}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+
+\allsectionsfont{\sffamily}
+\chapterfont{\raggedleft\sffamily\Huge}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% BY RAMESH
+\setcounter{secnumdepth}{4}
+%% BY RAMESH
+
+\input{ramesh_abbreviations}

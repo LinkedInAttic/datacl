@@ -1,0 +1,8 @@
+q get_nR TM
+q describe TCountry
+q pr_fld TCountry idx:txt
+q pr_fld TM CountryId | head
+q unset_meta TM CountryId dict_tbl
+q pr_fld TM CountryId | head
+q set_meta TM CountryId dict_tbl TCountry
+q pr_fld TM CountryId | head

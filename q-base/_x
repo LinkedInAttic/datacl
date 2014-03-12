@@ -1,0 +1,5 @@
+rm -f ./leveldb-1.12.0/libleveldb.a
+rm -f ./test/kj_qldb/bin/leveldbcxx.a
+rm -f ./test/kj_qldb/bin/leveldbc.a
+rm -f ./test/kj_qldb/bin/libleveldb.a
+rm -f ./src/leveldbcxx.a

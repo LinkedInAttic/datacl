@@ -1,0 +1,66 @@
+% PMC2000.sty for PMC2000 abstact/paper
+% PMC2000 <pmc2000@nd.edu>, http://www.nd.edu/~pmc2000/% Johanes Suhardjo (johanes@nd.edu) - February 2, 2000
+\topmargin      -0.5in
+\textheight     9in
+\oddsidemargin  0.25in
+\evensidemargin 0.25in
+\textwidth      6in
+\parindent      0pt
+\baselineskip   14pt
+\parskip        \baselineskip
+\listparindent  0pt
+%\itemsep       -100pt        % doesn't have any effect here (must put into list%\parsep        -100pt        % environment manually---cf example latex input)
+\headwidth      \textwidth
+\headrulewidth  0pt
+\newfont{\titlefont}{phvbc scaled\magstep2}
+\newfont{\abstractfont}{phvb}
+\newfont{\headingfont}{phvb scaled\magstep1}
+\newfont{\captionfont}{phvb}
+\renewcommand{\small}{\fontsize{10}{12}\selectfont}
+\renewcommand\@maketitle{
+\null
+\vspace{-0.5in}
+\begin{center}
+{\titlefont \@title \par} 
+\vskip 3pt
+{\lineskip .25em 
+\begin{tabular}[t]{c}\@author \end{tabular}\par} 
+\end{center}
+}
+
+\def\abstract#1{
+\setlength{\baselineskip}{12pt}
+\vspace{\baselineskip}
+\noindent{\abstractfont Abstract}
+
+{\small #1}
+\setlength{\baselineskip}{14pt}
+}
+
+\renewcommand\section{\@startsection{section}{1}{0pt}
+{0.0in plus .1ex  minus .1ex}{0.1ex plus .1ex}{\headingfont}
+}
+
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}
+{.1ex plus .1ex minus .1ex}{0.1ex plus 0.1ex}{\bf}
+}
+
+\def\acknowledgements#1{
+\setlength{\baselineskip}{12pt}
+\vspace{0.125\baselineskip}
+\noindent{\abstractfont Acknowledgements}
+
+{\small #1}
+\setlength{\baselineskip}{14pt}
+}
+
+% This one doesn't work right
+%\def\references#1{
+%  \setlength{\baselineskip}{12pt}
+%  \vspace{0.125\baselineskip}
+%  \noindent{\abstractfont References}
+%
+%  {\small #1}
+%  \setlength{\baselineskip}{14pt}
+%
+% }

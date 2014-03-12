@@ -1,0 +1,77 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Special for e-unibus doc commands
+
+\newcommand{\ForLater}{
+\begin{center}
+{\bf NOT FOR CURRENT VERSION}
+\end{center}
+}
+\newcommand{\TBC}{\framebox{\textbf{TO BE COMPLETED}}}
+\newcommand{\DISCUSS}{\Ovalbox {\bf \textcolor{red}{FOR DISCUSSION}}}
+\newcommand{\Input}{\framebox{\textsf{in}}}
+\newcommand{\Output}{\framebox{\textsf{out}}}
+\newcommand{\debug}[1]{\textbf{debug start} #1 \textbf{debug finish}}
+\newcommand{\inx}[1]{\emph{#1}}
+\newtheorem{notation}{Notation}
+\newtheorem{definition}{Definition}
+\newtheorem{problem_statement}{Problem Statement}
+\newtheorem{invariant}{Invariant}
+\newtheorem{resource_string}{Resource String}
+\newtheorem{testcase}{Test Case}
+\newtheorem{specification}{Specification}
+\newtheorem{caution}{Caution}
+\newtheorem{prereq}{Pre-requisite}
+\newtheorem{action}{Action}
+\newtheorem{query}{Query}
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\bv}{\begin{verbatim}}
+\newcommand{\ev}{\end{verbatim}}
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+\newcommand{\bpre}{\begin{prereq}}
+\newcommand{\epre}{\end{prereq}}
+\newcommand{\bact}{\begin{action}}
+\newcommand{\eact}{\end{action}}
+\newcommand{\bs}{\begin{specification}}
+\newcommand{\es}{\end{specification}}
+\newcommand{\btc}{\begin{testcase}}
+\newcommand{\etc}{\end{testcase}}
+\newcommand{\bc}{\begin{caution}}
+\newcommand{\ec}{\end{caution}}
+\newcommand{\la}{\leftarrow}
+\newcommand{\IpArgs}{\subsection{Input Arguments}}
+\newcommand{\PreReqs}{\subsection{Pre-requisities}}
+\newcommand{\Actions}{\subsection{Actions}}
+\newcommand{\Coverage}{{\bf To test coverage.}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{intuition}[1][Intuition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%% \newenvironment{definition}[1][Definition]{\begin{trivlist}
+%% \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newcommand{\Alogon}{\mbox{\fontfamily{ptm}\selectfont {\large \selectfont A} \hspace{-1.2ex} {\large \selectfont L} \hspace{-2.3ex} \raisebox{0.45ex}{ {\footnotesize \selectfont O} } \hspace{-1.80ex} {\large \selectfont G} \hspace{-1.80ex} \raisebox{-0.33ex}{ {\large \selectfont O} } \hspace{-1.8ex} {\large \selectfont N}}}
+

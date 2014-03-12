@@ -1,0 +1,398 @@
+% -*- latex -*-
+
+\documentclass{report}
+
+\input{e-unibus-common}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Report title page
+\newcommand{\ReportAuthor}{The LinkedIn Documentation Team}
+\newcommand{\reportauthor}[1]{\renewcommand{\ReportAuthor}{#1}}
+\newcommand{\reporttitle}[1]{\renewcommand{\ReportTitle}{#1}}
+
+\newcommand{\reporttitlepage}[1]{
+  \begin{titlepage}
+    {\noindent \raggedright\normalsize\sffamily \ReportAuthor}\par\vfill
+    {\noindent \raggedright\Huge\sffamily \rule{\textwidth}{1pt}\\[5pt]#1\\[5pt]\rule{\textwidth}{1pt}}\par\vfill
+    {\noindent \raggedright\normalsize\sffamily Version \docversion\hfill{}\docpublishingdate}\par\vfill
+  \end{titlepage}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\startreport}[1]
+{
+  \begin{document}
+  \reporttitlepage{#1}
+  \tableofcontents
+  \specialchapter{#1}
+}
+
+\renewcommand{\thesection}{\arabic{section}}
+
+\startreport{Meta Data Tests for Q}
+\reportauthor{Ramesh Subramonian}
+\newcommand{\IncludeResults}{1}
+\section{Tests}
+%%------- START SPEC Test 1 -----------
+ \begin{definition}
+ A table, \(i\), is said to be a ``dictionary'', if there is some
+ field, \(f\) such that \(f.dict\_tbl\_id = i\)
+ \end{definition}
+ \begin{invariant}
+ \label{inv_1}
+ If a table is a dictionary, then it must have the following fields 
+ \begin{enumerate}
+ \item len with fldtype = I4 
+ \item off with fldtype = I4 
+ \item idx with fldtype = I4 
+ \item txt with fldtype = SV 
+ \end{enumerate}
+ \end{invariant}
+Invariant~\ref{inv_1} implemented in     Section~\ref{code_1}.
+%%------- STOP  SPEC Test 1 -----------
+%%------- START RSLTS Test 1 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 1 -----------
+%%------- START SPEC Test 2 -----------
+ \begin{invariant}
+ \label{inv_2}
+ If min is not defined, then min val must be 0. Same for sum, max
+ \end{invariant}
+Invariant~\ref{inv_2} implemented in     Section~\ref{code_2}.
+%%------- STOP  SPEC Test 2 -----------
+%%------- START RSLTS Test 2 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 2 -----------
+%%------- START SPEC Test 3 -----------
+ \begin{invariant}
+ \label{inv_3}
+ Relationship between min/max/sum and fldtype 
+ \begin{enumerate}
+ \item If min is defined, then fldtype must be one of I1, I2, I4, I8, F4, F8. 
+ \item If max is defined, then fldtype must be one of I1, I2, I4, I8, F4, F8. 
+ \item If sum is defined, then fldtype must be one of B, I1, I2, I4, I8, F4, F8. 
+ \end{enumerate}
+ \end{invariant}
+Invariant~\ref{inv_3} implemented in     Section~\ref{code_3}.
+%%------- STOP  SPEC Test 3 -----------
+%%------- START RSLTS Test 3 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 3 -----------
+%%------- START SPEC Test 4 -----------
+ \begin{invariant}
+ \label{inv_4}
+ If field is sorted
+ \begin{enumerate}
+ \item fldtype must be one of I1, I2, I4, I8, F4, F8. 
+ \item cannot have null values i.e., no {\tt nn} field 
+ \end{enumerate}
+ \end{invariant}
+Invariant~\ref{inv_4} implemented in     Section~\ref{code_4}.
+%%------- STOP  SPEC Test 4 -----------
+%%------- START RSLTS Test 4 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 4 -----------
+%%------- START SPEC Test 5 -----------
+ \begin{invariant}
+ \label{inv_5}
+ Name of field is unique within a table 
+ \end{invariant}
+Invariant~\ref{inv_5} implemented in     Section~\ref{code_5}.
+%%------- STOP  SPEC Test 5 -----------
+%%------- START RSLTS Test 5 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 5 -----------
+%%------- START SPEC Test 6 -----------
+ \begin{invariant}
+ \label{inv_6}
+ If field is a nn field, then fldtype must be I1 or B
+ \end{invariant}
+Invariant~\ref{inv_6} implemented in     Section~\ref{code_6}.
+%%------- STOP  SPEC Test 6 -----------
+%%------- START RSLTS Test 6 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 6 -----------
+%%------- START SPEC Test 7 -----------
+ \begin{invariant}
+ \label{inv_7}
+ If field is a nn field, then nn of parent must be same as itself.
+ \end{invariant}
+Invariant~\ref{inv_7} implemented in     Section~\ref{code_7}.
+%%------- STOP  SPEC Test 7 -----------
+%%------- START RSLTS Test 7 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 7 -----------
+%%------- START SPEC Test 8 -----------
+ \begin{invariant}
+ \label{inv_8}
+ fileno is unique and positive and defined
+ \end{invariant}
+Invariant~\ref{inv_8} implemented in     Section~\ref{code_8}.
+%%------- STOP  SPEC Test 8 -----------
+%%------- START RSLTS Test 8 -----------
+\textcolor{green}{TEST PASSED}
+%%------- STOP  RSLTS Test 8 -----------
+\section{Code Listing}
+%%------- START CODE Test 1 -----------
+\subsection{Invariant 1}
+\label{code_1} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+q f1s1opf2 Tflds dict_tbl_id 0 '>=' x
+n=`q f_to_s Tflds x sum | cut -f 1 -d ":"`
+if [ $n -gt 0 ]; then 
+  q delete T1
+  q copy_fld Tflds dict_tbl_id x T1
+  q fop T1 dict_tbl_id sortA
+  q count_vals T1 dict_tbl_id '' T2 dict_tbl_id cnt
+# T2 is set of tables that are dictionaries for some field
+  bash check1.sh T2 "txt" "SV"
+  bash check1.sh T2 "key" "I8"
+  bash check1.sh T2 "len" "I4"
+  bash check1.sh T2 "off" "I4"
+  bash check1.sh T2 "idx" "I4"
+  echo "Completed $0 in $PWD"
+else 
+  echo "Test $0 in $PWD not executed "
+fi
+q delete T1:T2
+q delete Tflds x
+\end{verbatim}
+%%------- STOP SPEC Test 1 -----------
+%%------- START CODE Test 2 -----------
+\subsection{Invariant 2}
+\label{code_2} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+function foo()
+{
+  x=$1
+  q f1s1opf2 Tflds is_${x}_nn 0 '==' x
+  q f1s1opf2 Tflds ${x}I8 0 '!=' y 
+  q f1f2opf3 Tflds x y '&&' z
+  n=`q f_to_s Tflds z sum | cut -f 1 -d ":"`
+  if [ $n -ne 0 ]; then exit 1; fi 
+}
+foo min
+foo max
+foo sum
+
+
+q delete Tflds x:y:z
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 2 -----------
+%%------- START CODE Test 3 -----------
+\subsection{Invariant 3}
+\label{code_3} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+
+
+function foo()
+{
+  fldtype=$1
+  q regex_match lkp_fldtype txt $fldtype exact x
+  idx=`q f_to_s lkp_fldtype x 'op=[get_idx]:val=[1]'`
+  q f1s1opf2 Tflds fldtype $idx '==' tempf
+  q f1f2opf3 Tflds tempf y '||' y
+}
+
+q s_to_f Tflds y 'op=[const]:val=[0]:fldtype=[I1]'
+foo I1
+foo I2
+foo I4
+foo I8
+foo F4
+foo F8
+
+function bar() 
+{
+  x=$1
+  q f1s1opf2 Tflds is_${x}_nn 1 '==' x
+  q f1f2opf3 Tflds x y '&&!' z
+  n=`q f_to_s Tflds z sum | cut -f 1 -d ":"`
+  if [ $n != 0 ]; then exit 1; fi 
+}
+bar min
+bar max
+
+foo B
+bar sum
+
+q delete Tflds x:y:z:tempf
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 3 -----------
+%%------- START CODE Test 4 -----------
+\subsection{Invariant 4}
+\label{code_4} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+
+function foo_srt()
+{
+  fldtype=$1
+  outfld=$2
+  q regex_match lkp_fldtype txt $fldtype exact x
+  idx=`q f_to_s lkp_fldtype x 'op=[get_idx]:val=[1]'`
+  q f1s1opf2 Tflds fldtype $idx '==' tempf
+  q f1f2opf3 Tflds tempf $outfld '||' $outfld
+}
+
+
+function foo_fld()
+{
+  fldtype=$1
+  q regex_match lkp_fldtype txt $fldtype exact x
+  idx=`q f_to_s lkp_fldtype x 'op=[get_idx]:val=[1]'`
+  q f1s1opf2 Tflds fldtype $idx '==' tempf
+  q f1f2opf3 Tflds tempf y '||' y
+}
+
+# Let x indicate fields that are sorted
+q s_to_f Tflds x 'op=[const]:val=[0]:fldtype=[I1]'
+foo_srt ascending x
+foo_srt desceding x
+foo_srt unsorted  x
+
+# Let y indicate fields with type = one of I1, I2, I4, I8, F4, F8
+q s_to_f Tflds y 'op=[const]:val=[0]:fldtype=[I1]'
+foo_fld I1 y
+foo_fld I2 y
+foo_fld I4 y
+foo_fld I8 y
+foo_fld F4 y
+foo_fld F8 y
+
+# Let z = x and not y
+q f1f2opf3 Tflds x y '&&!' z
+n=`q f_to_s Tflds z sum | cut -f 1 -d ":"`
+if [ $n != 0 ]; then exit 1; fi 
+
+# Let y = fields that have null values
+q f1s1opf2 Tflds nn_fld_id 0 '>=' y
+q f1f2opf3 Tflds x y '&&' z
+n=`q f_to_s Tflds z sum | cut -f 1 -d ":"`
+if [ $n != 0 ]; then exit 1; fi 
+
+
+q delete Tflds x:y:z:tempf
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 4 -----------
+%%------- START CODE Test 5 -----------
+\subsection{Invariant 5}
+\label{code_5} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+
+q dup_fld Tflds fk_lkp_flds x
+q drop_nn_fld Tflds x  # TODO P1 Should not be needed
+q f1s1opf2 Tflds tbl_id 16 '<<' y
+q f1f2opf3 Tflds y x '|' z 
+q fop Tflds z sortA
+q count_vals Tflds z '' tempt z cnt
+n1=`q get_nR Tflds`
+n2=`q get_nR tempt`
+if [ $n1 != $n2 ]; then echo FAILURE; exit 1; fi 
+q delete Tflds x:y:z
+q delete tempt
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 5 -----------
+%%------- START CODE Test 6 -----------
+\subsection{Invariant 6}
+\label{code_6} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+function foo_fld()
+{
+  fldtype=$1
+  q regex_match lkp_fldtype txt $fldtype exact x
+  idx=`q f_to_s lkp_fldtype x 'op=[get_idx]:val=[1]'`
+  q f1s1opf2 Tflds fldtype $idx '==' tempf
+  q f1f2opf3 Tflds tempf y '||' y
+}
+
+
+# Let x identify nn fields 
+q f1s1opf2 Tflds parent_id 0 '>=' x
+n=`q f_to_s Tflds x sum | cut -f 1 -d ":"`
+if [ $n = 0 ]; then echo Test not executed: $0 in $PWD; exit 0; fi
+
+# Let y identify fields that are I1 or B
+q s_to_f Tflds y 'op=[const]:val=[0]:fldtype=[I1]'
+foo_fld I1 y
+foo_fld B  y
+# Let z = x and not y
+q f1f2opf3 Tflds x y '&&!' z
+n=`q f_to_s Tflds z sum | cut -f 1 -d ":"`
+if [ $n != 0 ]; then exit 1; fi 
+
+q delete Tflds x:y:z:tempf
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 6 -----------
+%%------- START CODE Test 7 -----------
+\subsection{Invariant 7}
+\label{code_7} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+
+# Let x identify nn fields 
+q f1s1opf2 Tflds parent_id 0 '>=' x
+q delete tempt
+q copy_fld Tflds id        x tempt 
+q copy_fld Tflds parent_id x tempt 
+q rename tempt id fld_id 
+q sortf1f2 tempt parent_id fld_id A_
+q is_a_in_b Tflds id tempt parent_id '' fld_id chk_nn_fld_id
+q f1f2opf3 Tflds nn_fld_id chk_nn_fld_id '!=' x
+n=`q f_to_s Tflds x sum | cut -f 1 -d ":"`
+if [ $n != 0 ]; then echo FAILURE; exit 1; fi
+
+q delete Tflds x:y:z:tempf
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 7 -----------
+%%------- START CODE Test 8 -----------
+\subsection{Invariant 8}
+\label{code_8} 
+\begin{verbatim}
+#/usr/local/bin/bash
+set -e 
+
+
+# Let x identify nn fields 
+min=`q f_to_s Tflds fileno min | cut -f 1 -d ":"`
+if [ $min -lt 0 ]; then echo FAILURE; exit 1; fi 
+q dup_fld Tflds fileno x
+q fop Tflds x sortA
+q delete tempt
+q count_vals Tflds x '' tempt fileno cnt
+nR1=`q get_nR Tflds`
+nR2=`q get_nR tempt`
+if [ $nR1 -ne $nR2 ]; then echo FAILURE; exit 1; fi 
+
+q delete Tflds x
+q delete tempt
+echo "Completed $0 in $PWD"
+\end{verbatim}
+%%------- STOP SPEC Test 8 -----------
+\end{document}

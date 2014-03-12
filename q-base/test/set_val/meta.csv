@@ -1,0 +1,4 @@
+bfld,bool,1
+ifld,int,4
+llfld,long long,8
+ffld,float,4

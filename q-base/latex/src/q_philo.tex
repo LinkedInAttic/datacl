@@ -1,0 +1,909 @@
+\startreport{Q --- An Analytics Framework}
+\reportauthor{Ramesh Subramonian}
+
+\newcommand{\YES}{\checkmark}
+
+
+\section{Introduction}
+
+Q is a vector language, designed for efficient counting implementation
+of counting, sorting and data transformations. It uses a single data
+structure --- a table.
+
+\subsection{Motivation}
+
+I will motivate the need for Q by quoting from two of my Gods --- Codd and
+Iverson. I could be accused of quoting scripture for my purpose (see
+below) and it is true that I am being selective in my extracts.
+However, that does not detract from their essential verity.
+
+\begin{verse}
+The devil can cite Scripture for his purpose. \\ 
+An evil soul producing holy witness \\ 
+Is like a villain with a smiling cheek, \\
+A goodly apple rotten at the heart:
+\end{verse}
+
+\subsubsection{Extracts from Codd}
+
+{\tt 
+The most important motivation for the research work that resulted in the
+relational model was the objective of providing a sharp and clear
+boundary between the logical and physical aspects of database
+management. We call this the {\em data independence objective}.
+
+A second objective was to make the model structurally simple, so that
+all kinds of users and programmers could have a common understanding of
+the data, and could therefore communicate with one another about the
+database. We call this the {\em communicability objective}.
+
+A third objective as to introduce high level language concepts *but not
+specific syntax) to enable users to express operations upon large chunks
+of information at a time. This entailed providing a foundation for
+set-oriented processing (i.e., the ability to express in a single
+statement the processing of multiple sets of records at a time). We
+call this the {\em set-processing objective}.
+
+To satisfy these three objectives, it was necessary to discard all those
+data structuring concepts (e.g., repeating groups, linked structures)
+that were not familiar to end users and to take a fresh look at
+the addressing of data.
+}
+
+We have deviated from Codd's preference for the relational model.
+Instead, we choose to drop down one level to the table. As Codd writes:
+
+{\tt 
+  Tables are at a lower level of abstraction than relations, since they
+    give the impression that positional (array-type) addressing is
+    applicable (which is not true of \(n\)-ary relations), and they fail
+    to show that the information content of a table is independent of
+    row order. Nevertheless, even with these minor flaws, tables are the
+    most important conceptual representation of relations, because they
+    are universally understood.
+
+}
+
+Lastly, in designing Q, we wanted it to be a data model as Codd defines
+one
+
+{\tt
+A data model is a combination of at least three components:
+  \be
+  \item A collection of data structure types (the building blocks);
+\item A collection of operators or rules of inference, which can be
+  applied to any valid instances of the data types listed in (1), to
+  retrieve, derive, or modify data from any parts of those structures in
+  any combinations desired;
+\item A collection of general  integrity rules, which implicitly or
+  explicitly define the set of consistent database states or changes of
+  states or both
+  \ee
+
+}
+
+\subsubsection{Extracts from Iverson}
+
+The importance of language has been stated over the centuries. Iverson
+quotes the following from Whitehead:
+
+{\tt By relieving the brain of all unnecessary work, a good notation
+  sets it free to concentrate on more advanced problems, and in effect
+    increases the mental power of the race}
+
+In the same vein, he quotes Babbage:
+
+{\tt The quantity of meaning compressed into small space by algebraic
+  signs, is another circumstance that facilitates the reasonings we are
+    accustomed to carry on by their aid}
+
+I would hesitate to claim that Q meets any of the following criteria
+that Iverson lays down for good notation. But it is  definitely the
+guiding principle and aspirational goal for Q.
+
+{\tt 
+\be
+\item Ease of expressing constructs arising in problems. If it is to be
+effective as a tool of thought, a notation must allow convenient
+expression not only of notions arising directly from a problem, but also
+of those arising in subsequent analysis, generalization and
+specialization.
+
+\item Suggestivity. A notation will be said to be suggestive if the
+forms of the expressions arising in one set of problems suggests related
+expressions which find application in other problems.
+
+\item Ability to subordinate detail. Brevity is achieved by
+subordinating detail, and we will consider three important ways of doing
+this
+\bi
+\item the use of arrays
+\item the assignment of names to functions and variables
+\item the use of operators
+\ei
+
+\item Economy. Economy requires that a large number of ideas be
+expressible in terms of a relatively small vocabulary. 
+
+\item Amenability to formal proofs
+
+\ee
+}
+
+
+
+
+\subsection{Notations}
+\input{notations.tex}
+
+\section{System Capabilities}
+
+\subsection{Field Types}
+\label{Field_Types}
+\be
+\item wchar\_t Do we really support this all the way? \TBC 
+\item char
+\item bool
+\item int
+\item long long (LL)
+\item float
+\item double
+\item char string. There are 2 variations
+\be
+\item sz = 0 means variable length
+\item sz = \(L\) means constant length of \(L\) Or is this L+1 because
+of null termination? \TBC
+\ee
+\ee
+
+\be
+\item If an operation is expected to create a table \(T\) and a table
+by that name exists, then the original table is first deleted. Examples
+of operations that create tables are
+\be
+\item add table --- Section~\ref{add_tbl}
+\item load from CSV --- Section~\ref{dld}
+\ee
+\item 
+If an operation is expected to create a field with name \(f\) and a
+field with such a name exists, then the old field is deleted {\bf after}
+the operation is performed and replaced by the newly created field. 
+\item 
+A table has a primary name (non-null) and a display name, which can be
+null. The primary name must be unique. The display name, if non-null,
+must be unique. 
+\item Similary, fields have a primary name (non-null) and a display
+name, which can be null. 
+The primary name must be unique, within the table, in which the field
+occurs. The display name, if non-null, must be unique, within the table.
+\ee
+
+%-----------------------------------------------------
+
+\section{Functions}
+
+\subsection{list\_tbls}
+\label{list_tbls}
+
+Returns list of tables in the docroot as a 3-column CSV text file
+\be
+\item  tbl ID
+\item name
+\item display name
+\ee
+
+%--------------------------------------------------------------
+\subsection{list\_files}
+\label{list_files}
+
+Returns list of files in the docroot as a 2-column text file
+\be
+\item is\_external --- 1 means that it is owned by somebody else; else, 0
+\item file\_name  --- unique, non-null string
+\ee
+
+%--------------------------------------------------------------
+
+\subsection{add\_fld}
+\label{add_fld}
+
+Creates field \(f\) in table \(T\), whose values are stored in specified
+data file.  Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item attributes --- string. This is a colon separated concatenation of
+\verb+name=value+ pairs where the names are
+\be
+\item \verb+sz+ --- size of field. Set to 0 for variable length fields
+\item \verb+fldtype+ --- see Section~\ref{Field_Types}
+\ee
+\item \verb+nR+ --- number of rows
+\item data file
+\ee
+
+Error conditions
+\be
+\item If table is empty, its number of rows is initially undefined. It
+is set to \(n_R\) from input.  If table is non-empty, its number of rows
+is defined, say, \(n_R'\). Then \(n_R = n_R'\)
+\ee
+
+
+\subsection{add\_tbl}
+\label{add_tbl}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(n_R\) --- number of rows. If not specified, set to 0.
+\ee
+Creates a table with name \(T\).
+
+\subsection{is\_tbl}
+\label{is_tbl}
+Arguments 
+\be
+\item \(T\) --- table
+\ee
+If table \(T\) exists, output is \(1, tbl\_id)\). Else, 
+output is \((0, -1)\)
+
+{\bf Question?} Does the input argument refer to the primary name
+or the display name or the ID? 
+\bi
+\item If the argument starts with {\tt display:}, then the text after 
+this prefix is considered to be the display name.
+\item If the argument starts with {\tt id:}, then the text after 
+this prefix is considered to be the ID (must be a positive integer).
+\item Else, the entire argument is considered to be the primary name.
+\ei
+
+\subsection{is\_fld}
+\label{is_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+If table \(T\) exists and field \(f\) exists in table \(T\), 
+output is \(1, fld\_id)\). Else, output is \((0, -1)\)
+
+{\bf Question?} Does the input argument (whether \(T\) or \(f\)) 
+refer to the primary name or the display name or the ID? 
+Same as in Section~\ref{is_tbl}.
+
+\subsection{is\_nn\_fld}
+\label{is_nn_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+Returns 1 if \(f\) exists in \(T\) and it has a nn field. \(f\) must be
+primary name.
+
+\subsection{pr\_fld}
+\label{pr_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(f_c\) --- condition field or range. If null, all rows printed
+\item \(O\) --- output file name. If null, writes to stdout
+\ee
+
+Prints all rows of field \(f\) of table \(T\). Behavior of print can be
+modified by specifying third parameter as either
+\be
+\item \(f_c\) --- printing of \(T[i].f\) is suppressed if \(T[i].f_c = false\).
+\item \(lb:ub\) --- we print rows with lb as lower bound inclusive and
+ub as upper bound exclusive
+\ee
+
+If range is specified, following must be satisified
+\be
+\item \(lb > 0 \)
+\item \(ub \leq n_R\)
+\item \(lb < ub\)
+\ee
+
+\subsection{tbl\_meta}
+\label{tbl_meta}
+
+Arguments
+\be
+\item \(T\) --- table
+\ee
+Lists all fields (including auxiliary) in table \(T\). 
+For each field, we print
+\be
+\item name
+\item display name
+\item field type --- Section~\ref{Field_Types}
+\ee
+
+\subsection{fld\_meta}
+\label{fld_meta}
+
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+For field \(f\) in table \(T\) (asuming it exists), we print the
+following information as a 2-column CSV
+\be
+\item \verb+id+
+\item \verb+tbl_id+
+\item \verb+name+
+\item \verb+disp_name+
+\item \verb+filename+
+\item \verb+fldtype+
+\item \verb+auxtype+
+\item \verb+n_sizeof+
+\item \verb+parent_id+
+\ee
+
+
+\subsection{del\_tbl}
+\label{del_tbl}
+
+Arguments
+\be
+\item \(T\) --- table
+\ee
+
+Deletes table \(T\) and all fields in \(T\)
+
+\subsection{del\_fld}
+\label{del_fld}
+
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+Deletes field \(f\) in table \(T\). If \(f\) is a primary field, then
+all auxiliary fields (if any) are deleted as well. If \(is\_external = 0\), then the corresponding file is {\bf not} deleted; else, it is deleted.
+
+\subsection{get\_nR}
+\label{get_nR}
+Arguments
+\be
+\item \(T\) --- table
+\ee
+Returns number of rows in table \(T\)
+
+\subsection{set\_nR}
+\label{set_nR}
+Arguments
+\be
+\item \(T\) --- table
+\item \(n_R\) --- positive integer
+\ee
+
+Sets number of rows in table \(T\) to \(n_R\). Number of rows in table
+must be 0 beore operation.
+
+\subsection{add\_aux\_fld}
+\label{add_aux_fld}
+
+\be
+\item \verb+sz+ --- this indicates it is an auxiliary field
+\item \verb+nn+ --- this indicates it is an auxiliary field
+\item \verb+hash+ --- this indicates it is an auxiliary field
+\ee
+
+\subsection{dup\_fld}
+\label{dup_fld}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f_1\) --- field in \(T\)
+\item \(f_2\) --- newly created field in \(T\)
+\ee
+
+Creates \(f_2\) in\(T\) which is a clone of \(f_1\). Requires
+\be
+\item \(f_1 \neq f_2\)
+\ee
+
+\subsection{fop}
+\label{fop}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field in \(T\). Modified in situ
+\item \(\circ\)  --- operation on \(f\) 
+\ee
+
+Operations supported are
+\be
+\item \verb+sortA+ --- \(\forall i: T[i].f \leq T[i+1].f\). 
+\item \verb+sortD+ --- \(\forall i: T[i].f \geq T[i+1].f\)
+\item \verb+lcase+ --- Applies {\tt tolower} on all ascii characters in 
+string.  
+\ee
+Restrictions
+\be
+\item field cannot have null values
+\ee
+Operations supported are in Table~\ref{tbl_fop}
+\begin{table}
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf bool} & {\bf char} & {\bf int} & {\bf LL}
+& {\bf float } & {\bf double} & {\bf string} \\ \hline \hline
+{\bf sortA} &   &   & \YES & \YES & \YES &   &   \\ \hline
+{\bf sortD} &   &   & \YES & \YES & \YES &   &   \\ \hline
+{\bf lcase} &   &   &   &   &   &   & \YES \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f\_to\_s}
+\label{tbl_fop}
+\end{table}
+
+\subsection{f\_to\_s}
+\label{ftos}
+Produces a scalar from a field. Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field in \(T\). 
+\item \(\circ\)  --- operation on \(f\) 
+\ee
+
+Operations supported are in Table~\ref{tbl_f_to_s}
+\begin{table}
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf bool} & {\bf char} & {\bf int} & {\bf LL}
+& {\bf float } & {\bf double} & {\bf string} \\ \hline \hline
+{\bf sum} & \YES & \YES & \YES & \YES & \YES &   &   \\ \hline
+{\bf min} &   &   & \YES & \YES & \YES &   &   \\ \hline
+{\bf max} &   &   & \YES & \YES & \YES &   &   \\ \hline
+{\bf avg} &   &   & \YES & \YES & \YES &   &   \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f\_to\_s}
+\label{tbl_f_to_s}
+\end{table}
+
+
+\subsection{is\_a\_in\_b}
+\label{is_a_in_b}
+
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\). 
+\item \(T_2\) --- table
+\item \(f_2\) --- field in \(T_2\). 
+\item \(f_c\) --- newly created field in \(T_1\). 
+\item \({f_2}^S\) --- field in \(T_2\) used as source
+\item \({f_1}^D\) --- newly created field in \(T_1\) 
+\ee
+
+The are two variations of this call
+\be
+\item If \(f_c\) is provided, then \({f_2}^S\) and \({f_1}^D\) must be
+  null. In this case, 
+\(\forall i: T[i].f_1 \in T_2.f_2 \Rightarrow T[i].f_c \leftarrow true\)
+\item If \(f_c\) is {\bf not} provided, then \({f_2}^S\) and \({f_1}^D\) must be
+  provided. In this case, 
+  \TBC
+\ee
+
+\subsection{f1opf2}
+\label{f1opf2}
+
+Arguments are 
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\)
+\item \(\circ\)  --- operation to b performed on \(f_1\)
+\item \(f_2\) --- newly created field in \(T_1\)
+\ee
+
+Creates field \(f_1\) in \(T_1\) by performing operation \(\circ\) on
+\(f_1\) in \(T_1\). 
+Operations supported are in Table~\ref{tbl_f1opf2}. Detailed
+explanations in Section~\ref{details_f1opf2}.
+\begin{table}
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf bool} & {\bf char} & {\bf int} & {\bf LL}
+& {\bf float } & {\bf double} & {\bf string} \\ \hline \hline
+{\bf conv    } & \YES &      & \YES & \YES & \YES & \YES &   \\ \hline
+{\bf bitcount} &      &      & \YES & \YES &      &      &   \\ \hline
+{\bf sqrt    } &      &      &      &      & \YES &      &   \\ \hline
+\verb+!+       & \YES &      & \YES & \YES &      &      &   \\ \hline
+\verb=++=      &      &      & \YES & \YES &      &      &   \\ \hline
+\verb+--+      &      &      & \YES & \YES &      &      &   \\ \hline
+\verb+~+       &      &      & \YES & \YES &      &      &   \\ \hline
+{\bf hash}     &      &      &      &      &      &      & \YES \\ \hline
+{\bf shift   } &      &      & \YES &      &      &      &   \\ \hline
+{\bf cum     } &      &      & \YES & \YES &      &      &   \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f1opf2}
+\label{tbl_f1opf2}
+\end{table}
+
+\subsubsection{Details for f1opf2}
+\label{details_f1opf2}
+We explain each of the operations below
+\bd
+\item [CONV] Converts from one type to another. Example
+\verb+op=conv:newtype=long long+. Conversions supported
+are
+\be
+\item LL \(\rightarrow\) int
+\item LL \(\rightarrow\) bool
+\item LL \(\rightarrow\) float
+\item int \(\rightarrow\) bool
+\item int \(\rightarrow\) LL
+\item int \(\rightarrow\) float
+\item bool \(\rightarrow\) int
+\item bool \(\rightarrow\) LL
+\item float \(\rightarrow\) int
+\item float \(\rightarrow\) LL
+\item float \(\rightarrow\) double
+\item double \(\rightarrow\) int
+\item double \(\rightarrow\) LL
+\item double \(\rightarrow\) float
+\ee
+\item [BITCOUNT] 
+Counts the number of bits.
+Example \verb+op=bitcount+
+\(Type(f_2) = int\)
+\item [SQRT] 
+Operation is \(\sqrt{x}\). 
+Example \verb+op=sqrt+
+\(Type(f_2) = Type(f_1)\)
+\item [NEGATION] Toggles bits. 
+Example is \verb+op=!+
+\(Type(f_2) = Type(f_1)\)
+\item [ONE's COMPLEMENT] 
+Takes one's complement. 
+Example is \verb+op=~+
+\(Type(f_2) = Type(f_1)\)
+\item [INCREMENT]
+Increments by 1
+Example is \verb~op=++~
+\(Type(f_2) = Type(f_1)\)
+\item [DECREMENT]
+Decrements by 1
+Example is \verb~op=--~
+\(Type(f_2) = Type(f_1)\)
+\item [CUM] 
+Accumulates the values of \(f_1\). Basic version is as follows.
+\(i = 0 \Rightarrow f_2[i] = f_1[i]\); else, \(f_2[i] = f_1[i] + f_2[i-1]\)
+\(Type(f_2) = Type(f_1)\)
+
+A subtlety arises when invoked as follows
+\verb+op=cum:reset_on=N:reset_to=M+ The way to think about this is to
+assume sequential ordered execution for ascending values of \(i\) and
+then \(f_1[i] = N \Rightarrow f_2[i] \leftarrow M\)
+
+\item [SHIFT] Shifts the values up or down up to a maximum of 16
+Example is \verb+op=shift:val=N+. In this case,
+\(f_2[i] = f_1[i+N]\). If \(N > 0 \), then it like a shift down
+of the column i.e., the first \(N\) values of \(f_2\) are undefined. If
+\(N < 0\), then it is like a shift up and the last \(N\) values will be
+undefined. Note that \(N \neq 0\). Currently, \(|N| \leq 16\).
+
+\item [HASH] Creates a has of the string. A few options to note
+\be
+\item One must specify whether to create a 4-byte hash or an 8-byte hash
+with the specifier \verb+len=4+ or \verb+len=8+
+\item The default algorithm is an MD5 hash. One can specify an alternate
+alorithm with the specifier \verb+algo=addchars+. In this case, we
+compute the ``hash'' by treating each character as a number whose maximum
+value is 256 and adding up these numbers, one at a time, shifting the
+accumulated value by 8 bits. Consider the string {\tt ABC} where {\tt A}
+has value 65. In this case, the ``hash'' would be \(65 \times {256}^2 + 66
+\times 256 + 67\). Useful to create a unique integer for short-length
+strings.
+\ee
+\ed
+
+\subsection{crossprod}
+\label{crossprod}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_1\)
+\item \(T_2\)
+\item \(f_2\)
+\item \(T_3\)
+\ee
+
+Creates a new table \(T_3\) with fields \(f_1\) and \(f_2\).  If such a
+table exists, it is deleted. 
+Let \(n_1\) be number of non-null values of \(f_1\) in \(T_1\).
+Let \(n_2\) be number of non-null values of \(f_2\) in \(T_2\).
+Then, \(T_3\) will have \(n_1 \times n_2\) rows. 
+For each row of \(T_1\) which has a non-null value of \(f_1\)
+for each row of \(T_2\) which has a non-null value of \(f_2\),
+we create a row of \(T_3\) with values \(T_1[i].f_1, T_2[j].f_2\). Note
+that duplicate values in \(f_1\) or \(f_2\) will result in duplicate
+values in \(T_3\). It is the responsibility of the caller to create
+unique values if so desired.
+
+\subsection{join}
+\label{join}
+
+\be
+\item \(T_s\) --- table
+\item \(l_s\) --- link field in \(T_1\). 
+\item \(f_s\) --- source field in \(T_1\). 
+\item \(T_d\) --- table
+\item \(l_d\) --- link field in \(T_2\). 
+\item \(f_d\) --- newly created field in \(T_2\). 
+\ee
+
+Let \(T_d[i].l_d = v_d\). \(T_d[i].f_d \la T_s[l_s = v_d].f_s\). Note
+that
+\be
+\item \(|T_s[l_s = v_d].f_s| = 0 \Rightarrow T_d[i] = \bot\)
+\item \(|T_s[l_s = v_d].f_s| > 1 \Rightarrow T_d[i] = \) is arbitrarily
+set to some one value of \(T_s[l_s = v_d].f_s\)
+\ee
+
+\subsection{wisifxthenyelsez}
+\label{wisifxthenyelsez}
+
+\be
+\item \(T\) --- table
+\item \(w\) --- output field 
+\item \(x\) --- boolean field 
+\item \(y\) --- 
+\item \(z\) --- 
+\ee
+
+Creates field \(w\), whose type is same as that of field \(y\).
+Algorithm in Figure~\ref{pseudo_code_wisifxthenyelsez}. Restrictions
+\be
+\item field types for \(y\) and \(z\) must be the same
+\item field types for \(y\) must be one of bool, integer, long, float
+\ee
+
+\begin{figure}
+\centering
+\begin{tabbing} \hspace*{0.25in} \=  \hspace*{0.25in} \= \kill
+{\bf if} \(T_x[i] = \bot\) then \+ \\
+  \(T_w[i] \la \bot \) \- \\
+{\bf else} \+  \\
+  {\bf if} \(T_x[i] = true\) then \+  \\
+    \(T_w[i] \la T_y[i] \) \- \\
+  {\bf else} \+  \\
+    \(T_w[i] \la T_z[i] \) \- \\
+  {\bf endif} \-  \\
+{\bf endif} 
+\end{tabbing}
+\label{pseudo_code_wisifxthenyelsez}
+\caption{Pseudo-code for wisifxthenyelsez}
+\end{figure}
+
+
+\subsection{count\_vals}
+\label{count_vals}
+
+Arguments are 
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field  in \(T_1\)
+\item \(f^c_1\) --- optional counter field in \(T_1\)
+\item \(T_2\) --- output table 
+\item \(f_2\) --- output field in \(T_1\)
+\item \(f^c_2\) --- counter field in \(T_2\)
+\ee
+
+Field types supported are in Table~\ref{tbl_fldtypes_count_vals}. Other
+restrictions are
+\be
+\item \(fldtype(f_1) = fldtype(f^c_1)\)
+\item \(fldtype(f_2) = fldtype(f^c_2)\)
+\ee
+
+We create a table \(T_2\) where \(f_2\) is the unique, non-null values
+of \(f_1\) in \(T_1\). If \(f^c_1\) is not specified, \(f^c_2[i] =
+|T_1[f_1 = T_2[f^c-2[i]]|\), the number of times the corresponding
+value of \(f_1\) occurred in \(T_1\). If it is specified, then the
+output is computed in much the same way but weighted by \(f^c_1\). In
+other words, let \(T_2[j].f_2 = V\). Then, 
+\begin{displaymath}
+T_2[j].f^c_2 = \sum_i T_1[i].f^c_1[i] \times \delta(T_1[i].f_1, V) 
+\end{displaymath}
+
+\begin{table}
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Field} & {\bf bool} & {\bf char} & {\bf int} & {\bf LL}
+& {\bf float } & {\bf double} & {\bf string} \\ \hline \hline
+\(f_1\) &   &   & \YES & \YES &      &   &   \\ \hline
+\(f^c_1\) &   &   & \YES & \YES &      &   &   \\ \hline
+\(f_2\) &   &   & \YES & \YES &      &   &   \\ \hline
+\(f^c_2\) &   &   & \YES & \YES &      &   &   \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Field Types for count\_vals}
+\label{tbl_fldtypes_count_vals}
+\end{table}
+
+\sunbsection{Enhancements}
+Do not create an output count field if not desired. % TODO
+
+\subsection{bindmp}
+\label{bindmp}
+Arguments are
+\be
+\item \(T\) --- input table
+\item \(f_1:f_2:\ldots f_N\) --- list of fields separated by colon. Must
+have at least one field
+\item \(f_c\) --- boolean field in \(T_1\) optional
+\item \(F\) --- output file to be created
+\ee
+
+Creates file \(F\) by dumping the desired fields, a row at a time. A
+row is output if either \(f_c\) is not specified or \(f_c\) is specified
+and it is true. 
+
+Restrictions are
+\be
+\item All fields do not need to have the same type 
+\item Field type must be one of 
+\be
+\item char (C)
+\item bool (B)
+\item int (I)
+\item long long (L)
+\item float (F)
+\item double (D)
+\ee
+\ee
+
+\subsection{binld}
+\label{binld}
+Similar to bindmp in Section~\ref{bindmp}.
+Arguments are
+\be
+\item \(T\) --- table to be created
+\item \(f_1:f_2:\ldots f_N\) --- list of fields separated by colon. Must
+have at least one field
+\item \(t_1:t_2:\ldots t_N\) --- where \(t_i\) is specifier of field
+type for field \(f_i\). 
+\item \(F\) --- input file to be created
+\ee
+
+Creates table \(T\) from file \(F\). Restrictions are 
+\be
+\item \(t_i \in \{B, C, I, LL, F, D\}\)
+\ee
+
+\subsection{copy\_fld}
+\label{copy_fld}
+
+Creates field \(f_2\) table \(T_2\) by copying
+\(T[i].f\) to \(T_2\) if \(T_1[i].f_c = true\). The order is preserved
+in the copy operation.
+Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field 
+\item \(f_c\) --- optional condition field 
+\item \(T_2\) --- output table 
+\item \(f_2\) --- newly created output field 
+\ee
+Restrictions are
+\be
+\item \(T_2\) must exist
+\item If \(f_c\) not specified, \(|T_1| = |T_2|\). Else,
+  \(NumVal(T_1.f_c, true), = |T_2|\)
+\item Field type must be one of 
+\be
+\item char
+\item bool
+\item int
+\item long long (LL)
+\item float
+\item double
+\ee
+\ee
+
+\subsection{sortf1f2}
+\label{sortf1f2}
+
+Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field 
+\item \(f_2\) --- optional input field 
+\item \(sort~spec\) --- see below
+\ee
+Restrictions are
+\be
+\item \(f_1 \neq f_2\)
+\item Field type must be one of 
+\be
+\item int
+\item long long (LL)
+\ee
+\item sort spec must be one of 
+\be
+\item \verb+A+  --- sort \(f_1\) ascending. \( \Rightarrow f_2 = \bot\)
+\item \verb+D+  --- sort \(f_1\) descending. \( \Rightarrow f_2 = \bot\)
+\item \verb+AA+ --- \(f_1\) primary ascending and \(f_2\) secondary ascending
+\item \verb+A_+ --- \(f_1\) primary ascending and \(f_2\) drag along
+\item \verb+AD+ --- \(f_1\) primary ascending and \(f_2\) secondary descending
+\item \verb+DA+ --- \(f_1\) primary descending and \(f_2\) secondary ascending
+\item \verb+D_+ --- \(f_1\) primary descending and \(f_2\) drag along
+\item \verb+DD+ --- \(f_1\) primary descending and \(f_2\) secondary descending
+\ee
+\ee
+
+\subsection{import}
+\label{import}
+Arguments are
+\be
+\item \(D_{from}\) --- from docroot 
+\item \(T_{from}\)
+\item \(T_{to}\)
+\ee
+Copies the table \(T_{from}\) from the docroot to the current docroot,
+       \((D_{to}\)
+Notes
+\be
+\item \(D_{from} \neq D_{to}\)
+\item If \(T_{to}\) exists in \(D_{to}\), then it is deleted
+\item If we delete a field in \(D_{to}\) or the entire table itself,
+there is no impact on \(T_{from}\) in \(D_{from}\). (As an
+  implementation note, this is because we mark the imported fields with
+  an \verb+is_external+ flag and we do not allow modifications of these
+  files. This is specially important for operations which modify the
+  underyling storage like Section~\ref{fop}.
+\ee
+
+\subsection{rename}
+\label{rename}
+Two styles of invocation. 
+\be
+\item to rename a table 
+\be
+\item \(T_1\) --- old name of table
+\item \(T_2\) --- new name. If such a table exists, it is deleted
+\ee
+\item to rename a field 
+\be
+\item \(T_1\) --- name of table
+\item \(f_1\) --- old name of field 
+\item \(f_2\) --- new name of field. If such a field exists, it is
+deleted
+\ee
+\ee
+
+\subsection{drop\_null\_fld}
+\label{drop_null_fld}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+If \(T.f\) has an auxiliary nn field, it is deleted i.e., all values of
+\(f\) are now defined. It is important to be sure that you know the
+value of the field in its undefined state. Usually, this will be 0, but
+you had better be damn sure!
+
+\subsection{no\_op}
+\label{no_op}
+
+As expected, does nothing. Although it writes a line to the log file. 
+
+\subsection{dld}
+\label{dld}
+
+\TBC

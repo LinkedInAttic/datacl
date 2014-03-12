@@ -1,0 +1,472 @@
+\startreport{DQ --- Distributed Q}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+\subsection{Basics of Q}
+There are other documents that describe Q more completely. A brief
+description is as follows.
+
+The basic building block is a table which can be viewed as a collection
+of fields or columns, each of which has the same number of cells or
+values. Hence, \(T[i].f\) as the \(i^{th}\) row of column \(f\) of table
+\(T\).  Every operation of Q consists of reading one or more columns
+from one or more tables and producing one or more columns in an existing
+table or a newly created one.
+
+This relatively simple statement makes for great simplicity, both in
+terms of implementation and programming There are a few exceptions to
+this rule e.g., computing an associative operation on a column, are
+the values of a column unique, meta-data based operations like listing
+the tables, describing them, \ldots
+
+\subsection{Assumptions}
+\be
+\item 
+We assume that no data is modified in place i.e. the data read from and
+written to during an operation are disjoint.
+\item 
+Initially, we shall ignore fault-tolerance considerations. This
+assumption is relaxed in Section~\ref{fault_tolerance}.
+\ee
+
+\subsection{Terminology}
+\be
+\item We shall use {\bf cilkfor} to denote a loop that can benefit from
+multi-threading
+\item We shall use {\bf vecfor} to denote a loop that can benefit from
+vectorization
+\item We shall omit arguments to functions that we define when it makes
+exposition simpler
+\ee
+
+\section{Global Data Structures}
+
+A Q table consists of zero or more columns. A column is broken into
+chunks of fixed number of rows (32K sounds like a reasonable
+number). Chunks need not have the same size, since fields can vary in
+width from bits to bytes to 8-byte doubles or integers. Note that all
+fields in Q are of fixed length.  The last chunk may not be fully
+utilized if the number of rows in the table is not a multiple of the
+chunk size. However, it will be the same size as every other chunk.
+
+The tables listed in Section~\ref{T_T}, ~\ref{T_D}, ~\ref{T_C} are
+conceptual. We make no statement about how exactly they are
+instantiated.
+
+\subsection{Table of Tables}
+\label{T_T}
+\(T_T\) lists all tables in the system. Note that \(nS
+\times n_C \geq n_R\). Columns are
+\be
+\item table name 
+\item number of rows, \(n_R\)
+\item chunk size, \(n_S\)
+\item number of chunks , \(n_C\)
+\ee
+
+\subsection{Table of Chunk Location}
+\label{T_D}
+\(T_D\) tells us on which machines the chunks are located.
+\be
+\item table 
+\item chunk index
+\item location (host)
+\ee
+
+\subsection{Table of Chunks}
+\label{T_C}
+\(T_C\) gives us details about the chunks.  Location refers to the 
+primary location.  For now, we deliberately ignore whether data is
+replicated. Columns are
+
+\be
+\item table 
+\item field 
+\item chunk index
+\item location (file)
+\item size
+\item number of elements
+\item type \( \in \{B, I1, I2, I4, I8, F4, F8\}\)
+\item does it have null values? If so, name of nn field
+\item sorted? Can be ascending, descending, unsorted, unknown
+\item internal or external?
+\item max value
+\item min value
+\item sum 
+\item what else? 
+\ee
+Meta data can be used in a variety of ways. For example
+\be
+\item Often, we will use a condition field, \(f_c\),  to select rows.
+Then, \(min(f_c) = max(f_c) = 0\) means that none of the rows in this
+chunk were selected. 
+Similarly, \(min(f_c) = max(f_c) = 1\) means that all the rows in this
+chunk were selected. 
+\item In doing a range query or an equality query, knowing that none of
+the values in this chunk are relevant, allows us to skip the chunk
+without scanning data.
+\item What else?
+\ee
+
+\section{Requirements of Distributed Store}
+
+\subsection{ADDT --- Adding a table}
+\label{ADDT}
+
+Creating a table corresponds to creating one or more rows in \(T_T\) and determining
+how the chunks are distributed across different nodes. For now,we assume
+that the number of rows in the table is known at creation time. This
+assumption is relaxed in Section~\ref{Variable_NumRows}.
+
+\subsection{ADDF --- Adding a field}
+\label{ADDF}
+Creating a table corresponds to creating one or more rows in \(T_C\).
+At the time of creation, \(T_C.location\) is created but the
+data in it is junk. A GET after an ADDF will succeed. The developer
+should bear in mind that the memory is un-initialized.
+
+\subsection{GET}
+
+Invocation is \(X \leftarrow GET(T, f, i) \). Returns the row in 
+\(T_C[table=T, fld=f, chunk~index =i]\). In addition, we assume that
+\(X\) is a \verb+void *+ pointer to memory on the local machine which
+provides access to the data.
+
+\subsubsection{Caching}
+
+GETs are expensive if the host for that piece of memory is remote.
+Hence, a local cache can avoid multiple GETs to a piece of memory that
+has not changed since last requested. In subsequent discussion, we shall
+assume that caching has been implemented. 
+
+The implementation of the cache needs to take into account the details
+that a cache normally has to e.g., garbage collection, invalidation,
+\ldots. For example, if we delete field \(f\) from table \(T\), then the
+cached copy of this data must also be deleted. Similar considerations
+apply for renaming, deleting entire tables, \ldots
+
+\subsection{ASSOC}
+
+Invocation is \(ASSOC(T, f, v, op) \). 
+Arguments are
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(v\) --- value
+\item \(op\) --- meta data value e.g., min, max, sum, \ldots
+\ee
+
+What this does is to perform an associative operation on
+\(T_C[table=T,field=f, metadata=op].value\). This is useful when
+we reduce a vector to a scalar with an associative operation such as
+min, max, sum. 
+
+\subsection{PUT}
+
+Invocation is \(PUT(T, f, i, X, n) \). 
+Arguments are
+\be
+\item \(X\) --- \verb+void * + pointer to local memory
+\item \(n\) --- length of X
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(i\) --- chunk number
+\ee
+
+By default this is a blocking call. The asynchrononus version is
+prefixed with \verb+async_+
+
+\section{Usage Examples}
+In this section, we use increasingly complex examples to see how the
+primitives offered in Section~\ref{read_write} serve Q's purpose.
+
+\subsection{Example --- one to one}
+\label{eg_one_to_one}
+The simplest class of operations in Q is of the form \(f_3 \leftarrow
+f_1 \oplus f_2\), where all fields are in the same table, \(T\). This is
+a one-to-one operation, as shown in Figure~\ref{fig_example_1}.
+
+\begin{figure}[hb]
+\begin{center}
+\fbox{
+  \begin{minipage}{10 cm}
+\begin{tabbing} 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\kill
+\(ADDF(T, f_3, \ldots)\) \\ 
+{\bf cilkfor} \(i \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\
+  {\bf if} \(T_D[table=T,chunk=i].host \neq me\) {\bf then} {\bf continue} {\bf fi} \\ 
+  \(X_1 \la GET(T, f_1, i) \) \\ 
+  \(X_2 \la GET(T, f_2, i) \) \\ 
+  \(X_3 \la GET(T, f_3, i) \) \\ 
+  Let \(n \leftarrow\) chunk size \\
+  {\bf vecfor} \( j \leftarrow 1\) {\bf to} \(n\) {\bf do} \+ \\ 
+    \(X_3[j] \leftarrow X_1[j] \oplus X_2[j]\) \- \\
+  {\bf endfor} \\ 
+{\bf endfor} \\ 
+{\bf wait} \\
+\end{tabbing}
+\caption{Figure for one-to-one Example}
+\label{fig_example_1}
+\end{minipage}
+}
+\end{center}
+\end{figure}
+
+\subsection{Example --- associative operation}
+\label{eg_assoc}
+Consider \(v \leftarrow \sum T.f\) as in Figure~\ref{fig_example_assoc}.
+
+\begin{figure}[hb]
+\begin{center}
+\fbox{
+  \begin{minipage}{10 cm}
+\begin{tabbing} 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\kill
+{\bf cilkfor} \(i_C \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\
+  {\bf if} \(T_D[table=T,chunk=i_C].host \neq me\) {\bf then} {\bf continue} {\bf fi} \\ 
+  Initialize scalar \(v\) appropriately for operation \(\oplus\) \\ 
+  \(X \la GET(T, f, i_C) \) \\ 
+  Let \(n \leftarrow\) chunk size \\
+  {\bf vecfor} \( j \leftarrow 1\) {\bf to} \(n\) {\bf do} \+ \\ 
+    \(v \leftarrow v \oplus X[j] \) \- \\ 
+  {\bf endfor} \\ 
+  \(async\_ASSOC(T, f, v, op)\) \- \\ 
+{\bf endfor}
+\end{tabbing}
+\caption{Figure for associative operation}
+\label{fig_example_assoc}
+\end{minipage}
+}
+\end{center}
+\end{figure}
+
+\subsection{Example --- aggregation}
+\label{eg_agg}
+We are often in the situation where we are condensing a large number of
+values into a smaller number of values. For example, \(T_1\) may contain
+member information, such as country, industry, \ldots and \(T_2\) may
+contain all countries. We would like to count the number of members in
+each country. In such cases, it is efficient to 
+\be
+\item replicate \(T_2\)
+\item have each processor perform the computation as if only the local data
+were involved 
+\item accumulate the local \(T_2\) into a global \(T_2\)
+\ee
+Note that this is applicable not just to sum, but to other associative
+operations e.g., min, max, \ldots
+
+\begin{figure}[hb]
+\begin{center}
+\fbox{
+  \begin{minipage}{10 cm}
+\begin{tabbing} 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\kill
+START: Make a copy of \(T_2.f_2\) in \(X_2\) \\
+{\bf cilkfor} \(i \leftarrow 1\) {\bf to} \(n_C(T_2)\) {\bf do} \+ \\
+  \(X_2(T_2, f_2) \la GET(T_2, f_2, i) \) \- \\ 
+{\bf endfor} \\
+STOP: Make a copy of \(T_2.f_2\) in \(X_2\) \\
+%-------------------- 
+{\bf cilkfor} \(i \leftarrow 1\) {\bf to} \(n_C(T_1)\) {\bf do} \+ \\
+  {\bf if} \(T_D[table=T_2,chunk=i].host \neq me\) {\bf then} {\bf continue} {\bf fi} \\ 
+  \(X_1, n \la GET(T_1, f_1, i) \) \\ 
+  {\bf vecfor} \( j \leftarrow 1\) {\bf to} \(n\) {\bf do} \+ \\ 
+    \(v \leftarrow v \oplus X[j] \) \- \\ 
+  {\bf endfor} \\ 
+  \(ASSOC(T, f, v, op)\) \- \\ 
+{\bf endfor}
+\end{tabbing}
+\caption{Figure for aggregation}
+\label{fig_example_agg}
+\end{minipage}
+}
+\end{center}
+\end{figure}
+
+\subsection{Example --- join (sorted)}
+\label{eg_join_sort}
+
+If \(T_D\) is small, this is similar to Section~\ref{eg_agg}. In this
+section, assume that it is not. 
+Consider an operation of the form \(T_2.f_D \leftarrow \oplus
+T_S.f_S(T_1.f_L, T_D.f_L)\). 
+This is a many-to-one operation. Typically used in a join. There can be
+many variations of \(\oplus\), like min, max, sum, or, and, regular,
+     \ldots
+
+\subsection{Example --- join (unsorted)}
+\label{eg_join_unsort}
+
+\TBC
+
+\section{Strip-Mining}
+
+Also called loop-blocking or loop-tiling. This replaces
+Figure~\ref{loop_no_strip_mine} with 
+Figure~\ref{loop_strip_mine}.
+
+\begin{figure}[hb]
+\begin{center}
+\fbox{
+  \begin{minipage}{10 cm}
+\begin{tabbing} 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\kill
+{\bf cilkfor} \(i_C \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\ 
+  {\bf vecfor } \( j \leftarrow 1\) {\bf to} \(n_S\) {\bf do} \+ \\ 
+    \(T.f_3 \leftarrow T.f_1 \oplus T.f_2\) \-  \\
+  {\bf endfor} \- \\ 
+{\bf endfor} \\ 
+%---------------------------
+{\bf cilkfor} \(i_C \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\ 
+  {\bf vecfor } \( j \leftarrow 1\) {\bf to} \(n_S\) {\bf do} \+ \\ 
+    \(T.f_4 \leftarrow T.f_3 \oplus T.f_5\) \- \\ 
+  {\bf endfor} \- \\ 
+{\bf endfor} \\ 
+%---------------------------
+{\bf cilkfor} \(i_C \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\ 
+  {\bf vecfor } \( j \leftarrow 1\) {\bf to} \(n_S\) {\bf do} \+ \\ 
+    \(T.f_6 \leftarrow T.f_4 \oplus T.f_7\) \- \\ 
+  {\bf endfor} \- \\ 
+{\bf endfor} \\ 
+\(x \leftarrow \sum T_6\) // Or some other associative function
+\end{tabbing}
+\caption{Loop execution without strip mining}
+\label{loop_no_strip_mine}
+\end{minipage}
+}
+\end{center}
+\end{figure}
+
+\begin{figure}[hb]
+\begin{center}
+\fbox{
+  \begin{minipage}{10 cm}
+\begin{tabbing} 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\hspace{0.25in} \=  \hspace{0.25in} \= 
+\kill
+{\bf cilkfor} \(i_C \leftarrow 1\) {\bf to} \(n_C\) {\bf do} \+ \\ 
+  {\bf vecfor } \( j \leftarrow 1\) {\bf to} \(n_S\) {\bf do} \+ \\ 
+    \(T.f_3 \leftarrow T.f_1 \oplus T.f_2\)  \\
+    \(T.f_4 \leftarrow T.f_3 \oplus T.f_5\) \\ 
+    \(T.f_6 \leftarrow T.f_4 \oplus T.f_7\) \- \\ 
+  {\bf endfor} \\ 
+  \(x_{i_C} \leftarrow \sum T_6\) // Or some other associative function \- \\ 
+{\bf endfor} \\ 
+\(x \leftarrow \sum x_{i_C}\) // Or some other associative function \\
+\end{tabbing}
+\caption{Loop execution with strip mining}
+\label{loop_strip_mine}
+\end{minipage}
+}
+\end{center}
+\end{figure}
+
+\section{Fault Tolerance}
+\label{fault_tolerance}
+
+We assume the existence of a coordinator that does not go down. It is
+responsible for the fault tolerance of the rest of the cluster.
+
+\section{Speculative Computing}
+\label{Speculative_Computing}
+
+The intuition behind this idea is that, when the system is not busy,
+could it be doing something that could potentially be of value later
+on? Examples of this are
+\be
+\item finding min/max of columns, assuming these have not been computed
+when the column was created. 
+\ee
+
+\section{Allowing concurrent access}
+
+In an earlier version of Q, only one invocation of Q was allowed at any
+point in time. The rationale behind this decision was that it simplified
+meta-data management. Otherwise, one operation could be reading from a
+field while another operation might be deleting it or renaming it or
+\ldots However, it would be nice to relax this requirement. In this
+section, we sketch out what this entails.
+
+Every operation must be classified as read or write
+A read operation is one that does not modify either data or meta-data.
+All other operations are writes.
+
+As usual, multiple read operations can proceed concurrently.
+
+When a write operation starts, we lock the tables and columns being
+created and release the lock at the end. What does this allow/disallow?
+
+\be
+\item If a write operation will create table \(T\), then no
+other operation can 
+\be
+\item create, rename or read from any field in \(T\)
+\item create or delete table \(T\)
+\ee
+
+\item If a write operation will create field  \(f\) in \(T\), then no
+other operation can 
+\be
+\item delete \(T\) 
+\item delete, rename or read from \(f\) 
+\item create another field called \(f\) in \(T\)
+\ee
+However, another write operation could be creating field \(f'\) in \(T\) at the same time.
+\ee
+
+So, what happens to an operation that cannot be performed for any of the
+following reasons? We have two choices and will support both using
+options provided in the reqtes
+\be
+\item {\bf BLOCK} Operation waits until it can perform the
+operation. Can it suffer starvation? \TBC
+\item {\bf QUIT}  Operation does nothing and returns with appropriate error
+code
+\ee
+
+\subsection{Requirements of Distributed Controller}
+
+The distributed controller must support the following atomic operations.
+
+\subsubsection{RESERVE}
+
+Arguments are
+\be
+\item table \(T\)
+\item field \(f\) (optional)
+\ee
+
+\subsubsection{FREE}
+
+Arguments are
+\be
+\item table
+\item field (optional)
+\ee
+
+
+
+\section{Miscellaneous Details}
+
+\subsection{Adding fields}
+\label{add_fld}
+
+When we load data, we first ADDF and then update the data 
+
+
+\subsection{Variable Number of Rows}
+\label{Variable_NumRows}.
+
+In this section, we relax the assumption that the number of rows of a
+table needs to be known at run-time.
+

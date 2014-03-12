@@ -1,0 +1,31 @@
+
+/.*html 
+-> show the file
+-> index.html default (will have info about Q server/lib, documentation of API and different URIs)
+
+/plugins/plugin-name?qid=identifier&input="blah blah"
+-> Execs plugin from plugin/ directory and passes input as the command line arg, output is converted into json as default for now.
+
+/info
+-> info of the server like:
+  static info: port number, max queue, environment details RAM size, cpu, etc. 
+  dynamic info: number of threads running, requests in queue, etc.
+
+/q?qid=identifier&func=ABC&param=f1,f2,f3&output=json
+-> actual q call from web server
+
+/qidentifier
+
+- Take care of encoding for input params from get query.
+- create ID and namespace for each request on /identifier and return it
+- wait for thread running same identifier
+
+env variables:
+Q_DOCROOT
+Q_DATA_DIR
+
+Back door entry commands:
+- delete namespace
+- query without qid
+- set other environment
+

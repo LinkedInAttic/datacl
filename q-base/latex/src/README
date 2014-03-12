@@ -1,0 +1,57 @@
+qtils
+==========================================
+
+<b>qtils</b> is a collection of data-wrangling utilities. While Hadoop has
+emerged as the de-facto standard for large data analysis tasks, there are
+often a large number of simple data manipulation operations that need to
+be performed in interactive mode as a post-processing step. The data for
+post-processing is often small enough to fit on a user's desktop.
+<b>qtils</b> is collection of efficient utilities for a data scientist.
+
+In our experience, the life of a data scientist is often less glamorous
+than the public perception. Accelerating the speed of inquiry --- both
+in terms of run time and scripting time --- significantly decreases some
+of the pains that come with the territory, opening up time to do
+higher-level thinking.
+
+While <b>qtils</b> was designed primarily as a useful toolkit for data
+scientists, we believe it can be used in other contexts as well. A case
+in point is our paper entitled "In Data Veritas --- Data Driven Testing for Distributed
+Systems", which was presented at DBTest2013, a SIGMOD workshop in New York in 2013.
+
+We believe by open sourcing, we can both contribute to the community
+while benefiting from their feedback and contributions.
+
+Installation
+=====================================
+
+* Copy the file qtils.tgz into a directory and cd to that directory
+* tar -zcvf qtils.tgz
+* cd src 
+* make
+* You should get a single file called <b>q</b>
+* cd ../test/
+* You will see a number of examples and unit tests over here. Each sub-directory has a file called *test.sh* which can be executed
+
+You need to set 2 environment variables.
+---------------------------------------
+* <b>Q_DOCROOT</b> This is the directory where the meta data will be stored
+* <b>Q\_DATA\_DIR</b> This is the directory where the      data will be stored
+
+Hello World
+======================================
+    mkdir            /tmp/qtils_test
+    export Q_DOCROOT=/tmp/qtils_test
+    export Q_DATA_DIR=/tmp/qtils_test
+    q init # This initializes the meta data
+    q add_tbl t1 10 # Creates a table with 10 rows
+    # Create a 4 byte integer field f1 in t1 whose values are 1, 2, ...
+    q s_to_f t1 f1 'op=[seq]:start=[1]:incr=[1]:fldtype=[I4]'
+    q list_tbls # list tables
+    q describe t1    # describes table t1
+    q describe t1 f1 # describes fld f1 in table t1
+    q pr_fld t1 f1 # Prints the values of f1 in t1
+    q fop    t1 f1 sortD # Sorts f1 in t1 in descending order
+    q pr_fld t1 f1 # Notice that values have switched order
+    q delete t1    # Clean up
+

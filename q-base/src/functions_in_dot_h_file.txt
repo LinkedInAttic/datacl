@@ -1,0 +1,365 @@
+ApproxQuantile.h,determine_b_k
+ApproxQuantile.h,approx_quantile
+Collapse.h,Collapse
+New.h,int *src_buf,
+Output.h,Output
+a_and_not_b_I1.h,a_and_not_b_I1
+add_aux_fld.h,add_aux_fld
+add_fld.h,get_empty_fld
+add_fld.h,add_fld
+add_fld.h,ext_add_fld
+add_tbl.h,get_empty_tbl
+add_tbl.h,add_tbl
+app_fld.h,app_fld
+app_tbl.h,app_tbl
+approx_frequent.h,ext_approx_frequent
+approx_frequent.h,approx_frequent 
+approx_quantile.h,ext_approx_quantile
+approx_quantile.h,approx_quantile
+approx_unique.h,ext_approx_unique
+approx_unique.h,approx_unique 
+approx_uq.h,approx_uq
+asc2bin.h,asc2bin
+aux_dld.h,process_aux_info
+aux_hdfs.h,get_file_names
+aux_join.h,join_prep
+aux_meta.h,FLD_INFO_TYPE X
+aux_meta.h,chk_tbl_meta
+aux_meta.h,chk_fld_meta
+aux_meta.h,zero_fld_info_rec
+aux_meta.h,is_zero_fld_info_rec
+aux_meta.h,zero_ddir_rec
+aux_meta.h,zero_fld_rec
+aux_meta.h,is_zero_fld_rec
+aux_meta.h,pr_fld_meta
+aux_meta.h,mk_str_srttype
+aux_meta.h,mk_str_tbltype
+auxil.h,stoF4
+auxil.h,stoF8
+auxil.h,stoI1
+auxil.h,stoI2
+auxil.h,stoI4
+auxil.h,stoI8
+auxil.h,read_nth_val /* n starts from 0 */
+auxil.h,break_str
+auxil.h,num_lines
+auxil.h,explode
+auxil.h,extract_name_value
+auxil.h,char *in_dir
+auxil.h,char *dir_to_del
+auxil.h,is_prime
+auxil.h,prime_geq
+auxil.h,const char *dir_name
+auxil.h,const char *filename
+auxil.h,strip_trailing_slash
+auxil.h,get_disk_space 
+auxil.h,count_char
+auxil.h,strip_extra_spaces
+auxil.h,)
+auxil.h,copy_file
+auxil.h,avail_space
+auxil.h,zero_string
+auxil.h,zero_string_to_nullc
+auxil.h,two_raised_to
+auxil.h,csv_to_json
+auxil.h,is_legal_env_var
+auxil.h,is_absolute_path
+auxil.h,str_to_argv
+auxil.h,alldigits
+bak_compound.h,char *op_spec,
+bak_compound.h,const char *op,
+bak_compound.h,is_created_prior
+bak_compound.h,char *scalar,
+bak_compound.h,char *env_var,
+bak_compound.h,proc_fld
+bak_compound.h,chk_comp_expr
+bin2asc.h,bin2asc
+bindmp.h,bindmp
+binld.h,binld
+break_nn_fld.h,break_nn_fld
+bwise_a_and_not_b_I8.h,bwise_a_and_not_b_I8
+bwise_not_and_scalar_I8.h,unsigned long long *in1,
+bwise_not_or_scalar_I8.h,unsigned long long *in1,
+chk_ascii.h,chk_ascii
+compound.h,char *op_spec,
+compound.h,const char *op,
+compound.h,is_created_prior
+compound.h,char *scalar,
+compound.h,char *env_var,
+compound.h,proc_fld
+compound.h,chk_comp_expr
+concat_I4_I4_to_I8.h,concat_I4_I4_to_I8
+conv.h,conv
+conv_B_to_I1.h,conv_B_to_I1
+conv_I1_to_B.h,conv_I1_to_B
+copy_fld.h,copy_fld
+copy_fld_ranges.h,copy_fld_ranges
+copy_tbl.h,copy_tbl
+count.h,count
+count_ht.h,count_ht
+count_vals.h,count_vals
+count_vals_ldb.h,int * x,
+count_vals_maps.h,int * x,
+countf.h,countf
+crossprod.h,crossprod
+date_to_I4.h,date_to_I4
+dateconv.h,dateconv
+dbauxil.h,mk_join_op
+dbauxil.h,del_ht_tbl_entry
+dbauxil.h,del_ht_fld_entry
+dbauxil.h,del_aux_fld
+dbauxil.h,mk_name_aux_fld
+dbauxil.h,chk_file_size
+dbauxil.h,long long num_to_divide,
+dbauxil.h,get_data
+dbauxil.h,q_mmap
+dbauxil.h,q_re_mmap
+dbauxil.h,q_delete
+dbauxil.h,q_trunc
+dbauxil.h,chk_aux_info
+dbauxil.h,get_file_size_B
+dbauxil.h,break_into_scalars
+dbauxil.h,switch_dirs
+dbauxil.h,chk_env_vars
+dbauxil.h,get_max_fileno)
+dbauxil.h,is_ddir /* ddir = data directory */
+dbauxil.h,set_ddir /* ddir = data directory */
+dbauxil.h,get_ddir /* ddir = data directory */
+dbauxil.h,mk_full_filename
+dbauxil.h,add_to_fld_info
+dbauxil.h,get_fld_info
+dbauxil.h,del_from_fld_info
+dbauxil.h,del_from_fld_info_1
+dbauxil.h,chk_dsk_ddir_id
+dbauxil.h,start_compound_expr
+dbauxil.h,stop_compound_expr
+dbauxil.h,is_in_compound
+dbauxil.h,compute_nT_for_count
+del_dict.h,del_dict
+del_fld.h,del_fld
+del_fld.h,iter_del_fld
+del_tbl.h,del_tbl
+del_tbl.h,iter_del_tbl
+determine_b_k.h,determine_b_k
+determine_rho_loc.h,determine_rho_loc 
+dir_is_a_in_b.h,dir_is_a_in_b
+dld.h,dld
+drop_aux_fld.h,drop_aux_fld
+dump.h,dump
+dup_fld.h,dup_fld
+esc_for_latex.h,esc_for_latex
+extract_S.h,extract_S
+extract_S.h,extract_F4
+f1f2_to_s.h,core_f1f2_to_s
+f1f2_to_s.h,f1f2_to_s
+f1f2opf3.h,f1f2opf3
+f1opf2.h,f1opf2
+f1opf2_cum.h,f1opf2_cum
+f1opf2_idx_with_reset.h,f1opf2_idx_with_reset
+f1opf2_shift.h,f1opf2_shift
+f1opf2f3.h,f1opf2f3
+f1s1opf2.h,f1s1opf2
+f_to_s.h,f_to_s
+f_to_s_sum_B.h,f_to_s_sum_B
+fld_meta.h,pr_min_max_sum
+fld_meta.h,fld_meta
+fld_meta.h,int_get_fld_meta
+fld_meta.h,get_fld_meta
+fld_meta.h,file_to_fld
+flush.h,flush
+fop.h,decide_on_parallelism
+fop.h,fop
+g_add_fld.h,g_add_fld
+g_aux.h,g_num_free_regs
+g_aux.h,g_is_fld
+g_count.h,g_count
+g_countf.h,g_countf
+g_del_fld.h,g_del_fld
+g_describe.h,g_describe
+g_f1f2_to_s.h,g_f1f2_to_s
+g_f1f2opf3.h,g_f1f2opf3
+g_f1s1opf2.h,g_f1s1opf2
+g_f_to_s.h,g_f_to_s
+g_load.h,g_load
+g_meta_data.h,g_mmap_meta_data
+g_print_reg_data.h,g_print_reg_data
+g_shift.h,g_shift
+g_store.h,g_store
+get_meta.h,int_get_meta
+get_meta.h,get_meta
+get_nR.h,get_nR
+get_nR.h,int_get_nR
+get_type_op_fld.h,get_type_op_fld
+get_val.h,get_val
+gqhttpd.h,char *src,
+gqhttpd.h,int client
+gqhttpd.h,int ns_map_indx
+gqhttpd.h,int ns_map_indx
+gqhttpd.h,char *path,
+gqhttpd.h,char *query_string,
+gqhttpd.h,char *buf
+gqhttpd.h,unsigned int token,
+gqhttpd.h,char *url,
+gqhttpd.h,void *voidptr
+gqhttpd.h,int client
+gqhttpd.h,int client,
+gqhttpd.h,char *msg,
+gqhttpd.h,const char *sc
+gqhttpd.h,int sock,
+gqhttpd.h,int client,
+gqhttpd.h,int client
+gqhttpd.h,int client
+gqhttpd.h,int client,
+gqhttpd.h,uint16_t *port
+gqhttpd.h,int client
+hash_string.h,int_hash_string
+hash_string.h,hash_string_UI4
+hash_string.h,hash_string_UI8
+hash_string.h,ext_hash_string
+hdfs_get.h,hdfs_get
+import.h,import
+is_A_in_b.h,is_A_in_b
+is_a_in_b.h,is_a_in_b
+is_aux_fld.h,is_aux_fld
+is_dict.h,is_dict
+is_fld.h,is_fld
+is_s_in_f.h,is_s_in_f
+is_tbl.h,is_tbl
+list_dicts.h,xlist_dicts
+list_files.h,list_files
+list_tbls.h,list_tbls
+lkp_sort.h,lkp_sort
+logger.h,)
+logger.h,)
+logger.h,int argc,
+logger.h,log_response
+meta_data.h,init_ddirs
+meta_data.h,mmap_meta_data
+mk_bins.h,mk_bins
+mk_dict.h,const void *in1,
+mk_dict.h,setup_ht_dict
+mk_dict.h,add_to_dict
+mk_file.h,mk_file
+mk_ldb_dict.h,mk_ldb_dict
+mk_nn_fld.h,mk_nn_fld
+mk_temp_file.h,space_in_dir
+mk_temp_file.h,mk_temp_file
+mmap.h,rs_mmap
+mv_fld.h,mv_fld
+mv_range.h,mv_range
+n_dict.h,n_dict
+num_in_range.h,num_in_range
+open_file_in_dir.h,open_file_in_dir
+orphan_files.h,orphan_files
+pack.h,pack
+par_f1opf2_cum.h,par_f1opf2_cum
+par_sort_with_bins.h,par_sort_with_bins
+patmatch.h,patmatch
+percentiles.h,percentiles
+pr_dict.h,const char *dict,
+pr_fld.h,core_pr_flds
+pr_fld.h,core_pr_fld
+pr_fld.h,pr_fld
+pr_fld_SC.h,pr_fld_SC
+pr_fld_SV.h,pr_fld_SV
+pr_fld_clob.h,pr_fld_clob
+print_cell.h,print_cell
+q.h,q
+q_batch.h,q_batch
+q_core.h,q_core
+q_init.h,q_init
+qhead.h,qhead
+qhttpd.h,char *src,
+qhttpd.h,int client
+qhttpd.h,int ns_map_indx
+qhttpd.h,int ns_map_indx
+qhttpd.h,char *path,
+qhttpd.h,char *query_string,
+qhttpd.h,char *buf
+qhttpd.h,int content_length,
+qhttpd.h,unsigned int token,
+qhttpd.h,char *method,
+qhttpd.h,void *voidptr
+qhttpd.h,int client
+qhttpd.h,int client,
+qhttpd.h,char *msg,
+qhttpd.h,char *Y,
+qhttpd.h,char *scalars,
+qhttpd.h,const char *sc
+qhttpd.h,int sock,
+qhttpd.h,int client,
+qhttpd.h,int client
+qhttpd.h,int client
+qhttpd.h,int client,
+qhttpd.h,uint16_t *port
+qhttpd.h,int client
+qldb.h,main
+qtils.h,qtils
+rd_dict.h,rd_dict
+read_csv.h,read_csv
+read_meta_data.h,read_meta_data
+regex_match.h,regex_match
+rename_fld.h,rename_fld
+rename_tbl.h,rename_tbl
+replace_char.h,replace_char
+rng_join.h,rng_join
+rng_sort.h,rng_sort
+s_to_f.h,s_to_f
+set_meta.h,const char *attr,
+set_meta.h,int_set_meta
+set_meta.h,set_meta
+set_val.h,set_val
+smear.h,smear
+sortbindmp.h,sortbindmp
+sorted_array_to_id_freq.h,sorted_array_to_id_freq 
+sortf1f2.h,sortf1f2
+srt_join.h,srt_join
+stride.h,stride_I4
+stride.h,stride_I8
+stride.h,ext_stride
+subsample.h,subsample
+t1f1t2f2opt3f3.h,t1f1t2f2opt3f3
+tab_split.h,tab_split
+tbl_meta.h,tbl_meta
+tbl_meta.h,get_tbl_meta
+test.h,zero_string
+test.h,zero_string_to_nullc
+test.h,csv_to_json
+time1.h,time1
+top_n.h,ext_top_n
+top_n.h,top_n 
+txt_sub.h,txt_sub
+udf_deg2.h,udf_deg2
+udf_eq_B.h,udf_eq_B
+unpack.h,unpack
+unset_meta.h,const char *attr,
+unset_meta.h,int_unset_meta
+unset_meta.h,unset_meta
+update_counter.h,update_counter 
+url.h,from_hex
+url.h,to_hex
+url.h,url_encode
+url.h,url_decode
+url.h,ext_url_encode
+url.h,ext_url_decode
+vec_abs_F4.h,vec_abs_F4
+vec_abs_F8.h,vec_abs_F8
+vec_f1f2opf3.h,vec_f1f2opf3
+vec_f1opf2.h,vec_f1opf2
+vec_f1s1opf2.h,vec_f1s1opf2
+vec_f_to_s.h,vec_f_to_s
+vec_normal_cdf_inverse.h,rational_approximation
+vec_normal_cdf_inverse.h,vec_normal_cdf_inverse
+vec_pval_from_zval.h,double tvalue
+vec_pval_from_zval.h,double tvalue
+vec_pval_from_zval.h,vec_pval_from_zval
+vec_reciprocal_F4.h,vec_reciprocal_F4
+vec_reciprocal_F8.h,vec_reciprocal_F8
+vec_s_to_f.h,vec_s_to_f
+vec_sqrt_F4.h,vec_sqrt_F4
+vec_sqrt_F8.h,vec_sqrt_F8
+wisifxthenyelsez.h,wisifxthenyelsez
+xfer.h,xfer
+xfer_I4_I4.h,xfer_I4_I4
+xfer_SC_I4.h,xfer_SC_I4
+zero_after_n.h,zero_after_n

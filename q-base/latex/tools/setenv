@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+
+# $Id: setenv,v 1.1 2009-04-10 14:55:54 subramon Exp $
+
+use File::Basename;
+
+chdir(dirname(dirname(__FILE__)));
+my $root = `pwd`;
+chomp $root;
+
+printf "DOCROOT=%s; export DOCROOT\n", $root;
+printf "TEXINPUTS='%s/styles:%s/src/IMAGES:%s::'; export TEXINPUTS\n", $root, $root, $root;

@@ -1,0 +1,8 @@
+<html>
+<title> Test Q Server 1 </title>
+<form name="input" action="1.csp" method="post">
+Username: <input type="text" name="user">
+Password: <input type="text" name="password">
+<input type="submit" value="Submit">
+</form> 
+</html>

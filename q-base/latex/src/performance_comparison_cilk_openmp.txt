@@ -1,0 +1,206 @@
+﻿From Kittur Ganesh Intel 
+
+Comparision of  cilk_for and OpenMP parallel_for
+Case 1: Workload is uniform across all threads 
+OpenMP Code Sample:
+$ export OMP_NUM_THREADS=4
+$ cat openmp_no_condition.cc
+#include<iostream>
+#include<omp.h>
+#include<math.h>
+#include"../timer.h"
+#define SIZE 800000
+using namespace std;
+int main()
+{
+float a[SIZE], b[SIZE], c[SIZE];
+CUtilTimer t;
+long long ticks = 0;
+long long sum = 0;
+c[:] = 0;
+for(int j = 0; j < 15; j++)
+{
+        t.start();
+        #pragma omp parallel for schedule(dynamic, 200000)
+        for(long long i = 0; i < SIZE; i++)
+        {
+                        c[i] = (a[i] * b[i]) + b[i];
+                        b[i] = c[i] + a[i] - (b[i] * c[i]);
+                        b[i] = sqrt(c[i] + b[i]);
+                        b[i] = exp(c[i]+b[i]);
+                        c[i] = pow(b[i],3) + sqrt(a[i]+b[i]);
+        }
+        t.stop();
+        ticks += t.get_ticks();
+}
+for(long long j = 0; j < SIZE; j++)
+        sum += c[j];
+cout<<"sum = "<<sum<<" , ticks = "<<ticks/15<<"\n";
+return 0;
+}
+
+Building and running the executable:
+$ icpc openmp_no_condition.cc -o openmp_output -openmp ../timer.cpp -vec-report2
+openmp_no_condition.cc(13): (col. 1) remark: LOOP WAS VECTORIZED
+openmp_no_condition.cc(32): (col. 1) remark: loop was not vectorized: vectorization possible but seems inefficient
+openmp_no_condition.cc(18): (col. 2) remark: LOOP WAS VECTORIZED
+openmp_no_condition.cc(14): (col. 1) remark: loop was not vectorized: nonstandard loop is not a vectorization candidate
+openmp_no_condition.cc(18): (col. 2) remark: loop was not vectorized: nonstandard loop is not a vectorization candidate
+$ ./openmp_output
+sum = -9223372036854775808 , ticks = 10706238
+Cilk Code Sample:
+$ export CILK_NWORKERS=4
+$ cat cilk_no_condition.cc
+#include<iostream>
+#include<cilk/cilk.h>
+#include<cilk/cilk_api.h>
+#include<math.h>
+#include"../timer.h"
+#define SIZE 800000
+using namespace std;
+int main()
+{
+float a[SIZE], b[SIZE], c[SIZE];
+CUtilTimer t;
+long long ticks = 0;
+long long sum = 0;
+c[:] = 0;
+#pragma cilk grainsize = 200000
+for(int j = 0; j < 5; j++)
+{
+        t.start();
+        cilk_for(long long i = 0; i < SIZE; i++)
+        {
+                        c[i] = (a[i] * b[i]) + b[i];
+                        b[i] = c[i] + a[i] - (b[i] * c[i]);
+                        b[i] = sqrt(c[i] + b[i]);
+                        b[i] = exp(c[i]+b[i]);
+                        c[i] = pow(b[i],3) + sqrt(a[i]+b[i]);
+        }
+        t.stop();
+        ticks += t.get_ticks();
+}
+for(long long j = 0; j < SIZE; j++)
+        sum += c[j];
+cout<<"sum = "<<sum<<" , ticks = "<<ticks/5<<"\n";
+cout<<"Number of worker threads = "<<__cilkrts_get_nworkers()<<"\n";
+return 0;
+}
+Building and running the executable:
+$ icpc cilk_no_condition.cc -o cilk_output ../timer.cpp -vec-report2
+cilk_no_condition.cc(14): (col. 1) remark: LOOP WAS VECTORIZED
+cilk_no_condition.cc(16): (col. 1) remark: loop was not vectorized: existence of vector dependence
+cilk_no_condition.cc(33): (col. 1) remark: loop was not vectorized: vectorization possible but seems inefficient
+cilk_no_condition.cc(20): (col. 2) remark: LOOP WAS VECTORIZED
+
+$ ./cilk_output
+sum = -9223372036854775808 , ticks = 12747022
+Number of worker threads = 4
+Made sure that both cilk_for and OMP parallel_for loops vectorized and also made sure both spawned 4 threads. When the load is balanced across all 4 threads, OpenMP seems to perform way 19% better than OpenMP parallel_for.
+Case 1: Workload is non-uniform across the threads 
+OpenMP Code Sample:
+$ export OMP_NUM_THREADS=4
+$ cat openmp.cc
+#include<iostream>
+#include<omp.h>
+#include<math.h>
+#include"../timer.h"
+#define SIZE 800000
+using namespace std;
+int main()
+{
+float a[SIZE], b[SIZE], c[SIZE];
+CUtilTimer t;
+long long ticks = 0;
+long long sum = 0;
+c[:] = 0;
+for(int j = 0; j < 15; j++)
+{
+        t.start();
+        #pragma omp parallel for schedule(guided, 200000)
+        for(long long i = 0; i < SIZE; i++)
+        {
+                if(i < 200000)
+                {
+                        c[i] = (a[i] * b[i]) + b[i];
+                        b[i] = c[i] + a[i] - (b[i] * c[i]);
+                        b[i] = sqrt(c[i] + b[i]);
+                        b[i] = exp(c[i]+b[i]);
+                        c[i] = pow(b[i],3) + sqrt(a[i]+b[i]);
+                }
+        }
+        t.stop();
+        ticks += t.get_ticks();
+}
+for(long long j = 0; j < SIZE; j++)
+        sum += c[j];
+cout<<"sum = "<<sum<<" , ticks = "<<ticks/15<<"\n";
+return 0;
+}
+Building and running the executable:
+$ icpc openmp.cc -o openmp_output -openmp ../timer.cpp -vec-report2
+openmp.cc(13): (col. 1) remark: LOOP WAS VECTORIZED
+openmp.cc(32): (col. 1) remark: loop was not vectorized: vectorization possible but seems inefficient
+openmp.cc(18): (col. 2) remark: loop was not vectorized: vectorization possible but seems inefficient
+openmp.cc(14): (col. 1) remark: loop was not vectorized: nonstandard loop is not a vectorization candidate
+openmp.cc(18): (col. 2) remark: loop was not vectorized: nonstandard loop is not a vectorization candidate
+
+
+
+$ ./openmp_output
+sum = -9223372036854775808 , ticks = 7687444
+Cilk Code Sample:
+$ export CILK_NWORKERS=4
+$ cat cilk.cc
+#include<iostream>
+#include<cilk/cilk.h>
+#include<cilk/cilk_api.h>
+#include<math.h>
+#include"../timer.h"
+#define SIZE 800000
+using namespace std;
+int main()
+{
+float a[SIZE], b[SIZE], c[SIZE];
+CUtilTimer t;
+long long ticks = 0;
+long long sum = 0;
+c[:] = 0;
+#pragma cilk grainsize = 200000
+for(int j = 0; j < 5; j++)
+{
+        t.start();
+        cilk_for(long long i = 0; i < SIZE; i++)
+        {
+                if(i < 200000)
+                {
+                        c[i] = (a[i] * b[i]) + b[i];
+                        b[i] = c[i] + a[i] - (b[i] * c[i]);
+                        b[i] = sqrt(c[i] + b[i]);
+                        b[i] = exp(c[i]+b[i]);
+                        c[i] = pow(b[i],3) + sqrt(a[i]+b[i]);
+                }
+        }
+        t.stop();
+        ticks += t.get_ticks();
+}
+for(long long j = 0; j < SIZE; j++)
+        sum += c[j];
+cout<<"sum = "<<sum<<" , ticks = "<<ticks/5<<"\n";
+cout<<"Number of worker threads = "<<__cilkrts_get_nworkers()<<"\n";
+return 0;
+}
+Building and running the executable:
+$ icpc cilk.cc -o cilk_output ../timer.cpp -vec-report2
+cilk.cc(14): (col. 1) remark: LOOP WAS VECTORIZED
+cilk.cc(16): (col. 1) remark: loop was not vectorized: existence of vector dependence
+cilk.cc(33): (col. 1) remark: loop was not vectorized: vectorization possible but seems inefficient
+cilk.cc(20): (col. 2) remark: loop was not vectorized: vectorization possible but seems inefficient
+$ ./cilk_output
+sum = -9223372036854775808 , ticks = 6483202
+Number of worker threads = 4
+Unlike the first case, here there is a unbalanced work load across multiple threads and here Cilk runtime performs better than OpenMP runtime since Cilk runtime uses Work stealing scheduling. Work stealing schedule really helps when the user deals with unbalanced workload. Here the performance boost from Cilk threading is 19% more than OpenMP thread. 
+
+
+
+

@@ -1,0 +1,89 @@
+\contentsline {chapter}{Q --- An Analytics Framework}{3}{chapter*.2}
+\contentsline {section}{\numberline {1}Introduction}{3}{section.0.1}
+\contentsline {subsection}{\numberline {1.1}Motivation}{3}{subsection.0.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}Extracts from Codd}{3}{subsubsection.0.1.1.1}
+\contentsline {subsubsection}{\numberline {1.1.2}Extracts from Iverson}{4}{subsubsection.0.1.1.2}
+\contentsline {subsection}{\numberline {1.2}Notations}{5}{subsection.0.1.2}
+\contentsline {section}{\numberline {2}System Capabilities}{5}{section.0.2}
+\contentsline {subsection}{\numberline {2.1}Field Types}{5}{subsection.0.2.1}
+\contentsline {subsection}{\numberline {2.2}Environment Variables}{6}{subsection.0.2.2}
+\contentsline {section}{\numberline {3}Functions}{6}{section.0.3}
+\contentsline {subsection}{\numberline {3.1}Accessing meta-data}{6}{subsection.0.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}file\_to\_fld}{6}{subsubsection.0.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}list\_files}{6}{subsubsection.0.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}dump}{7}{subsubsection.0.3.1.3}
+\contentsline {subsubsection}{\numberline {3.1.4}list\_tbls}{7}{subsubsection.0.3.1.4}
+\contentsline {subsubsection}{\numberline {3.1.5}orphan\_files}{7}{subsubsection.0.3.1.5}
+\contentsline {subsubsection}{\numberline {3.1.6}is\_tbl}{7}{subsubsection.0.3.1.6}
+\contentsline {subsubsection}{\numberline {3.1.7}is\_fld}{7}{subsubsection.0.3.1.7}
+\contentsline {subsubsection}{\numberline {3.1.8}is\_aux\_fld}{8}{subsubsection.0.3.1.8}
+\contentsline {subsubsection}{\numberline {3.1.9}describe}{8}{subsubsection.0.3.1.9}
+\contentsline {subsection}{\numberline {3.2}get\_nR}{9}{subsection.0.3.2}
+\contentsline {subsection}{\numberline {3.3}Modifying meta-data}{9}{subsection.0.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}rename}{9}{subsubsection.0.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}drop\_nn\_fld}{9}{subsubsection.0.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}del\_tbl}{9}{subsubsection.0.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}del\_fld}{10}{subsubsection.0.3.3.4}
+\contentsline {subsubsection}{\numberline {3.3.5}set\_meta}{10}{subsubsection.0.3.3.5}
+\contentsline {subsection}{\numberline {3.4}import}{10}{subsection.0.3.4}
+\contentsline {subsection}{\numberline {3.5}Accessing Data}{11}{subsection.0.3.5}
+\contentsline {subsubsection}{\numberline {3.5.1}pr\_fld}{11}{subsubsection.0.3.5.1}
+\contentsline {subsubsection}{\numberline {3.5.2}bindmp}{11}{subsubsection.0.3.5.2}
+\contentsline {subsection}{\numberline {3.6}Creating Data}{12}{subsection.0.3.6}
+\contentsline {subsubsection}{\numberline {3.6.1}add\_tbl}{12}{subsubsection.0.3.6.1}
+\contentsline {subsubsection}{\numberline {3.6.2}add\_fld}{12}{subsubsection.0.3.6.2}
+\contentsline {subsubsection}{\numberline {3.6.3}dup\_fld}{12}{subsubsection.0.3.6.3}
+\contentsline {subsubsection}{\numberline {3.6.4}mk\_idx}{13}{subsubsection.0.3.6.4}
+\contentsline {subsubsection}{\numberline {3.6.5}get\_val}{13}{subsubsection.0.3.6.5}
+\contentsline {subsubsection}{\numberline {3.6.6}set\_val}{13}{subsubsection.0.3.6.6}
+\contentsline {subsubsection}{\numberline {3.6.7}copy\_tbl}{13}{subsubsection.0.3.6.7}
+\contentsline {subsubsection}{\numberline {3.6.8}copy\_fld}{14}{subsubsection.0.3.6.8}
+\contentsline {subsubsection}{\numberline {3.6.9}copy\_fld\_ranges}{14}{subsubsection.0.3.6.9}
+\contentsline {subsubsection}{\numberline {3.6.10}mv\_fld}{15}{subsubsection.0.3.6.10}
+\contentsline {subsubsection}{\numberline {3.6.11}mk\_nn\_fld}{15}{subsubsection.0.3.6.11}
+\contentsline {subsubsection}{\numberline {3.6.12}break\_nn\_fld}{15}{subsubsection.0.3.6.12}
+\contentsline {subsection}{\numberline {3.7}Operations}{16}{subsection.0.3.7}
+\contentsline {subsubsection}{\numberline {3.7.1}regex\_match}{16}{subsubsection.0.3.7.1}
+\contentsline {subsubsection}{\numberline {3.7.2}stride}{16}{subsubsection.0.3.7.2}
+\contentsline {subsubsection}{\numberline {3.7.3}count}{17}{subsubsection.0.3.7.3}
+\contentsline {subsubsection}{\numberline {3.7.4}countf}{17}{subsubsection.0.3.7.4}
+\contentsline {subsection}{\numberline {3.8}count\_ht}{18}{subsection.0.3.8}
+\contentsline {subsection}{\numberline {3.9}s\_to\_f}{19}{subsection.0.3.9}
+\contentsline {subsection}{\numberline {3.10}pack}{19}{subsection.0.3.10}
+\contentsline {subsection}{\numberline {3.11}unpack}{20}{subsection.0.3.11}
+\contentsline {subsection}{\numberline {3.12}subsample}{21}{subsection.0.3.12}
+\contentsline {subsection}{\numberline {3.13}wisifxthenyelsez}{21}{subsection.0.3.13}
+\contentsline {subsection}{\numberline {3.14}fop}{22}{subsection.0.3.14}
+\contentsline {subsection}{\numberline {3.15}num\_in\_range}{23}{subsection.0.3.15}
+\contentsline {subsection}{\numberline {3.16}f1s1opf2}{23}{subsection.0.3.16}
+\contentsline {subsection}{\numberline {3.17}f1f2\_to\_s}{24}{subsection.0.3.17}
+\contentsline {subsection}{\numberline {3.18}f\_to\_s}{24}{subsection.0.3.18}
+\contentsline {subsection}{\numberline {3.19}f1opf2}{25}{subsection.0.3.19}
+\contentsline {subsubsection}{\numberline {3.19.1}Details for f1opf2}{25}{subsubsection.0.3.19.1}
+\contentsline {subsection}{\numberline {3.20}xfer}{26}{subsection.0.3.20}
+\contentsline {subsection}{\numberline {3.21}is\_a\_in\_b}{26}{subsection.0.3.21}
+\contentsline {subsection}{\numberline {3.22}f1opf2f3}{27}{subsection.0.3.22}
+\contentsline {subsection}{\numberline {3.23}f1f2opf3}{28}{subsection.0.3.23}
+\contentsline {subsection}{\numberline {3.24}crossprod}{28}{subsection.0.3.24}
+\contentsline {subsection}{\numberline {3.25}is\_A\_in\_b}{29}{subsection.0.3.25}
+\contentsline {subsection}{\numberline {3.26}srt\_join}{30}{subsection.0.3.26}
+\contentsline {subsection}{\numberline {3.27}rng\_join}{30}{subsection.0.3.27}
+\contentsline {subsection}{\numberline {3.28}count\_vals}{31}{subsection.0.3.28}
+\contentsline {subsubsection}{\numberline {3.28.1}Enhancements}{32}{subsubsection.0.3.28.1}
+\contentsline {subsection}{\numberline {3.29}mk\_bins}{32}{subsection.0.3.29}
+\contentsline {subsection}{\numberline {3.30}t1f1t2f2opt3f3}{33}{subsection.0.3.30}
+\contentsline {subsection}{\numberline {3.31}binld}{33}{subsection.0.3.31}
+\contentsline {subsection}{\numberline {3.32}percentiles}{34}{subsection.0.3.32}
+\contentsline {subsection}{\numberline {3.33}rng\_sort}{34}{subsection.0.3.33}
+\contentsline {subsection}{\numberline {3.34}app\_tbl}{35}{subsection.0.3.34}
+\contentsline {subsection}{\numberline {3.35}sortf1f2}{35}{subsection.0.3.35}
+\contentsline {subsection}{\numberline {3.36}no\_op}{36}{subsection.0.3.36}
+\contentsline {subsection}{\numberline {3.37}dld}{36}{subsection.0.3.37}
+\contentsline {subsubsection}{\numberline {3.37.1}Input Restrictions}{36}{subsubsection.0.3.37.1}
+\contentsline {subsection}{\numberline {3.38}lkp\_sort}{36}{subsection.0.3.38}
+\contentsline {section}{\numberline {4}GPU Operations}{37}{section.0.4}
+\contentsline {subsection}{\numberline {4.1}g\_load}{37}{subsection.0.4.1}
+\contentsline {subsection}{\numberline {4.2}g\_info}{38}{subsection.0.4.2}
+\contentsline {section}{\numberline {5}Compound Expressions}{38}{section.0.5}
+\contentsline {subsection}{\numberline {5.1}Verification}{38}{subsection.0.5.1}
+\contentsline {subsection}{\numberline {5.2}For some later point in time}{39}{subsection.0.5.2}

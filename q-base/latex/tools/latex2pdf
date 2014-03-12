@@ -1,0 +1,55 @@
+#!/usr/bin/perl -w
+
+use strict;
+use File::Basename;
+
+die "No DOCROOT environment variable set. Try to use 'setenv' script\n" unless $ENV{DOCROOT};
+
+my $fname = shift @ARGV or die "No file fiven\n";
+
+my $docenv;
+open F, $fname or die "Cannot open '$fname': $!\n";
+while (<F>) {
+  if (/^\s*\\start(report|book)\b/) {
+    $docenv = $1;
+    last;
+  }
+}
+close F;
+
+System("rm -f TEMP.*");
+
+my $fullfname = `pwd`;
+chomp $fullfname;
+$fullfname .= "/$fname";
+
+if ($docenv) {
+  Warn("Process\n'$fullfname'\nin '$docenv' environment");
+  System("cat $ENV{DOCROOT}/styles/e-unibus-${docenv}.tex $fname > TEMP.tex");
+  System("echo '\\end{document}' >> TEMP.tex");
+  System('pdflatex', './TEMP.tex');
+  System('pdflatex', './TEMP.tex');
+# Uncomment both following lines if you need to make indexes
+# System('makeindex', './TEMP');
+# System('pdflatex', './TEMP.tex');
+  System('mv', './TEMP.pdf', basename($fname, '.tex') . '.pdf');
+} else {
+  Warn("Cannot determine doc environment for\n'$fullfname',\nprocess as a plain latex file");
+  System('pdflatex', $fname);
+# Uncomment both following lines if you need to make indexes
+# System('pdflatex', $fname);
+# System('makeindex', basename($fname, '.tex'));
+  System('pdflatex', $fname);
+}
+
+sub Warn {
+  my $t = shift;
+  warn('*' x 60 . "\n" . $t . "\n" . '*' x 60 . "\n");
+}
+
+sub System {
+  print "@_\n";
+  system @_;
+  die "Execution error: $!\n" if $? >> 8;
+}
+

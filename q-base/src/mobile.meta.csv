@@ -1,0 +1,5 @@
+mobile_sk,I4,
+os_version,str,'is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[lkp_os_version]'
+os,str,'is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[lkp_os]'
+app_version,str,'is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[lkp_app_version]'
+device,str,'is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[lkp_device]'

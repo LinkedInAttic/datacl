@@ -1,0 +1,371 @@
+\usepackage{hyperref}
+\startreport{Q Roadmap --- July 1, 2013}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+Road map for Q as of July 1, 2013 is described below. The rationale for
+each is in Table~\ref{Rationale}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|} \hline \hline 
+{\bf Rationale} & {\bf Section} \\ \hline \hline 
+Basics      & Section~\ref{Code_Hygiene} \\ \hline 
+Basics      & Section~\ref{Testing} \\ \hline 
+\hline
+Performance & Section~\ref{Performance_Fixes} \\ \hline 
+Performance & Section~\ref{Approximation} \\ \hline 
+Performance & Section~\ref{Meta_Data_Based_Acceleration} \\ \hline 
+Performance & Section~\ref{GPU} \\ \hline 
+Performance & Section~\ref{Compound_Expressions} \\ \hline 
+Performance & Section~\ref{RAMFS} \\ \hline 
+\hline
+Deployability & Section~\ref{HTTP} \\ \hline 
+Deployability & Section~\ref{Concurrency} \\ \hline 
+\hline
+Accessibility & Section~\ref{Programming_Ease} \\ \hline 
+Accessibility & Section~\ref{UDFs} \\ \hline 
+Accessibility & Section~\ref{Supporting_SQL} \\ \hline 
+\hline
+Scalability & Section~\ref{Distributed_Computation} \\ \hline 
+\hline 
+Functionality & Section~\ref{LevelDB} \\ \hline 
+Functionality & Section~\ref{Hyperdex} \\ \hline 
+\hline
+\end{tabular}
+\caption{Rationale}
+\label{Rationale}
+\end{table}
+
+\section{Code Hygiene and Basic Functionality Enhancements}
+\label{Code_Hygiene}
+Clean up the code. In particular
+\be
+\item use of \verb=C++= templates to have compiler generate code instead
+of our doing it. 
+\item extend functionality from I4, I8 to include I1, I2 in all relevant
+spots e.g., 
+\be
+\item sort
+\item join
+\item \ldots
+\ee
+
+\item fix handling of nn field for f1f2opf3 and similar operations
+\item convert file names to integers
+\item postpone file creation to latest possible moment --- to avoid
+creating files before validation completed
+\item Increase meta-data storage when hash tables occupancy exceeds
+\(\frac{2}{3}\)
+\item Consider alternative ways to handle meta data storage and query.
+SQLite did not work well. 
+\item printing (\verb+pr_fld+)
+  \be
+\item improve efficiency of print routines, especially for strings
+\item CSV to JSON/AVRO conversions inside engine itself
+\ee
+\item complete other options for multi-sort, not just \verb+A_+
+\item Handle type conversions automatically --- {\em P4. Maybe better to leave it to user.}
+\item augment meta data storage with
+\be
+\item time file last read/written
+\item 
+\ee 
+\item augment meta data access with 
+\be
+\item list in order of size, time accessed, time created, \ldots
+\item 
+\ee
+\item improve data loader (\verb+dld+)
+\be
+\item use LevelDB to load strings (useful when number of unique strings
+    in a column is small but number of rows in table is large)
+\item error out as quickly as possible
+\item be able to add values to lookup table without jeopardizing prior
+values
+\ee
+\ee
+
+\section{Testing}
+\label{Testing}
+
+\bi
+\item Create unit tests that have fallen into disarray
+\item Test import meta-data functionality
+\item bring meta-data checker up to date
+\be
+\item make sure there are no orphan files
+\item do not allow data directory to be shared across docroots, with the
+exception of ``external'' files.
+\ee
+\item Create post-facto random tests. For example, take a simple
+operation such as \(f_3 \leftarrow f_1 + f_2\). We would pick a random
+\(i\) and determine whether \(f_3[i] = f_1[i] + f_2[i]\). To improve
+test coverage, we would test for cases where 
+\be
+\item boundary cases \(i = 0, N-1\)
+\item overflow cases, when \(f_2[i]\) is very large or very small
+\item value is null
+\item \ldots
+\ee
+The advantage of these tests is that 
+\be
+\item they are based on the formal spec of the operation
+\item we can run them constantly (and disable them only when we are in
+production mode). Hence, the more we use the system, the more we
+test it.
+\ee
+\ei
+
+\section{Performance Fixes}
+\label{Performance_Fixes}
+
+\be
+\item test parallel sort with new approximate quantile algorithm
+\item complete vectorization wherever possible
+\item complete multi-threading wherever possible
+\item complete use of libraries  (IPP, MKL) wherever possible
+\ee
+
+
+\section{HTTP Access}
+\label{HTTP}
+Embedding Q into an http server.
+
+\bi
+\item Create anonymous sessions
+\item Create persistent sessions (for a named set of users with basic
+    authentication)
+\item Limit the number of concurrent sessions
+\item Back-end to clean up/delete sessions
+\item Convert CSV to JSON
+\item Handle file uploads
+\ei
+
+\section{Approximation}
+\label{Approximation}
+The use of approximation algorithms (e.g., hyperloglog by Flajolet).
+Examples are
+
+\be
+\item top-K
+\item histogram
+\item quantiles
+\item median
+\item average
+\item variance
+\item number of distinct values
+\item \ldots
+\ee
+
+\section{Meta-data Based Acceleration}
+\label{Meta_Data_Based_Acceleration}
+Consider the following scenario. At the time that a column is created
+(either by load or by a subsequent Q operation), assume that one could
+some create some additional meta-data. Further, assume that the time and
+space cost of this meta-data is significantly {\bf less} than the column
+itself. In that case, what meta-data would one create and what
+operations would leverage it?
+
+\bi
+\item Create meta-data for chunks that can accelerate subsequent computations.
+For example, creating min/max/sum/num null for a chunk 
+\item Create meta-data for rows that can accelerate subsequent
+computations. For example, having the quantiles can help parallelize
+sort
+\ei
+
+\subsection{Speculative Computing}
+The intuition behind this idea is that, when the system is not busy,
+could it be doing something that could potentially
+be of value later on? This is useful for interactive analysis, not so
+much for batch computation, I believe.
+
+This requires a Q-daemon that can run in the background and
+create/update meta data for fields/tables based on
+\be
+\item frequency of access
+\item recency of access
+\ee
+
+\section{Allowing concurrent access}
+\label{Concurrency}
+
+In an earlier version of Q, only one invocation of Q was allowed at any
+point in time. The rationale behind this decision was that it simplified
+meta-data management. Otherwise, one operation could be reading from a
+field while another operation might be deleting it or renaming it or
+\ldots However, it would be nice to relax this requirement. In this
+section, we sketch out what this entails.
+
+Every operation must be classified as read or write
+A read operation is one that does not modify either data or meta-data.
+All other operations are writes.
+
+Multiple read operations can proceed concurrently.
+Only a single write operation can run at any point in time.
+
+So, what happens to an operation that cannot be performed?
+We have two choices and will support both using
+options provided in the reqtes
+\be
+\item {\bf BLOCK} Operation waits until it can perform the
+operation. Can it suffer starvation? \TBC
+\item {\bf QUIT}  Operation does nothing and returns with appropriate error
+code
+\ee
+
+\section{GPU Acceleration}
+\label{GPU}
+Using the GPU for selected computations 
+\be
+\item Find the equivalent of \verb+_Cilk_for+ from Intel. With a single
+keyword or pragma declaration, the aim is to transform a sequential loop
+into a parallel loop. In the case of Cilk, the iterations are farmed out
+to the cores. In the case of the GPU, they are farmed out to the GPU
+processors.
+\item Create a cut-paste recipe which allows the following
+\be
+\item Transfer memory to the GPU. It is the job of the CPU to load the
+memory with the correct data and to chunk up the transfer based on
+available memory on the GPU.
+\item Auxiliary routines to query the state of the GPU e.g., 
+  \be
+  \item number of cores
+  \item amount of memory
+  \item \ldots
+  \ee
+\item Initiate computation on the GPU. It should be possible to write
+and test the code executed on the GPU {\bf as if} it were sequential
+code. We would have some simple text transformation routines to convert
+the sequential code into ``GPU''-code.
+\item Overlap computation with communication of next block of memory
+\item Transfer memory from the GPU to the CPU
+\item The above steps allow for embarasingly parallel applications. We
+should also have a simple reduction step, which allows us to compute
+associative operations on a scalar (for min, max, sum) or a vector 
+(for histograms)
+\ee
+\item Find the equivalent of Intel's IPP and MKL, which are highly
+optimized routines for common computations such as sort, \ldots
+\ee
+
+
+\section{Ease of Programming}
+\label{Programming_Ease}
+\bi
+\item Bind to some shell (e.g.,zsh (\url{www.zsh.org}) or bash). This
+allows us to keep the simplicity of shell programming but eliminate the
+process invocation cost, since Q is now native to the shell. 
+\item embedding it into a language that allows debugging like Python.
+This consists of two parts
+\bd
+\item [SYNTAX]. Improving Q syntax. For example, replace
+\be 
+\item \verb+q f1f2opf3 T f1 f2 '*' f3+ with 
+\verb+T(f3 := f1*f2)+
+\item 
+\verb+q fop T f1 sortA+ with  \verb+sort(T.f)("ascending")+
+\ee
+\item [CLIENT]. Use Python as the client code. 
+
+Our current design for a client-server architecture is as follows.
+Replicate the storage and management of meta-data in the host language, 
+e.g., Python using a light-weight database such as SQLite. The down side
+is that we have 2 ``sources of truth'', the one maintained by Q and the
+one maintained by the host. We use high water marks to make sure that we
+are using the right version. When in doubt, the Q version wins. 
+
+The up-side of this duplication is that it is much more scalable to
+build the meta-data management in the host than it is in Q. For example,
+suppose we are trying to sort a column on which sort is not supported or
+access a table that does not exist. The host can respond to the user
+with a meaningful error message. This allows the engine to focus
+purely on computation. Note that it will still check its inputs but we
+no longer need it to produce user-friendly error messages.
+
+What should the interface be between the host and Q. One could go with a
+tight native binding or with an HTTP interface. I like the simplicity of
+the second but I wonder about its efficiency.
+
+Two optimizations to implement
+\be
+\item batch calls to Q instead of sending them one by one. This can be
+done when we have created a script and are not using Q interactively
+\item disable error checking on the client side once the scripts are
+production-ready
+\ee
+\ed
+\ei
+
+\section{UDFs}
+\label{UDFs}
+
+While we hope to support most data processing needs within the engine,
+there will always be data transformations that we cannot support. We
+would like the user to be able to write plugins in Python. They need to
+subscribe to the following.
+Every operation of Q consists of reading one or more columns
+from one or more tables and producing either (i) one or more columns in
+an existing table or a newly created one or (ii) one or more scalars.
+
+\section{Supporting SQL}
+\label{Supporting_SQL}
+{\em Collaboration with Data Infra Team}
+
+Translating a limited set of SQL into Q (Srinivas
+thinks that this can be done. I do not know
+enough to comment)
+
+\section{RAMFS}
+\label{RAMFS}
+
+Investigate the performance advantages of using the RAMFS for temporary
+files. 
+
+\section{Compound Expressions}
+\label{Compound_Expressions}
+
+\bi
+\item Compound expressions (which help with strip-mining loops)
+\item Evaluating associative functions like min, max, sum at tail end of
+compound expression
+\item Designate columns as intermediate if not needed after compound
+expression
+\item Do not allocate entire column for intermediate values
+\ei
+ 
+
+\section{Hadoop Connector}
+Export data from Hadoop into Q's format with as few intermediate 
+steps as possible.
+
+\section{Distributed Computation}
+\label{Distributed_Computation}
+
+{\em Collaboration with Data Infra Team}
+
+We restrict ourselves, in the foreseeable future to the simple scenarios
+where the computation shards easily, shards have minimal interactions
+and can be distributed across machines.
+
+We also consider cases where different tables are on different machines
+so that computations are not symmetric across machines.
+
+We do not handle cases where rows of the same table are split across machines.
+
+\section{LevelDB}
+\label{LevelDB}
+
+Q does a poor job of dealing with strings. It considers strings as
+labels, maps them to integers and then works in the integer space.
+LevelDB is a generic key-value store that could be used to improve Q's
+string handling capabilities.
+
+\section{Hyperdex}
+\label{Hyperdex}
+
+Q does a poor job of dealing with data of unpredictable size. For
+example, in triangle closing, we do not have a good bound on the number
+of new edges created. A distributed computing solution to this problem
+is provided by Hyperdex.

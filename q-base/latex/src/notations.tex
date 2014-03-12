@@ -1,0 +1,58 @@
+\begin{definition}
+\(\delta(x, y)  = 1 \) if \(x = y\) and 0 otherwise
+\end{definition}
+
+\begin{notation}
+For convenience, we shall often blur the distinction between arrays,
+sets and tables.  Hence, \(T.f\) refers to field \(f\) of table
+\(T\). Similarly, \(T[i].  f\) means the \(i^{th}\) value of field
+\(f\) of table \(T\).  
+\end{notation}
+
+\begin{notation}
+We shall often use \(T_X\) to refer to the table whose name is \(X\).
+\end{notation}
+
+\begin{notation}
+Also, \(T|f(\ldots)\) refers to the subset of
+\(T\) for which the predicate \(f(\ldots)\) is satisfied.
+\end{notation}
+
+\begin{notation}
+\(Count(T)\) is cardinality of \(T\)
+\end{notation}
+
+\begin{notation}
+\label{NumNN}
+\(NumVal(T.f, v) = \sum_i \delta (T[i].f, v)\)
+\end{notation}
+
+\begin{notation}
+\(Unique(T.f)\) be the unique values of \(T.f\)
+\end{notation}
+
+\begin{notation}
+\(CU(T.f)\) is the count of the unique values of \(T.f =
+Count(Unique(T.f))\)
+\end{notation}
+
+\begin{notation}
+\((f_1:v_1 \ldots f_N:v_N) \in T \Rightarrow 
+\exists j: T[j].f_1 = v_1 \wedge \ldots T[j].f_N = v_N \)
+\end{notation}
+
+\begin{notation}
+\((v_1 \ldots v_N) = T[i].(f_1,\ldots f_N) \Rightarrow 
+v_1 = T[i].f_1 \ldots v_N = T[j].f_N\)
+\end{notation}
+
+\begin{notation}
+\(\exists ! \) is read as ``there exists a unique''
+\end{notation}
+
+
+\begin{definition}
+Let \(T_1.f_1 = Join (T_2, f_2, l_2, l_1)\) be a field in \(T_1\)
+  created by joining field \(f_2\) in Table \(T_2\) using \(l_2\) in
+  \(T_2\) and \(l_1\) in \(T_1\) as the link fields.
+\end{definition}

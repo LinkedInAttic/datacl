@@ -1,0 +1,171 @@
+\startreport{Conflation Analyzer}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+
+The overall goal of this analysis is to 
+\be
+\item make it easy to assess the quality of title standardization in an
+ongoing fashion
+\item suggest when and where dictionaries need to be updated
+\item measure quality when the data is sliced in a particular way e.g.,
+  by geography
+\item find titles that are mapped too broadly e.g., {\tt engineer} to
+  {\tt engineeer} versus {\tt engineeer} to {\tt hardware engineer}.
+\ee
+
+The baby step described here is the Conflation Analyzer. 
+It helps find multiple raw titles that map to the same clean title.
+
+\section{Set Up}
+
+The algorithm consists of the following steps
+\be
+\item Load clean titles --- Section~\ref{load_clean_titles}
+\item Create clean titles for a number of raw titles ---
+Section~\ref{load_and_scrub_raw_titles}
+\ee
+
+
+\subsection{Load Clean Titles}
+\label{load_clean_titles}
+
+\bi
+\item \verb+cd ~/WORK/Q/src/CONFLATE_ANALYZER+
+\item \verb+sh load_clean_title_dict.sh final clean titles.txt+
+\ei
+
+\subsection{Load and Scrub Raw Titles}
+\label{load_and_scrub_raw_titles}
+
+The input to this routine is an extract from a data warehouse dump. It
+is a tab separated file, the 4th line of which is the raw title. 
+The output of this routine is a file containing the clean title
+associated with the raw title. If more than one title is provided, the
+first is extracted. This limitation will be removed in subsequent
+versions \TBC
+
+\bi
+\item \verb+cd ~/WORK/TITLE/RON/+
+\item 
+\verb+cut -f 4 <mbr_pos.txt> | php prep_for_ron.php _just_titles.txt _title_count.txt N+, 
+  where \(N\) is the number of lines
+we want to limit our experiment to. Use -1 for no limit.
+\item \verb+java -cp . TitleMapping/TitleMapping _title_count.txt _ron_op.txt+
+\item \verb+php first_clean_title.php _ron_op.txt _raw.txt _clean.txt+
+\ei
+
+\section{Queries}
+\subsection{Conflation Counter}
+\label{conflation_counter}
+
+The input is a clean title. The output is a set of pairs \(\{rtitle_i,
+count_i\}\) which lists the raw titles that map to this clean title
+and the number of times that each of these raw titles occurs.
+
+\subsection{Raw Titles with No Clean Title}
+\label{no_clean_title}
+The output is a set of pairs \(\{rtitle_i, count_i\}\) which lists the raw titles 
+that do not map to any clean title and how many times each such raw
+title occurs.
+
+\subsection{Most Conflated}
+\label{most_conflated}
+The aim of this analysis is to find clean titles which are ``most
+conflated''. Intuitively, this means that if there are many diferent raw
+titles that map to a given clean title, then that clean title becomes a
+suspect. It does not mean that it is a wrong mapping! It is merely an
+indicator of something worthy of further investigation.
+
+We now proceed more formally. We define the following tables
+\be
+\item \(T_{RC}\). Columns are
+\be
+\item \(C\) --- clean title 
+\item \(R\) --- raw title 
+\item \(n_R\) --- number of times raw title occurred
+\ee
+\item \(T_C\). Columns are
+\be
+\item \(C\) --- clean title 
+\ee
+\ee
+Rough values for some of the parameters listed below are
+\be
+\item \(\alpha\) --- 0.05
+\item \(\beta_1\) --- 100
+\item \(\beta_2\) --- 10
+\ee
+Algorithm is as follows
+\be
+\item Create field \(one\) in \(T_{RC}\) such that \(\forall i: one[i] = 1\)
+\item Create field \(n_C\) in \(T_C\) such that \(T_C[C=c'].n_C = \sum
+T_{RC}(C=c').one\). 
+\item Create \(\alpha n_C\) in \(T_C\) as \(\alpha \times n_C\)
+\item Create \(\alpha n_C\) in \(T_{RC}\) using \(C\) as link field
+\item Create \(x_1\) in \(T_{RC}\) such that \(n_R > \alpha n_C\)
+\item Create \(x_2\) in \(T_{RC}\) such that \(n_R > \beta_2\)
+\item Create \(x\) in \(T_{RC}\) such that \(x \la x_1 \wedge x_2\)
+\item Create \(y\) in \(T_{RC}\) such that \(n_R > \beta_1\)
+\item Create \(z\) in \(T_{RC}\) such that \(z \la x \vee y\)
+\item Let \(T'_{RC} \la T_{RC}[z = true]\)
+
+\item Create field \(one\) in \(T'_{RC}\) such that \(\forall i: one[i] = 1\)
+\item Create field \(cnt\) in \(T_C\) such that \(T_C[C=c'].n_C = \sum
+T'_{RC}(C=c').one\). 
+\item Create field \(y\) in \(T'_{RC}\) such that \(cnt > 1\)
+\item Join field \(y\) from \(T_C\) to \(T'_{RC}\)
+
+\item Let \(T''_{RC} \la T'_{RC}[y = true]\)
+\item Create a sort order in \(T''_{RC}\) using \(N_C\) as primary key
+and \(C\) as secondary key so that more commonly occurring titles occur
+first and all different mappings of raw title to a given clean title
+occur together
+\item Print the following fields from \(T''_{RC}\) using above sort
+order --- raw title, number of times raw title occurs, clean title,
+      number of times clean title occurs
+
+\ee
+
+\subsection{Previous titles}
+\label{previous_titles}
+
+Let us say that the results of Section~\ref{most_conflated} indicates
+that the raw titles \verb+md+ and \verb+managing director+ both map to
+\verb+managing director+. Let us further assume that we consider this
+suspicious since we believe that the most common expansion of \verb+md+
+is \verb+medical doctor+. To test our hypothesis, we would ideally look 
+at the entire profile of members with the title \verb+md+. A less exact
+but faster approach would be to use the next and previous
+titles as an approximation to the entire profile.
+
+Algorithm is as follows. Let \(T_M\) be a table with (at least) the 
+following fields
+\be
+\item m --- member ID
+\item c --- chronological order of title
+\item t --- user supplied title
+\ee
+Let \(t'\) be the title in question.
+\be
+\item Create field  \(x\) in \(T_M\) such that \(t = t'\)
+\item Create table \(T_1 \la T_M[x=true].m\)
+\item Add constant boolean field \(b\) in \(T_1\) with value true.
+\item Join \(b\) in \(T_1\) to \(b\) in \(T_M\) using \(m\) as link
+field
+\item Note that the number of rows in \(T_M\) with \(b = true\) is at
+as many as the number of rows with \(x = true\)
+\item Create table \(T_2 \la T_M[b=true]\)
+\item Sort \(T_2\) using \(m\) as primary key and \(c\) as secondary key
+\item Create field \(b_n\) in \(T_2\) by shifting \(b\) up by one
+\item Create field \(b_p\) in \(T_2\) by shifting \(b\) down by one
+\item Create field \(m_n\) in \(T_2\) by shifting \(b\) up by one
+\item Create field \(m_p\) in \(T_2\) by shifting \(b\) down by one
+\item Create boolean field \(y\) in \(T_2\) as \(
+(m = m_n \wedge b_n = true) \vee (m = m_p \wedge b_p = true) \)
+\item Create \(T_3 \la T_2[y=true].t\)
+\item Create \(T_4\) with fields \((t, cnt)\) as histogram of \(T_3.t\)
+\item Create sort order on \(T_4\) using \(cnt\) as primary key in
+  descending order
+\item Print \(T_4\) using sort order
+\ee

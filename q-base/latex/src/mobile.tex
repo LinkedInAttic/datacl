@@ -1,0 +1,461 @@
+\usepackage{hyperref}
+\startreport{Mobile Work}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+
+Early spec reads as follows.
+\begin{verbatim}
+Raw Input
+=======================
+Table Name : DWH.V_AGG_DAILY_MOBILE_PAGE_STATS
+
+DATE_SK : Long ( Unix to Epoch conversion neede
+    Ex : 1357027200000)
+MEMBER_SK : Long
+COUNTRY_SK : Int
+MOBILE_SK : Int
+PAGE_KEY_SK : Int
+TRACKING_CODE_SK : Int
+PAGE_VIEWS : Int                    
+
+----------------------------------------------------------------
+Table Name : DWH.V_DIM_PAGE_KEY
+
+PAGE_KEY_SK  : Int     
+PAGE_KEY_GROUP_SK : Int
+PAGE_KEY : String 
+DESCRIPTION  : String                                                                             
+VALID_BEGIN_DT : Long ( Unix to Epoch conversion needed . Ex :
+    1357027200000)
+VALID_END_DT : Long ( Unix to Epoch conversion needed . Ex :
+    1357027200000)
+CURRENT_FLAG  : String ( Y or N)
+  QUALITY_FLAG  : String ( Y or N)
+  OWNER : String
+  IS_AGGREGATE     : Boolean                                                                         
+  CREATED_TS       : Long ( Unix to Epoch conversion needed . Ex :
+      1357027200000)                                                                         
+  PRODUCT_PAGE_KEY_GROUP_SK  : Int                                                             
+  PLATFORM_SK  : Int                                                         
+
+  ----------------------------------------------------------------
+  Table Name : DWH.V_DIM_MOBILE
+
+  MOBILE_SK      : Int                                                                            
+  OS_VERSION     : String                                                                            
+  OS_NAME        : String                                                                          
+  APP_VERSION    : String ( 2.2.1 )                                                                          
+  DEVICE         : String                                                                          
+
+  ----------------------------------------------------------------
+  Table Name : DWH.V_DIM_PAGE_KEY_GROUP
+
+  PAGE_KEY_GROUP_SK   : Int                                                                      
+  PAGE_KEY_GROUP      : String                                                                      
+  DESCRIPTION         : String                                                                      
+
+  ----------------------------------------------------------------
+  Table Name : DWH.V_DIM_COUNTRY
+
+  COUNTRY_SK  : Int                                                                              
+  CONTINENT_SK  : Int                                                                         
+  COUNTRY        : String                                                                           
+  DESCRIPTION    : String                                                                           
+  COUNTRY_CODE        : String                                                                       
+  MINOR_CONTINENT_SK   : Int                                                                                                                         
+  AD_COUNTRY_ID        : String                                                                      
+  AD_COUNTRY           : String                                                                      
+  AD_COUNTRY_SK    : Int                                                                         
+  AD_COUNTRY_CODE     : String                                                                       
+
+  ----------------------------------------------------------------
+  Table Name : DWH.V_DIM_DATE
+
+  ----------------------------------------------------------------
+  Table Name : DWH.V_DIM_PLATFORM
+
+  PLATFORM_SK     : Int                                                                          
+  PLATFORM_NAME   : String                                                                          
+
+  ----------------------------------------------------------------
+
+  Queries to be Answered:
+  =======================
+  [Daily]
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Phone
+  Optimized
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Tablet
+  Optimized
+  Avg Connectivity density for Users from Date-X to Date-Y ( satisfying
+      #1 )
+  Histogram of Connectivity density for Users from Date-X to Date-Y (
+      satisfying #1 )
+
+  [Weekly]
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Phone
+  Optimized
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Tablet
+  Optimized
+
+  [Monthly]
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk < 0
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 Split by Product PageKeyGroup
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'iPhone'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsVersion like 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Device like 'Samsung' and
+  OsName = 'Android'
+  Sum of Uniques from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and OsName = 'Android' and
+  OsMajorVersion > 3
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Phone
+  Optimized
+  Sum of Pageviews from Date-X to Date-Y where PageKeyGrpoup_SK = 39,
+  PageKey.Is_Aggregate=1 and Member_Sk > 0 and Platform = Tablet
+  Optimized
+
+\end{verbatim}
+
+\section{Raw Input}
+
+\subsection{T\_mobpgk}
+\label{T_mobpgk}
+
+\(T_{mobpgk}\) contains page keys relevant to mobile
+\be
+\item Tpgk\_id, page key --- I4, foreign key to \(T_{pgk}\)
+\item Tpgkgrp\_id, product page key group --- I4, foreign key to \(T_{pgkgrp}\)
+\item Tplatform\_id, platform --- I4, foreign key to \(T_{platform}\)
+\ee
+Created as
+\begin{verbatim}
+grep -P "\t39\t" V_DIM_PAGE_KEY.csv | cut -f 1,10,12,13 | \
+               grep -v -P "\t0\t" | cut -f 1,3,4 
+\end{verbatim}
+
+\subsection{Tpgkgrp}
+\label{Tpgkgrp}
+\be
+\item Tpgkgrp\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_pgkgrp --- foreign key to lkp\_pgkgrp
+Section~\ref{lkp_pgkgrp}
+\ee
+
+\subsection{lkp\_pgkgrp}
+\label{lkp_pgkgrp}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{Tos}
+\label{Tos}
+\be
+\item Tos\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_os --- foreign key to lkp\_os
+Section~\ref{lkp_os}
+\ee
+
+\subsection{lkp\_os}
+\label{lkp_os}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{Tdevice}
+\label{Tdevice}
+\be
+\item Tdevice\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_device --- foreign key to lkp\_device
+Section~\ref{lkp_device}
+\ee
+
+\subsection{lkp\_device}
+\label{lkp_device}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{Tcountry}
+\label{Tcountry}
+\be
+\item Tcountry\_id --- pk, I4 (not created by us)
+\item fk\_lkp\_country --- foreign key to lkp\_country, 
+Section~\ref{lkp_country}
+\ee
+
+\subsection{lkp\_country}
+\label{lkp_country}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{Tsmall\_country}
+\label{Tsmall_country}
+This is similar to Section~\ref{Tcountry} except that we have limited
+ourselves to 127 countries and grouped everybody else as ``Other''.
+\be
+\item Tsmall\_country\_id --- pk, I4 (not created by us)
+\item fk\_lkp\_small\_country --- foreign key to lkp\_small\_country, 
+Section~\ref{lkp_small_country}
+\ee
+
+\subsection{lkp\_small\_country}
+\label{lkp_small_country}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+%----------------------------------------------------
+\subsection{Tplatform}
+\be
+\item Tplatform\_id --- pk, takes on values 0, 1, 2, \ldots
+\item fk\_lkp\_platform --- foreign key to lkp\_platform,
+Section~\ref{lkp_platform}
+\ee
+
+\subsection{lkp\_platform}
+\label{lkp_platform}
+\be
+\item idx --- pk, takes on values 0, 1, 2, \ldots
+\item txt --- description
+\ee
+%----------------------------------------------------
+\subsection{T\_mob\_os}
+\label{T_mob_os}
+\be
+\item mobile\_sk --- foreign key to \(T_{mobilesk}\)
+\item Tos\_id --- foreign key to Tos, Section~\ref{Tos}
+\item fk\_lkp\_os --- foreign key to lkp\_os, Section~\ref{lkp_os}
+\ee
+%----------------------------------------------------
+\subsection{T\_mob\_device}
+\label{T_mob_device}
+\be
+\item mobile\_sk --- foreign key to \(T_{mobilesk}\)
+\item Tdevice\_id --- foreign key to Tdevice, Section~\ref{Tdevice}
+\item fk\_lkp\_device --- foreign key to lkp\_device,
+  Section~\ref{lkp_device}
+\ee
+%----------------------------------------------------
+
+\subsection{Fact Data}
+\label{Fact_Data}
+
+The raw data is sharded by date, which is expressed as \verb+YYYYMMDD+
+What this means is that we will create separate tables e.g., T20130401,
+T20130402, \ldots for each date for which data is provided. Each
+table looks as follows. 
+
+\be
+\item mid, member\_sk, I4
+\item Tcountry\_id, foreign key to \(T_{country}\)
+\item mobile\_sk, I4, foreign key to \(T_{mobpgk}\)
+\item Tpgk\_id, I4. When a page key, it is foreign key to \(T_{pgk}\).
+But it could be something else as well e.g., invitation
+\item nviews, I4, number of views
+\ee
+
+After processing, this is converted into two tables
+
+\subsubsection{T}
+\label{T}
+
+This is sorted ascending on mid
+\be
+\item mid, member\_sk, I4
+\item b\_is\_pgk, B, boolean
+\item b\_is\_guest, B, boolean, true if \(mid > 0\)
+\item nviews, I4
+\item I1\_fk\_lkp\_platform --- I1, fk to \(lkp\_{platform}\)
+\item I2\_fk\_lkp\_pgk --- I1, fk to \(lkp\_{pgk}\)
+\item I1\_fk\_lkp\_pgkgrp --- I1, fk to \(lkp\_{pgkgrp}\)
+
+\item I1\_fk\_lkp\_os --- I1, fk to \(lkp\_{os}\), 
+  created using field mobile\_sk and Section~\ref{T_mob_os}.
+\item I1\_fk\_lkp\_device --- I1, fk to \(lkp_{device}\), 
+  created using field mobile\_sk and Section~\ref{T_mob_device}.
+\item I1\_fk\_lkp\_small\_country --- I1, fk to
+\(lkp_{small\_country}\), created using Tcountry\_id and
+Section~\ref{Tsmall_country}
+\ee
+
+\section{Selection}
+A selection is a semi-colon separated string consisting of one or more
+the following clauses, which are {\bf AND}-ed together to form the final
+selection
+\be
+\item for a date field, the desired values are specified as a range of
+the form \verb+YYYYMMDD:YYYYMMDD+ e.g., \verb+20130401:20130430+ for the
+days in April
+\item for a categorical field, {\tt foo}, the desired values are specified 
+as comma separated integers, which come from the idx field of the table
+{\tt lkp\_foo}.
+\item for a boolean field, the desired value is either 1 or 0
+\item for an integer field, the operations are 
+\be
+\item \verb+< x+
+\item \verb+> x+
+\item \verb+<= x+
+\item \verb+>= x+
+\item \verb+== x+
+\item \verb+!= x+
+\item \verb+>=&&<= x:y+, which is read as \(v \geq x\) and \( v \leq y\)
+\item \verb+<=||>= x:y+, which is read as \(v \leq x\) or  \( v \geq y\)
+\ee
+\ee
+As an example
+\begin{verbatim}
+os=1,2:device=2;is_guest=0;is_pgk=1:niews>=&&<=10:20
+\end{verbatim}
+
+The fields available for selection are 
+\be
+\item platform  (called platform)
+\item page key  (called pgk)
+\item page key group (called pgkgrp)
+\item os (called os)
+\item device (called device)
+\item country (called country)
+\item nviews (called num\_views)
+\ee
+
+\section{Profiling}
+\label{Profiling}
+
+Once a selection has been made, the following options are provided. Let
+\(D = \{D_1, D_2,\ldots\}\) be the dates selected. For a given date, let
+\(T_{D_i}\) be the relevant table (Section~\ref{T}). Let 
+\(T'_{D_i} \subseteq T_{D_i}\) be the selected rows of that table.
+
+\subsection{sum}
+\label{profiling_sum}
+
+Given a selection and an integer field, \(f\), 
+return \(\sum T'_{d}.f\) for each \(d \in D\).
+
+Sample invocation shown below.
+\begin{verbatim}
+curl --url http://172.18.42.75:8080/dp/bala2.php \
+	--data-urlencode dstr='20130401>=&&<=20130410' \
+	--data-urlencode qstr='os=1:2;device=2;is_guest=0;country=36' \
+	--data-urlencode opstr='sum' 
+	--data-urlencode metric='num_views' 
+\end{verbatim}
+
+\subsection{num unique}
+\label{profiling_num_unique}
+
+Given a selection, 
+return the number of dictinct values of \(mid\) for each \(d \in D\).
+
+\subsection{num unique histogram}
+
+Given a selection and a categorical field, \(f\), 
+
+For each \(d \in D\), return a histogram of \(f\), such that XXX where
+\(f\) can be one of 
+\be
+\item os
+\item device
+\item platform
+\item page key
+\item page key group
+\item country
+\ee

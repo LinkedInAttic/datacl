@@ -1,0 +1,33 @@
+% -*- latex -*-
+
+\documentclass{report}
+
+\input{e-unibus-common}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Report title page
+% \newcommand{\ReportAuthor}{The LinkedIn Documentation Team}
+\newcommand{\ReportAuthor}{Ramesh}
+\newcommand{\reportauthor}[1]{\renewcommand{\ReportAuthor}{#1}}
+\newcommand{\reporttitle}[1]{\renewcommand{\ReportTitle}{#1}}
+
+\newcommand{\reporttitlepage}[1]{
+  \begin{titlepage}
+    {\noindent \raggedright\normalsize\sffamily \ReportAuthor}\par\vfill
+    {\noindent \raggedright\Huge\sffamily \rule{\textwidth}{1pt}\\[5pt]#1\\[5pt]\rule{\textwidth}{1pt}}\par\vfill
+    {\noindent \raggedright\normalsize\sffamily Version \docversion\hfill{}\docpublishingdate}\par\vfill
+  \end{titlepage}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\startreport}[1]
+{
+  \begin{document}
+  \reporttitlepage{#1}
+  \tableofcontents
+  \specialchapter{#1}
+}
+
+\renewcommand{\thesection}{\arabic{section}}
+

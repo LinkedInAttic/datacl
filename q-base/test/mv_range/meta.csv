@@ -1,0 +1,3 @@
+ifld,int,4
+bfld,bool,1
+sfld,char string,0

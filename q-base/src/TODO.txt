@@ -1,0 +1,174 @@
+FOR PAPER
+
+Check that parallel join works
+Check that udf_deg2 works 
+
+========================================
+
+
+openmp
+data sharing -- Think about when should things be marked as private
+====
+
+f1s1opf2
+bug when we are working with hashes
+
+===
+app_tbl  -> deal with SC and SV or disallow for now 
+===
+code review join, especially when src = null and dst = I1
+consider separating dld as separate utility, especially for large hash tables
+integrate leveldb
+text fields as such e.g., email, for both SC and SV
+check approximation algorithms and test them 
+nn for f1opf2, f1s1opf2, f1f2opf3 should be done properly
+==
+In f1opf2, you need to check smear, cum, ... for ability to make part of a
+compound statement
+==
+Fix P0 bug in srt_uniform 
+add srt_uniform_I8 
+------
+In f1opf2 and (I think) f1f2opf3, the nn field for f3 is computed
+simplistically. In particualr, it is very likely that nn[i] = 0 and f[i] != 0.
+If we are going to insist on the conventiont that nn[i] = => f[i]= 0, then
+this needs to be fixed.
+==
+In dld, use dateconv and other direct conversion routines
+==
+In del_fld, cannot delete fields idx, len, off, txt from a dict_tbl
+==
+continuous testing
+(a) generate dump and then write invariants against those tests
+==
+stuff to integrate from Kishore
+count_vals_maps()
+count_vals_ldb()
+top_n()
+
+approx_quantile()
+approx_freq()
+approx_unique()
+
+In test/kj_qldb/, mak Makefiles to create executables for each file
+==
+sortbindmp
+find out why I8:I8 did not produce what I4:I4:I4:I4 did in plp.sh in Funnels
+==
+Put back import
+==
+pr_fld => Test SC. 
+== 
+some of get_meta and set_meta updates TBL_FLD_TYPE. Implement these.
+==
+Change parsort1 after including Kishore's quantiles
+==
+Be very careful when importing to deal with importing tables upon which fields
+depend
+====
+Clean up is_a_in_b in terms of using the same file to mean different things
+based upon invocation
+==
+orpahn_files -- needs to account for ddir_id 
+==
+in srt_join use I8/F8 for sum even when input is I4/F4
+because otherwise we might have overflow
+==
+In mk_temp_file, should be able to default to g_data_dir if temp dir does not
+have enough space. 
+====
+think about setting grain size for cilkfor to avoid false sharing
+====
+memcpy versus ippsCopy_XX
+===========
+We should have copy_flds to optimize the following situation.
+If we use a condition field, then we need to count the number of rows
+We have to do this for *every* call. However, if the same condition field is
+being used for all the copy_fld calls, then we need to have done it only for
+the first.
+===========
+To document: No checks being made for conv function
+Templatize *ALL* sort functions
+Templatize f1f2opf3_arith
+
+Find orphan files
+
+App_tbl: Need to deal with fact that you cannot append to a field if you are
+not its owner. 
+
+====================================================================
+There is a bug in mjoin that does not provide values to the second occurrence
+of a value on the destination side. As an example, notice the last row in the
+sample output below
+
+q pr_flds t2 f1:f2:f1reg:f1min:f1max:f1sum:f1and:f1or
+"100","10","","","","","",""
+"200","20","2","2","2","2","2","2"
+"300","30","3","3","3","3","3","3"
+"400","40","4","4","4","4","4","4"
+"400","50","5","5","5","5","5","5"
+"500","60","7","5","7","18","4","7"
+"600","60","7","","","","",""
+====================================================================
+Packaging
+To deal with error message: TeX capacity exceeded, sorry [save size=5000].
+	o sudo vi /usr/share/texmf/web2c/texmf.cnf
+	o Replace save_size with a larger value, say 50000 
+===================================================
+Source code modifications
+Following suggestions from http://www.jetcafe.org/jim/c-style.html
+
+For constants, consider using:
+enum { Red = 0xF00, Blue = 0x0F0, Green = 0x00F };
+static const float pi = 3.14159265358;
+instead of #defines, which are rarely visible in debuggers. 
+
+Since macros can be dangerous, follow tradition fully capitalize them,
+otherwise following the conventions for function or variable names. 
+
+Use goto sparingly. Two harmless places to use it are to break out of a
+multilevel loop, or to jump to common function exit code. (Often these are the
+same places.) 
+
+Say:
+char *p;
+not:
+char* p;
+
+for functions. Don't parenthesize things unnecessarily; say
+return 7;
+not
+return (7);
+and especially not
+return(7);
+
+Rule 5 
+Data dominates. If you've chosen the right data structures and organized
+things well, the algorithms will almost always be self-evident. Data
+structures, not algorithms, are central to programming
+
+malloc
+Don't cast the return value of calls to malloc, It has type void *, so it
+will be compatible with anything. K&R2, p. 142 gives contrary advice, but
+it has since been retracted by Dennis Ritchie:
+"In any case, now that I reread the stuff on p. 142, I think it's
+wrong; it's written in such a way that it's not just defensive
+against earlier rules, it misrepresents the ANSI rule"
+=======================================================
+Set meta-data for sort whenever a field is sorted
+sort_type is not always preserved. Some operations (like f1s1opf2) should
+preserve it
+Check meta-data for sort whenever sort is assumed. Examples are
+	is_a_in_b (f2 in t2)
+	srt_join (...)
+	....
+	count_vals
+	copy_fld
+	dup_fld
+
+====
+Some time I need to make sure that IPP does not cause me a problem because it
+often assumes number of elements to be an int whereas I assume long long and
+this causes problems when size of array exceeds INT_MAX
+===
+add semaphore to qhttpd server and to q process

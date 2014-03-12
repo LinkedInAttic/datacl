@@ -1,0 +1,11 @@
+#!/usr/local/bin/bash
+set -e
+g++ -ggdb -Wall -fPIC -g -c LevelDict.cc     -o LevelDict.cc.o 
+g++ -ggdb -Wall -fPIC -g -c DictFunctions.cc -o DictFunctions.cc.o 
+g++ -ggdb -Wall -fPIC -g -c DBManager.cc     -o DBManager.cc.o 
+# g++ -fPIC LevelDict.cc.o DictFunctions.cc.o DBManager.cc.o ../leveldb-1.12.0/libleveldb.a -lpthread -O2 -shared -fPIC -o leveldbcxx.a
+g++ -fPIC LevelDict.cc.o DictFunctions.cc.o DBManager.cc.o -lpthread -O2 -shared -fPIC -o leveldbcxx.a
+sudo cp leveldbcxx.a /usr/lib/
+
+gcc  -fPIC -std=gnu99 -Wall LevelDict.o DictFunctions.o QLevelDB.c qldb.c auxil.c mmap.c -I./AUTOGEN/GENFILES/ ./AUTOGEN/GENFILES/assign_I1.c -lm -lpthread leveldbcxx.a ../leveldb-1.12.0/libleveldb.a -o qldb
+./qldb

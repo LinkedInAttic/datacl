@@ -1,0 +1,59 @@
+PARENT_COUNTRY_CODE is not used
+RADIUS_BUFFER_MI    is not used
+GRANULARITY is CITY, STATE, NONE
+
+GRANULARITY = STATE is used in ad targeting
+
+GEO_PLACE_CODE is any string. However, currently it emebds the hierarchy in
+it.
+GEO_PLACE_CODE is unique within a country, not across countries.
+
+
+The field GEO_NAME_ADMIN_CODE in geo_places_XX.xml is produced only when
+GRANULARITY=STATE and in such cases, it is the abbreviation e.g., CA for
+California
+
+Ethan wrote as follows
+"When the place is not a STAT, the admin code is not used. 
+I don't know what they mean."
+
+Hence, I will produce GEO_NAME_ADMIN_CODE only when GRANULARITY=STAT
+
+
+Ethan wrote as follows:
+GEO_NAME_ADMIN_CODE, if present for states, means the abbreviated state name.
+It doesn't have to be two letters. When it's absent, then there is no (known)
+state name abbreviation. We should probably still populate it with the English
+name of the state, but there is no requirement for it so far.
+
+
+Geo places do NOT get translated (mail from Alexis)
+
+-----------------------------------------------------------------
+GEO_NAME_ID -- no idea what it is. Leave it as some unique integer.
+latitude != null => longitude != null
+longitude != null => latitude != null
+latitude != null => geo_name_id != null
+
+=======================================
+=======================================
+Ramesh to Ethan: 
+ can a region_code be assigned to more than one state?
+
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="49"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="262"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="412"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="620"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="852"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="AZ" REGION_CODE="936"/>
+<geo_state_region_map COUNTRY_CODE="us" STATE_CODE="CA" REGION_CODE="49"/>
+
+Ramesh
+ --------------------------------------
+Ethan to Ramesh: 
+Yes. That's an issue of the current data – we over count members in some
+states. For example, the Washington DC region is mapped to DC, West Virginia,
+and Maryland, and the member count for each of those states will include the
+ones in that region.
+=======================================
+=======================================

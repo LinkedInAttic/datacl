@@ -1,0 +1,13 @@
+column,segment_position,label,percentage
+col1,1,c1,20
+col1,1,c2,80
+col1,2,c1,50
+col1,2,c2,50
+col2,1,x1,33
+col2,1,x2,33
+col2,1,x3,34
+col2,2,l1,20
+col2,2,l2,30
+col2,2,l3,10
+col2,2,l4,25
+col2,2,l5,15

@@ -1,0 +1,268 @@
+"conv_F8_to_I4","INTYPE","F8"
+"conv_F8_to_I4","INTYPE2","double"
+"conv_F8_to_I4","OUTTYPE","I4"
+"conv_F8_to_I4","OUTTYPE2","int"
+,,-----------------------
+"conv_F8_to_I8","INTYPE","F8"
+"conv_F8_to_I8","INTYPE2","double"
+"conv_F8_to_I8","OUTTYPE","I8"
+"conv_F8_to_I8","OUTTYPE2","long long"
+,,-----------------------
+"conv_F8_to_F4","INTYPE","F8"
+"conv_F8_to_F4","INTYPE2","double"
+"conv_F8_to_F4","OUTTYPE","F4"
+"conv_F8_to_F4","OUTTYPE2","float"
+,,--------------------------------------
+"conv_I4_to_I8","INTYPE","I4"
+"conv_I4_to_I8","INTYPE2","int"
+"conv_I4_to_I8","OUTTYPE","I8"
+"conv_I4_to_I8","OUTTYPE2","long long"
+,,-----------------------
+"conv_I4_to_I1","INTYPE","I4"
+"conv_I4_to_I1","INTYPE2","int"
+"conv_I4_to_I1","OUTTYPE","I1"
+"conv_I4_to_I1","OUTTYPE2","char"
+,,-----------------------
+"conv_I4_to_I2","INTYPE","I4"
+"conv_I4_to_I2","INTYPE2","int"
+"conv_I4_to_I2","OUTTYPE","I2"
+"conv_I4_to_I2","OUTTYPE2","short"
+,,-----------------------
+"conv_I4_to_F4","INTYPE","I4"
+"conv_I4_to_F4","INTYPE2","int"
+"conv_I4_to_F4","OUTTYPE","F4"
+"conv_I4_to_F4","OUTTYPE2","float"
+,,--------------------------------------
+,,--------------------------------------
+"conv_I8_to_I4","INTYPE","I8"
+"conv_I8_to_I4","INTYPE2","long long"
+"conv_I8_to_I4","OUTTYPE","I4"
+"conv_I8_to_I4","OUTTYPE2","int"
+,,-----------------------
+"conv_I8_to_I1","INTYPE","I8"
+"conv_I8_to_I1","INTYPE2","long long"
+"conv_I8_to_I1","OUTTYPE","I1"
+"conv_I8_to_I1","OUTTYPE2","char"
+,,-----------------------
+"conv_I8_to_F4","INTYPE","I8"
+"conv_I8_to_F4","INTYPE2","long long"
+"conv_I8_to_F4","OUTTYPE","F4"
+"conv_I8_to_F4","OUTTYPE2","float"
+,,--------------------------------------
+"conv_I4_to_F8","INTYPE","I4"
+"conv_I4_to_F8","INTYPE2","int"
+"conv_I4_to_F8","OUTTYPE","F8"
+"conv_I4_to_F8","OUTTYPE2","double"
+,,-----------------------
+"conv_I8_to_F8","INTYPE","I8"
+"conv_I8_to_F8","INTYPE2","long long"
+"conv_I8_to_F8","OUTTYPE","F8"
+"conv_I8_to_F8","OUTTYPE2","double"
+,,-----------------------
+"conv_I2_to_I8","INTYPE","I2"
+"conv_I2_to_I8","INTYPE2","short"
+"conv_I2_to_I8","OUTTYPE","I8"
+"conv_I2_to_I8","OUTTYPE2","long long"
+,,-----------------------
+"conv_I2_to_I4","INTYPE","I2"
+"conv_I2_to_I4","INTYPE2","short"
+"conv_I2_to_I4","OUTTYPE","I4"
+"conv_I2_to_I4","OUTTYPE2","int"
+,,-----------------------
+"conv_I1_to_I8","INTYPE","I1"
+"conv_I1_to_I8","INTYPE2","char"
+"conv_I1_to_I8","OUTTYPE","I8"
+"conv_I1_to_I8","OUTTYPE2","long long"
+,,-----------------------
+"conv_I1_to_I4","INTYPE","I1"
+"conv_I1_to_I4","INTYPE2","char"
+"conv_I1_to_I4","OUTTYPE","I4"
+"conv_I1_to_I4","OUTTYPE2","int"
+,,-----------------------
+"conv_F4_to_I4","INTYPE","F4"
+"conv_F4_to_I4","INTYPE2","float"
+"conv_F4_to_I4","OUTTYPE","I4"
+"conv_F4_to_I4","OUTTYPE2","int"
+,,-----------------------
+"conv_F4_to_I8","INTYPE","F4"
+"conv_F4_to_I8","INTYPE2","float"
+"conv_F4_to_I8","OUTTYPE","I8"
+"conv_F4_to_I8","OUTTYPE2","long long"
+,,-----------------------
+"conv_F4_to_F8","INTYPE","F4"
+"conv_F4_to_F8","INTYPE2","float"
+"conv_F4_to_F8","OUTTYPE","F8"
+"conv_F4_to_F8","OUTTYPE2","double"
+,,--------
+,,---------------------------------------------------------
+,,-----------------------
+"B1","INTYPE","I4"
+"B1","INTYPE2","int"
+"B1","UNARYOP","ones_complement"
+"B1","UNARYOP2","~"
+,,-----------------------
+"B0","INTYPE","I4"
+"B0","INTYPE2","int"
+"B0","UNARYOP","not"
+"B0","UNARYOP2","!"
+,,-----------------------
+"B3","INTYPE","I8"
+"B3","INTYPE2","long long"
+"B3","UNARYOP","ones_complement"
+"B3","UNARYOP2","~"
+,,-----------------------
+"B2","INTYPE","I8"
+"B2","INTYPE2","long long"
+"B2","UNARYOP","not"
+"B2","UNARYOP2","!"
+,,-----------------------
+"B5","INTYPE","I1"
+"B5","INTYPE2","char"
+"B5","UNARYOP","ones_complement"
+"B5","UNARYOP2","~"
+,,-----------------------
+"B4","INTYPE","I1"
+"B4","INTYPE2","char"
+"B4","UNARYOP","not"
+"B4","UNARYOP2","!"
+,,-----------------------
+"C0","INTYPE","I4"
+"C0","INTYPE2","int"
+"C0","UNARYOP","incr"
+"C0","UNARYOP2","++"
+,,-----------------------
+"C1","INTYPE","I4"
+"C1","INTYPE2","int"
+"C1","UNARYOP","decr"
+"C1","UNARYOP2","--"
+,,-----------------------
+"C2","INTYPE","I8"
+"C2","INTYPE2","long long"
+"C2","UNARYOP","incr"
+"C2","UNARYOP2","++"
+,,-----------------------
+"C3","INTYPE","I8"
+"C3","INTYPE2","long long"
+"C3","UNARYOP","decr"
+"C3","UNARYOP2","--"
+,,-----------------------
+,,-----------------------
+"D0","INTYPE","int"
+"D0","INTYPE2","int"
+"D0","MINMAXOP","min"
+"D0","MINMAXOP2","<"
+,,-----------------------
+"D1","INTYPE","int"
+"D1","INTYPE2","int"
+"D1","MINMAXOP","max"
+"D1","MINMAXOP2",">"
+,,-----------------------
+"D2","INTYPE","longlong"
+"D2","INTYPE2","long long"
+"D2","MINMAXOP","min"
+"D2","MINMAXOP2","<"
+,,-----------------------
+"D3","INTYPE","longlong"
+"D3","INTYPE2","long long"
+"D3","MINMAXOP","max"
+"D3","MINMAXOP2",">"
+,,-----------------------
+"D4","INTYPE","bool"
+"D4","INTYPE2","char"
+"D4","MINMAXOP","min"
+"D4","MINMAXOP2","<"
+,,-----------------------
+"D5","INTYPE","bool"
+"D5","INTYPE2","char"
+"D5","MINMAXOP","max"
+"D5","MINMAXOP2",">"
+,,-----------------------
+"D6","INTYPE","float"
+"D6","INTYPE2","float"
+"D6","MINMAXOP","min"
+"D6","MINMAXOP2","<"
+,,-----------------------
+"D7","INTYPE","float"
+"D7","INTYPE2","float"
+"D7","MINMAXOP","max"
+"D7","MINMAXOP2",">"
+,,-----------------------
+"D8","INTYPE","double"
+"D8","INTYPE2","double"
+"D8","MINMAXOP","min"
+"D8","MINMAXOP2","<"
+,,-----------------------
+"D9","INTYPE","double"
+"D9","INTYPE2","double"
+"D9","MINMAXOP","max"
+"D9","MINMAXOP2",">"
+,,-----------------------
+,,-----------------------------------------------
+"E0","INTYPE","int"
+"E0","INTYPE2","int"
+"E0","INTYPE3","long long"
+,,-----------------------
+"E2","INTYPE","longlong"
+"E2","INTYPE2","long long"
+"E2","INTYPE3","long long"
+,,-----------------------
+"E4","INTYPE","bool"
+"E4","INTYPE2","char"
+"E4","INTYPE3","long long"
+,,-----------------------
+"E6","INTYPE","float"
+"E6","INTYPE2","float"
+"E6","INTYPE3","double"
+,,-----------------------
+"E8","INTYPE","double"
+"E8","INTYPE2","double"
+"E8","INTYPE3","double"
+,,-----------------------
+"F0","INTYPE","I4"
+"F0","INTYPE2","int"
+"F0","OUTTYPE","I4"
+"F0","OUTTYPE2","int"
+,,-----------------------
+"F1","INTYPE","I4"
+"F1","INTYPE2","int"
+"F1","OUTTYPE","I8"
+"F1","OUTTYPE2","long long"
+,,-----------------------
+"F2","INTYPE","I8"
+"F2","INTYPE2","long long"
+"F2","OUTTYPE","I4"
+"F2","OUTTYPE2","int"
+,,-----------------------
+"F3","INTYPE","I8"
+"F3","INTYPE2","long long"
+"F3","OUTTYPE","I8"
+"F3","OUTTYPE2","long long"
+,,-----------------------
+"F4","INTYPE","I1"
+"F4","INTYPE2","char"
+"F4","OUTTYPE","I4"
+"F4","OUTTYPE2","int"
+,,-----------------------
+"F5","INTYPE","I1"
+"F5","INTYPE2","char"
+"F5","OUTTYPE","I8"
+"F5","OUTTYPE2","long long"
+,,-----------------------
+"cum_I2_to_I4","INTYPE","I2"
+"cum_I2_to_I4","INTYPE2","short"
+"cum_I2_to_I4","OUTTYPE","I4"
+"cum_I2_to_I4","OUTTYPE2","int"
+,,-----------------------
+"cum_I2_to_I8","INTYPE","I2"
+"cum_I2_to_I8","INTYPE2","short"
+"cum_I2_to_I8","OUTTYPE","I8"
+"cum_I2_to_I8","OUTTYPE2","long long"
+,,--------------------------------------
+"saturate_I1","TYPEX","I1"
+"saturate_I1","TYPEI","char"
+"saturate_I2","TYPEX","I2"
+"saturate_I2","TYPEI","short"
+"saturate_I4","TYPEX","I4"
+"saturate_I4","TYPEI","int"
+"saturate_I8","TYPEX","I8"
+"saturate_I8","TYPEI","long long"

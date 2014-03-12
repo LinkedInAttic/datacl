@@ -1,0 +1,55 @@
+% -*- latex -*-
+
+
+\documentclass[openany,oneside]{book}
+
+\input{e-unibus-common}
+
+% UNCOMMENTED BY RAMESH \setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Book title page
+\newcommand{\BookAuthor}{The LinkedIn Documentation Team}
+\newcommand{\bookauthor}[1]{\renewcommand{\BookAuthor}{#1}}
+\newcommand{\BookSubtitle}{}
+\newcommand{\booksubtitle}[1]{\renewcommand{\BookSubtitle}{#1}}
+
+\newcommand{\booktitlepage}[1]{
+  \begin{titlepage}
+    {\noindent \raggedright\normalsize\sffamily \BookAuthor}\par\vfill
+    {\noindent \raggedright\Huge\sffamily \rule{\textwidth}{1pt}\\[5pt]#1\\[5pt]\rule{\textwidth}{1pt}}\par\vfill
+    {\noindent \raggedright\LARGE\sffamily \BookSubtitle}\par\vfill
+    {\noindent \raggedright\normalsize\sffamily Version \docversion}\par\vfill
+  \end{titlepage}
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Report title page in book environment
+\newcommand{\ReportAuthor}{}
+\newcommand{\reportauthor}[1]{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 'report' environment wne 'book'
+\newcommand{\startreport}[1]{\chapter{#1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 'book' environment itself
+\newcommand{\startbook}[1]
+{
+  \begin{document}
+  \booktitlepage{#1}
+  \tableofcontents
+  \listoffigures
+  \listoftables
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

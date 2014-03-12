@@ -1,0 +1,6 @@
+TEXT1,long long
+TEXT2,long_long
+TEXT3,LONGLONG_INT_TYPE
+TEXT4,longlong_int_type
+TEXT5,longlong
+TEXT6,Li

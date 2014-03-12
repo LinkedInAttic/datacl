@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+builddeps - internally used dependency builder
+
+=head1 SYNOPSIS
+
+ builddeps [docname...]
+
+=head1 DESCRIPTION
+
+It checks each listed document (adding .tex) suffix
+and prints to stdout content of .deps file.
+
+=cut
+
+use strict;
+use IO::File;
+use File::Basename;
+
+die "No DOCROOT set\n" unless $ENV{DOCROOT};
+
+my @deps = qw(
+	      Config.tex
+	      styles/e-unibus-book.tex
+	      styles/e-unibus-common.tex
+	      styles/e-unibus-report.tex
+	      src/IMAGES/logo.png
+	     );
+
+my %processed;
+
+for (@ARGV) {
+  %processed = ();
+  chdir dirname($_) or die $!;
+  my $f = basename($_);
+
+  print "$ENV{DOCROOT}/pdf/$f.pdf : $f.pdf\n\n";
+
+  print "$f.pdf : \\\n";
+  print join(" \\\n", map {"\t$ENV{DOCROOT}/$_"} @deps), " \\\n";
+  deps("$f.tex", $_);
+  print join(" \\\n", map {"\t$_"} sort keys %processed), "\n\n";
+}
+
+sub deps {
+  my $fn = shift;
+  my $ctx = shift;
+  return if $processed{$fn};
+  my $f = IO::File->new($fn) or die "processing $ctx $fn:$!\n";
+
+  while (<$f>) {
+    next if m!\\begin\{verbatim! .. m!\\end\{verbatim!;
+    next unless $_ =~ m!^[^%]*\\(input|include|includegraphics)\s*\{\s*(\S+?)\s*\}!;
+    my ($cmd, $arg) = ($1, $2);
+    if ($cmd eq 'includegraphics') {
+      $arg .= '.png';
+      my $i = `kpsewhich $arg`;
+      die "No included image file '$arg' in '$ctx': '$_'\n" if $? >> 8;
+      chomp $i;
+      $processed{$i} = 1;
+    } else {
+      my $i = `kpsewhich $arg`;
+      die "No included file '$arg' in '$ctx': '$_'\n" if $? >> 8;
+      chomp $i;
+      deps($i, $fn);
+    }
+  }
+  $f->close;
+  $processed{$fn} = 1;
+}

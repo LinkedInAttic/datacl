@@ -1,0 +1,9 @@
+fldI4,I4,
+fldI8,I8,
+fldF4,F4,
+fldF8,F8,
+fldI1,I1,
+fldI2,I2,
+xxxx,LKP,'is_dict_old=[false]:dict=[lkp_SV]'
+fldSC,SC,'maxlen=[11]:is_trunc=[true]'
+fldSV,SV,'maxlen=[32]'

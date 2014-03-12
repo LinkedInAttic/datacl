@@ -1,0 +1,39 @@
+Following suggestions from http://www.jetcafe.org/jim/c-style.html
+
+For constants, consider using:
+enum { Red = 0xF00, Blue = 0x0F0, Green = 0x00F };
+static const float pi = 3.14159265358;
+instead of #defines, which are rarely visible in debuggers. 
+
+Since macros can be dangerous, follow tradition fully capitalize them,
+otherwise following the conventions for function or variable names. 
+
+Use goto sparingly. Two harmless places to use it are to break out of a
+multilevel loop, or to jump to common function exit code. (Often these are the
+same places.) 
+
+Say:
+char *p;
+not:
+char* p;
+
+for functions. Don't parenthesize things unnecessarily; say
+return 7;
+not
+return (7);
+and especially not
+return(7);
+
+Rule 5 
+Data dominates. If you've chosen the right data structures and organized
+things well, the algorithms will almost always be self-evident. Data
+structures, not algorithms, are central to programming
+
+malloc
+Don't cast the return value of calls to malloc, It has type void *, so it
+will be compatible with anything. K&R2, p. 142 gives contrary advice, but
+it has since been retracted by Dennis Ritchie:
+"In any case, now that I reread the stuff on p. 142, I think it's
+wrong; it's written in such a way that it's not just defensive
+against earlier rules, it misrepresents the ANSI rule"
+=======================================================

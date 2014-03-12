@@ -1,0 +1,17 @@
+fld_id,int,4
+tbl_id,int,4
+is_external,bool,1
+is_lkp_id,bool,1
+is_lkp_val,bool,1
+lkp_tbl_id,int,4
+sorttype,int,4
+n_sizeof,int,4
+auxtype,int,4
+parent_id,int,4
+nn_fld_id,int,4
+sz_fld_id,int,4
+fldtype,char string,0
+name,char string,0
+filename,char string,0
+filesize,long long,8
+dispname,char string,0

@@ -1,0 +1,95 @@
+\documentclass[letterpaper]{article}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+\usepackage{pmc}
+\usepackage{graphicx}
+\setlength\textwidth{6.5in}
+\setlength\textheight{8.5in}
+\begin{document}
+\title{Code For Page Flow Analysis}
+\author{ Ramesh Subramonian }
+\maketitle
+\thispagestyle{fancy}
+\lfoot{{\small Data Analytics Team}}
+\cfoot{}
+\rfoot{{\small \thepage}}
+
+\begin{verbatim}
+ 1  # First page is a special case. Deal with this first.
+ 2  # Extract p_i, n_i for i = 1
+ 3  pi_ni=`echo $pids | cut -f 1 -d ";"`
+ 4  pid=`echo $pi_ni  | cut -f 1 -d ":"`
+ 5  num=`echo $pi_ni  | cut -f 2 -d ":"`
+ 6  # Let x mark rows that match desired page
+ 7  q f1s1opf2 $tbl pid $pid_id '==' x
+ 8  if [ $num -gt 1 ]; then
+ 9    idx=1
+10   while [ $idx -le $num ]; do
+11     # Let y mark rows that occur sufficiently many times
+12     q f1s1opf2 $tbl cnt $idx '>=' y
+13     q f1f2opf3 $tbl x y '&&' z
+14     n2=`q f1f2_to_s $tbl z cnt sum | cut -f 1 -d ":"`
+15     nz=`q f_to_s    $tbl z     sum | cut -f 1 -d ":"`
+16     n1=`echo " $n2 - ($nz * ($idx-1) ) " | bc `
+17     echo $n1; if [ $n1 = 0 ]; then exit 0; fi
+18     idx=`expr $idx + 1 `
+19   done
+20   q rename $tbl z cum_sel
+21  else
+22   n1=`q f1f2_to_s $tbl x cnt sum | cut -f 1 -d ":"`
+23   echo $n1; if [ $n1 = 0 ]; then exit 0; fi
+24   q rename $tbl x cum_sel
+25  fi
+26  q delete $tbl x:y:z
+\end{verbatim}
+
+\newpage
+
+\begin{verbatim}
+iter=2 # Start from 2nd iteration, since 1st already done
+while [ $iter -le $nump ] ; do
+  pi_ni=`echo $pids | cut -f $iter -d ";"`
+  pid=`echo $pi_ni | cut -f 1 -d ":"`
+  num=`echo $pi_ni | cut -f 2 -d ":"`
+  if [ $iter == 1 ] || [ $iter == $nump ]; then
+    comparator=">="
+  else
+    comparator="=="
+  fi
+  # Let x mark rows that match desired page
+  q f1s1opf2 $tbl pid_id $pid '==' x
+  # We use z to ensure 2 other things hold true. 
+  # 1. Current selection in same session as previous selection
+  # 2. Current selection immediately after previous selection
+  q f1opf2   $tbl cum_sel 'op=[shift]:val=[1]:newval=[0]' y
+  q f1f2opf3 $tbl y is_same_sess_as_prev '&&' z
+  q f1f2opf3 $tbl y  z '&&'  yz
+  q f1f2opf3 $tbl x yz '&&' xyz
+  # Now we handle the partial matches
+  idx=1
+  while [ $idx -le $num ]; do
+    q f1s1opf2 $tbl cnt $idx ">=" w
+    q f1f2opf3 $tbl w xyz '&&' wxyz
+    rslt=`q f_to_s $tbl wxyz sum | cut -f 1 -d ":"`
+    echo $rslt
+    if [ $rslt = 0 ]; then exit 0; fi
+    idx=`expr $idx + 1`
+  done 
+  # Make sure page occurs sufficiently many times
+  q f1s1opf2 $tbl cnt $num "$comparator" w
+  q f1f2opf3 $tbl w xyz '&&' wxyz
+  #-----------------------------------------
+  # Count number of occurrences. Quit early if zero matches
+  rslt=`q f_to_s $tbl wxyz sum | cut -f 1 -d ":"`
+  if [ $rslt = 0 ]; then exit 0; fi
+  q rename $tbl wxyz cum_sel
+  #-----------------------------------------
+  iter=`expr  $iter + 1`
+  if [ $iter -gt $nump ]; then break; fi
+done
+\end{verbatim}
+
+\end{document}

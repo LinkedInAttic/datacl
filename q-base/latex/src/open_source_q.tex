@@ -1,0 +1,144 @@
+\documentclass[letterpaper]{article}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{fancyheadings}
+\usepackage{hyperref}
+\pagestyle{fancy}
+\usepackage{pmc}
+\usepackage{graphicx}
+\setlength\textwidth{6.5in}
+\setlength\textheight{8.5in}
+\input{../styles/ramesh_abbreviations}
+\begin{document}
+\title{Open-sourcing ``qtils''}
+\author{ Ramesh Subramonian }
+\maketitle
+\thispagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{{\small Decision Sciences Team}}
+\cfoot{}
+\rfoot{{\small \thepage}}
+
+\section{Introduction}
+
+{\tt qtils} is a collection of data-wrangling utilities. While Hadoop has
+emerged as the de-facto standard for large data analysis tasks, there are
+often a large number of simple data manipulation operations that need to
+be performed in interactive mode as a post-processing step. The data for
+post-processing is often small enough to fit on a user's desktop. {\tt
+  qtils} is collection of efficient utilities for a data scientist.
+
+In our experience, the life of a data scientist is often less glamorous
+than the public perception. Accelerating the speed of inquiry --- both
+in terms of run time and scripting time --- significantly decreases some
+of the pains that come with the territory, opening up time to do
+higher-level thinking.
+
+Our hope is that open-sourcing {\tt qtils} will make it become the
+``go-to'' toolbox for data scientists, in much the same way that the
+number of shell utilities have become invaluable for a sysadmin.
+
+At LinkedIn, {\tt qtils} has proved useful for a variety of tasks e.g.,
+\begin{enumerate}
+\item path analysis --- to validate hypotheses of how users navigate
+pages.  Sponsor is Jim Baer. 
+\item nCRM --- creating lists for marketing.  Sponsor is Simon Zhang.
+\item data driven testing. Sponsor was Bob Schulman.
+\end{enumerate}
+
+\subsection{External Interest}
+
+While {\tt qtils} was designed primarily as a useful toolkit for data
+scientists, we believe it can be used in other contexts as well. A case
+in point is our paper (collaboration with the Data Infra team) entitled
+``In Data Veritas --- Data Driven Testing for Distributed
+Systems'', which was presented at a SIGMOD workshop this year. After the
+presentation, several members of the audience expressed an interest in
+experimenting with the tools and approach.
+
+We believe by open sourcing, we can both contribute to the community
+while benefiting from their feedback and contributions. 
+
+\section{Examples of usage}
+
+For interactive data exploration, approximate results are often good
+enough. Examples are 
+\be
+\item approximate quantiles --- gives the user a high-level distribution
+of the data e.g., how are ``number of connections'' distributed?
+\item top \(n\) --- often we are interested in the items that occur most
+frequently e.g., which are the top 10 industries of members who have
+visited a company page in the last month
+\item approximate count distinct --- given every ad click, select ads
+from a given advertiser and determine number of members who saw an ad
+from that advertiser
+\ee
+
+\section{Operational aspects of open-sourcing}
+
+\begin{enumerate}
+\item Every source file has the following header with the copyright
+symbol \(\copyright\) at the start
+\begin{verbatim}
+<copyright symbol> [2013] LinkedIn Corp. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may
+not use this file except in compliance with the License. You may obtain
+a copy of the License at  http://www.apache.org/licenses/LICENSE-2.0
+ 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an "AS IS"
+BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied.
+\end{verbatim}
+\item
+Code has been checked in to gitli
+\url{https://gitli.corp.linkedin.com/qtils/qtils}
+\item Currently, we do not plan to make it an Apache project, although
+this is a possibility in the future.
+\item Documentation has been written as a PDF document and is available
+along with the source code.
+\item A few ``hello world'' style examples have been provided to jump
+start developers.
+\item Currently, {\tt qtils} is invoked from the shell. Our early
+experimentation convinces us that creating bindings to other languages
+--- Ruby, PHP, Python \ldots --- is not particuarly difficult. We hope
+to find champions in the open source community who would take this on.
+\end{enumerate}
+
+\section{Installation}
+\be
+\item Copy the file {\tt qtils.tgz} into a directory and {\tt cd} to that directory
+\item {\tt tar -zcvf qtils.tgz}
+\item {\tt cd src; make}
+\item You should get a single file called {\tt q}
+\ee
+
+You need to set 2 environment variables.
+\be
+\item 
+\verb+Q_DOCROOT+  This is the directory where the meta data will be stored
+\item 
+\verb+Q_DATA_DIR+ This is the directory where the      data will be stored
+\ee
+
+\subsection{Hello World}
+\begin{verbatim}
+mkdir            /tmp/qtils_test
+export Q_DOCROOT=/tmp/qtils_test
+export Q_DATA_DIR=/tmp/qtils_test
+q init # This initializes the meta data
+q add_tbl t1 10 # Creates a table with 10 rows
+q s_to_f t1 f1 'op=[seq]:start=[1]:incr=[1]:fldtype=[I4]'
+q list_tbls # list tables
+q describe t1    # describes table t1 
+q describe t1 f1 # describes fld f1 in table t1 
+# Creates a 4 byte integer field f1 in t1 whose values are 1, 2, ...
+q pr_fld t1 f1 # Prints the values of f1 in t1 
+q fop    t1 f1 sortD # Sorts f1 in t1 in descending order
+q pr_fld t1 f1 # Notice that values have switched order
+q delete t1    # Clean up
+\end{verbatim}
+\end{document}

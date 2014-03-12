@@ -1,0 +1,6 @@
+i1,I1,"is_load=[true]:is_all_def=[true]"
+i2,I2,"is_load=[false]:is_all_def=[true]"
+i4,I4,"is_load=[false]:is_all_def=[false]"
+i8,I8,"is_load=[true]:is_all_def=[false]"
+f4,F4,"is_load=[true]:is_all_def=[false]"
+f8,F8,"is_load=[true]:is_all_def=[true]"

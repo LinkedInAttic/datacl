@@ -1,0 +1,633 @@
+#
+# make with c compiler, using 4rd party .h files and .a files
+#
+#
+CC=gcc
+OPTFLAG= -g
+FLG = ${OPTFLAG} -ansi -pedantic -std=gnu99 -Wall 
+DBG = -DDEBUG
+ERR = -DERR_LOG
+CHECKS = -DCHECKS
+# VERBOSE = -DVERBOSE
+VERBOSE = 
+CFLAGS= ${FLG} ${DBG} ${ERR} ${CHECKS} ${VERBOSE}
+#
+# make variable for compiles with the -I command 
+#
+#INCLUDES=-I/where/the/header/file/is -I/other/header/files
+INCLUDES=-I./AUTOGEN/GENFILES -I.
+
+#
+# make variable for extra libraries
+# link with -L and -l
+#
+# LIBS=-L/where/the/lib/file/is -L/other/lib/files -lUSR1 -lUSR2 -lOTHER
+LIBS=
+#
+#
+.PHONY: all clean 
+
+ALL = \
+	q ut_parse_attrs gen_data cli_hash_string str2bin qhead \
+	sortbindmp cli_closest_lat_long latlong_distance.o levenshtein.o \
+	chk_ascii cli_elim_outliers cli_tab_delim_import \
+	asc2bin_int ut_parse_scalar_vals ut_read_meta_data ut_read_csv \
+	ut_callbacks cli_hash_titles cli_mk_title_lkp_tbl bin2asc_int \
+	cli_ron_op_to_q pa \
+	mjoin_longlong.c mjoin_int.c \
+	mjoin_longlong.h mjoin_int.h \
+	join_longlong.c join_int.c \
+	join_longlong.h join_int.h \
+	uniq_long_long.c uniq_int.c \
+	uniq_long_long.h uniq_int.h \
+	sort_1_int.c sort_1_long_long.c \
+	sort_1_int.h sort_1_long_long.h \
+	conv_int_to_longlong.c conv_longlong_to_int.c \
+	conv_char_to_int.c conv_char_to_longlong.c \
+	conv_int_to_longlong.h conv_longlong_to_int.h \
+	conv_char_to_int.h conv_char_to_longlong.h \
+
+LATEX = \
+	_NumUniqTitles _NumTitles \
+	_fn_nidiff _fn_nwidiff \
+	_sr_nidiff _sr_nwidiff \
+
+PDF = \
+	_title_eval.tex _title_eval.pdf 
+
+
+all: ${ALL}
+
+clean:
+	rm -f *.o ${ALL} *.a *.so 
+
+clean_latex:
+	rm -f ${LATEX} ${PDF}
+
+INC1 = constants.h macros.h qtypes.h
+
+q: q.o sqlite3.o \
+	add_fld.o add_tbl.o pr_fld.o bpr_fld.o pr_flds.o glue_files.o \
+	fld_meta.o tbl_meta.o mk_tbl_hash_words.o \
+	parse_attrs.o is_tbl.o is_fld.o auxil.o chk_tbl.o \
+	md5c.o mddriver.o hash_string.o fsize.o mk_file.o aux_fld_meta.o \
+	chk_num_rows.o del_tbl.o del_fld.o get_nR.o set_nR.o \
+	add_aux_fld.o f1s1opf2.o copy_fld.o fop.o f_to_s.o app_fld.o \
+	is_a_in_b.o is_a_in_b_2.o bin_search.o t1f1t2f2op.o dbauxil.o dup_fld.o \
+	xfer.o xfer_nonstring.o mjoin.o mjoin_int.o mjoin_longlong.o \
+	s_to_f.o f1opf2.o wisifxthenyelsez.o dld.o read_csv.o list_tbls.o \
+	orphan_files.o vec_f1f2opf3.o vec_f1s1opf2.o \
+	f1opf2_hash.o f1f2opf3.o bindmp.o binld.o rename_tbl.o \
+	f1f2opf3_custom1.o new_f1opf2.o vec_f1opf2.o \
+	rename_fld.o f1f2opf3_arith.o aux_join.o \
+	f1s1opf2_int_bool.o f1opf2_shift.o callbacks.o app_tbl.o \
+	f1opf2_cum.o sortbindmp.o crossprod1.o \
+	qchown.o qchmod.o \
+	parse_scalar_vals.o  set_fld_meta.o read_meta_data.o \
+	sort.o sort_1_int.o sort_1_long_long.o  \
+	uniq_int.o uniq_long_long.o  \
+	conv_int_to_longlong.o conv_longlong_to_int.o \
+	conv_char_to_int.o conv_char_to_longlong.o \
+	chunking.o get_sz_type_op_fld.o \
+	./AUTOGEN/GENFILES/assign_char.c \
+	./AUTOGEN/GENFILES/A0000_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0001_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0002_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0003_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0004_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0005_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0006_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0007_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0008_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0009_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0010_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0011_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0012_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0013_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0015_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0016_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0020_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0030_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0040_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0021_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0031_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/A0041_f1f2opf3_arith.c \
+	./AUTOGEN/GENFILES/B0000_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/B0001_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/B0002_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/B0003_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/B0004_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/B0005_f1f2opf3_cond.c \
+	./AUTOGEN/GENFILES/AS0000_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0001_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0002_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0003_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0004_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0005_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0006_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0007_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0008_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0009_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0010_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0011_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0012_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0013_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0015_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0016_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0020_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0030_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0040_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0021_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0031_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0041_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0022_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0032_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/AS0042_f1s1opf2_arith.c \
+	./AUTOGEN/GENFILES/BS0000_f1s1opf2_cond.c \
+	./AUTOGEN/GENFILES/BS0001_f1s1opf2_cond.c \
+	./AUTOGEN/GENFILES/BS0002_f1s1opf2_cond.c \
+	./AUTOGEN/GENFILES/BS0003_f1s1opf2_cond.c \
+	./AUTOGEN/GENFILES/BS0004_f1s1opf2_cond.c \
+	./AUTOGEN/GENFILES/BS0005_f1s1opf2_cond.c
+	$(CC) $(CFLAGS) -o $@ $^ -ldl -lm -lpthread
+
+#	join.o join_int.o join_longlong.o \
+
+ut_parse_attrs: ut_parse_attrs.o parse_attrs.o auxil.o fsize.o \
+	sort.o aux_fld_meta.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+ut_set_fld_meta: ut_set_fld_meta.o set_fld_meta.o auxil.o fsize.o \
+	sort.o aux_fld_meta.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_hash_titles: cli_hash_titles.o  fsize.o \
+	hash_string.o md5c.o mddriver.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+sortbindmp: cli_sortbindmp.o  sortbindmp.o fsize.o sort.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+chk_ascii: chk_ascii.o fsize.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_elim_outliers: cli_elim_outliers.o fsize.o latlong_distance.o \
+	sort.o
+	$(CC) $(CFLAGS) -o $@ $^  -lm
+
+pa: pa.o 
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+pa.o: pa.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c pa.c
+
+
+cli_ron_op_to_q: cli_ron_op_to_q.o fsize.o \
+	hash_string.o md5c.o mddriver.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_ron_op_to_q.o: cli_ron_op_to_q.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c cli_ron_op_to_q.c
+
+cli_mk_title_lkp_tbl: cli_mk_title_lkp_tbl.o  fsize.o \
+	hash_string.o md5c.o mddriver.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+ut_callbacks: ut_callbacks.o auxil.o sort.o fsize.o dbauxil.o \
+	callbacks.o sqlite3.o is_tbl.o add_tbl.o del_tbl.o del_fld.o \
+	is_fld.o fld_meta.o is_tbl.o is_fld.o aux_fld_meta.o \
+	tbl_meta.o get_nR.o
+	$(CC) $(CFLAGS) -o $@ $^ -ldl -lpthread
+
+ut_read_meta_data: ut_read_meta_data.o read_meta_data.o auxil.o \
+	fsize.o sort.o aux_fld_meta.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+ut_read_csv: ut_read_csv.o read_meta_data.o read_csv.o auxil.o \
+	fsize.o sort.o aux_fld_meta.o parse_scalar_vals.o dbauxil.o \
+	sqlite3.o callbacks.o fld_meta.o is_tbl.o is_fld.o
+	$(CC) $(CFLAGS) -o $@ $^  -ldl -lm -lpthread
+
+gen_data: gen_data.o 
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+ut_parse_scalar_vals: ut_parse_scalar_vals.o parse_scalar_vals.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+str2bin: str2bin.o fsize.o auxil.o sort.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+asc2bin_int: asc2bin_int.o fsize.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+bin2asc_int: bin2asc_int.o fsize.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+qhead: qhead.o fsize.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_hash_string: cli_hash_string.o fsize.o \
+	hash_string.o md5c.o mddriver.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_tab_delim_import: cli_tab_delim_import.o fsize.o \
+	hash_string.o md5c.o mddriver.o auxil.o sort.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+cli_closest_lat_long: cli_closest_lat_long.o fsize.o \
+	latlong_distance.o levenshtein.o
+	$(CC) $(CFLAGS) -o $@ $^  -lm
+
+#
+#
+# DO NOT include 3rd party headers for your source
+# DO     include your own headers
+#
+q.o: q.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c q.c
+
+pr_fld.o: pr_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c pr_fld.c
+
+bpr_fld.o: bpr_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c bpr_fld.c
+
+pr_flds.o: pr_flds.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c pr_flds.c
+
+glue_files.o: glue_files.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c glue_files.c
+
+fld_meta.o: fld_meta.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c fld_meta.c
+
+aux_fld_meta.o: aux_fld_meta.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c aux_fld_meta.c
+
+tbl_meta.o: tbl_meta.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c tbl_meta.c
+
+sqlite3.o: sqlite3.c 
+	$(CC) $(CFLAGS) $(INCLUDES) -c sqlite3.c
+
+md5c.o: md5c.c md5c.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c md5c.c
+
+mddriver.o: mddriver.c mddriver.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c mddriver.c
+
+hash_string.o: hash_string.c hash_string.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c hash_string.c
+
+aux_join.o: aux_join.c aux_join.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c aux_join.c
+
+fsize.o: fsize.c fsize.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c fsize.c
+
+mk_file.o: mk_file.c mk_file.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c mk_file.c
+
+sortbindmp.o: sortbindmp.c 
+	$(CC) $(CFLAGS) $(INCLUDES) -c sortbindmp.c
+
+chk_ascii.o: chk_ascii.c 
+	$(CC) $(CFLAGS) $(INCLUDES) -c chk_ascii.c
+
+cli_elim_outliers.o: cli_elim_outliers.c 
+	$(CC) $(CFLAGS) $(INCLUDES) -c cli_elim_outliers.c
+
+parse_attrs.o: parse_attrs.c parse_attrs.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c parse_attrs.c
+
+set_fld_meta.o: set_fld_meta.c set_fld_meta.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c set_fld_meta.c
+
+is_tbl.o: is_tbl.c is_tbl.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c is_tbl.c
+
+is_fld.o: is_fld.c is_fld.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c is_fld.c
+
+auxil.o: auxil.c auxil.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c auxil.c
+
+add_fld.o: add_fld.c add_fld.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c add_fld.c
+
+add_tbl.o: add_tbl.c add_tbl.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c add_tbl.c
+
+chk_num_rows.o: chk_num_rows.c chk_num_rows.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c chk_num_rows.c
+
+del_fld.o: del_fld.c del_fld.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c del_fld.c
+
+del_tbl.o: del_tbl.c del_tbl.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c del_tbl.c
+
+get_nR.o: get_nR.c get_nR.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c get_nR.c
+
+set_nR.o: set_nR.c set_nR.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c set_nR.c
+
+list_tbls.o: list_tbls.c list_tbls.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c list_tbls.c
+
+orphan_files.o: orphan_files.c orphan_files.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c orphan_files.c
+
+add_aux_fld.o: add_aux_fld.c add_aux_fld.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c add_aux_fld.c
+
+gen_data.o: gen_data.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c gen_data.c
+
+str2bin.o: str2bin.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c str2bin.c
+
+read_csv.o: read_csv.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c read_csv.c
+
+dld.o: dld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c dld.c
+
+f1s1opf2.o: f1s1opf2.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1s1opf2.c
+
+copy_fld.o: copy_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c copy_fld.c
+
+wisifxthenyelsez.o: wisifxthenyelsez.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c wisifxthenyelsez.c
+
+fop.o: fop.c sort_1_int.h sort_1_long_long.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c fop.c
+
+f_to_s.o: f_to_s.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f_to_s.c
+
+f1opf2.o: f1opf2.c conv_int_to_longlong.h conv_longlong_to_int.h \
+	conv_char_to_int.h conv_char_to_longlong.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1opf2.c
+
+f1opf2_hash.o: f1opf2_hash.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1opf2_hash.c
+
+f1opf2_shift.o: f1opf2_shift.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1opf2_shift.c
+
+f1opf2_cum.o: f1opf2_cum.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1opf2_cum.c
+
+qchmod.o: qchmod.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c qchmod.c
+
+qchown.o: qchown.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c qchown.c
+
+is_a_in_b.o: is_a_in_b.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c is_a_in_b.c
+
+is_a_in_b_2.o: is_a_in_b_2.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c is_a_in_b_2.c
+
+bin_search.o: bin_search.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c bin_search.c
+
+t1f1t2f2op.o: t1f1t2f2op.c uniq_int.h uniq_long_long.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c t1f1t2f2op.c
+
+mk_tbl_hash_words.o: mk_tbl_hash_words.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c mk_tbl_hash_words.c
+
+cli_hash_string.o: cli_hash_string.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c cli_hash_string.c
+
+cli_tab_delim_import.o: cli_tab_delim_import.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c cli_tab_delim_import.c
+
+cli_closest_lat_long.o: cli_closest_lat_long.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c cli_closest_lat_long.c
+
+latlong_distance.o: latlong_distance.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c latlong_distance.c
+
+levenshtein.o: levenshtein.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c levenshtein.c
+
+join.o: join.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c join.c
+
+dbauxil.o: dbauxil.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c dbauxil.c
+
+dup_fld.o: dup_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c dup_fld.c
+
+app_fld.o: app_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c app_fld.c
+
+app_tbl.o: app_tbl.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c app_tbl.c
+
+xfer.o: xfer.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c xfer.c
+
+xfer_float.o: xfer_float.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c xfer_float.c
+
+mjoin.o: mjoin.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c mjoin.c
+
+crossprod1.o: crossprod1.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c crossprod1.c
+
+join.c: join.h join_int.h join_longlong.h
+
+join_int.o: join_int.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c join_int.c
+
+join_longlong.o: join_longlong.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c join_longlong.c
+
+mjoin.c: mjoin.h mjoin_int.h mjoin_longlong.h
+
+mjoin_int.o: mjoin_int.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c mjoin_int.c
+
+mjoin_longlong.o: mjoin_longlong.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c mjoin_longlong.c
+
+s_to_f.o: s_to_f.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c s_to_f.c
+
+vec_f1opf2.o: vec_f1opf2.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c vec_f1opf2.c
+
+new_f1opf2.o: new_f1opf2.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c new_f1opf2.c
+
+f1f2opf3.o: f1f2opf3.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1f2opf3.c
+
+vec_f1f2opf3.o: vec_f1f2opf3.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c vec_f1f2opf3.c
+
+vec_f1s1opf2.o: vec_f1s1opf2.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c vec_f1s1opf2.c
+
+chunking.o: chunking.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c chunking.c
+
+get_sz_type_op_fld.o: get_sz_type_op_fld.c $(INC1) 
+	$(CC) $(CFLAGS) $(INCLUDES) -c get_sz_type_op_fld.c
+
+bindmp.o: bindmp.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c bindmp.c
+
+binld.o: binld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c binld.c
+
+rename_tbl.o: rename_tbl.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c rename_tbl.c
+
+rename_fld.o: rename_fld.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c rename_fld.c
+
+f1f2opf3_custom1.o: f1f2opf3_custom1.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1f2opf3_custom1.c
+
+f1f2opf3_arith.o: f1f2opf3_arith.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1f2opf3_arith.c
+
+f1s1opf2_int_bool.o: f1s1opf2_int_bool.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c f1s1opf2_int_bool.c
+
+chk_tbl.o: chk_tbl.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c chk_tbl.c
+
+callbacks.o: callbacks.c $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c callbacks.c
+
+#--------------------------------------------------------
+join_longlong.c: repl.php join_tmpl.c repl_join_longlong.txt join_longlong.h
+	php repl.php join_tmpl.c repl_join_longlong.txt join_longlong.c
+
+join_int.c: repl.php join_tmpl.c repl_join_int.txt join_int.h
+	php repl.php join_tmpl.c repl_join_int.txt join_int.c
+
+join_longlong.h: repl.php join_tmpl.h repl_join_longlong.txt
+	php repl.php join_tmpl.h repl_join_longlong.txt join_longlong.h
+
+join_int.h: repl.php join_tmpl.h repl_join_int.txt
+	php repl.php join_tmpl.h repl_join_int.txt join_int.h
+
+#--------------------------------------------------------
+mjoin_longlong.c: repl.php mjoin_tmpl.c repl_mjoin_longlong.txt mjoin_longlong.h
+	php repl.php mjoin_tmpl.c repl_mjoin_longlong.txt mjoin_longlong.c
+
+mjoin_int.c: repl.php mjoin_tmpl.c repl_mjoin_int.txt mjoin_int.h
+	php repl.php mjoin_tmpl.c repl_mjoin_int.txt mjoin_int.c
+
+mjoin_longlong.h: repl.php mjoin_tmpl.h repl_mjoin_longlong.txt
+	php repl.php mjoin_tmpl.h repl_mjoin_longlong.txt mjoin_longlong.h
+
+mjoin_int.h: repl.php mjoin_tmpl.h repl_mjoin_int.txt
+	php repl.php mjoin_tmpl.h repl_mjoin_int.txt mjoin_int.h
+
+#--------------------------------------------------------
+sort_1_int.c: repl.php sort_1_tmpl.c repl_sort_1_int.txt 
+	php repl.php sort_1_tmpl.c repl_sort_1_int.txt sort_1_int.c
+
+sort_1_long_long.c: repl.php sort_1_tmpl.c repl_sort_1_long_long.txt 
+	php repl.php sort_1_tmpl.c repl_sort_1_long_long.txt sort_1_long_long.c
+
+sort_1_int.h: repl.php sort_1_tmpl.h repl_sort_1_int.txt 
+	php repl.php sort_1_tmpl.h repl_sort_1_int.txt sort_1_int.h
+
+sort_1_long_long.h: repl.php sort_1_tmpl.h repl_sort_1_long_long.txt 
+	php repl.php sort_1_tmpl.h repl_sort_1_long_long.txt sort_1_long_long.h
+
+sort_1_int.o: sort_1_int.c sort_1_int.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c sort_1_int.c
+
+sort_1_long_long.o: sort_1_long_long.c sort_1_long_long.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c sort_1_long_long.c
+
+#--------------------------------------------------------
+uniq_int.c: repl.php uniq_tmpl.c repl_uniq_int.txt 
+	php repl.php uniq_tmpl.c repl_uniq_int.txt uniq_int.c
+
+uniq_long_long.c: repl.php uniq_tmpl.c repl_uniq_long_long.txt uniq_tmpl.c
+	php repl.php uniq_tmpl.c repl_uniq_long_long.txt uniq_long_long.c
+
+uniq_int.h: repl.php uniq_tmpl.h repl_uniq_int.txt uniq_tmpl.h
+	php repl.php uniq_tmpl.h repl_uniq_int.txt uniq_int.h
+
+uniq_long_long.h: repl.php uniq_tmpl.h repl_uniq_long_long.txt uniq_tmpl.h
+	php repl.php uniq_tmpl.h repl_uniq_long_long.txt uniq_long_long.h
+
+uniq_int.o: uniq_int.c uniq_int.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c uniq_int.c
+
+uniq_long_long.o: uniq_long_long.c uniq_long_long.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c uniq_long_long.c
+
+#--------------------------------------------------------
+conv_int_to_longlong.c: repl.php conv_tmpl.c repl_conv_int_to_longlong.txt 
+	php repl.php conv_tmpl.c repl_conv_int_to_longlong.txt \
+	conv_int_to_longlong.c
+
+conv_int_to_longlong.h: repl.php conv_tmpl.h repl_conv_int_to_longlong.txt 
+	php repl.php conv_tmpl.h repl_conv_int_to_longlong.txt \
+	conv_int_to_longlong.h
+
+conv_int_to_longlong.o: conv_int_to_longlong.c conv_int_to_longlong.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c conv_int_to_longlong.c
+
+conv_longlong_to_int.c: repl.php conv_tmpl.c repl_conv_longlong_to_int.txt 
+	php repl.php conv_tmpl.c repl_conv_longlong_to_int.txt \
+	conv_longlong_to_int.c
+
+conv_longlong_to_int.h: repl.php conv_tmpl.h repl_conv_longlong_to_int.txt 
+	php repl.php conv_tmpl.h repl_conv_longlong_to_int.txt \
+	conv_longlong_to_int.h
+
+conv_longlong_to_int.o: conv_longlong_to_int.c conv_longlong_to_int.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c conv_longlong_to_int.c
+
+conv_char_to_int.c: repl.php conv_tmpl.c repl_conv_char_to_int.txt 
+	php repl.php conv_tmpl.c repl_conv_char_to_int.txt \
+	conv_char_to_int.c
+
+conv_char_to_int.h: repl.php conv_tmpl.h repl_conv_char_to_int.txt 
+	php repl.php conv_tmpl.h repl_conv_char_to_int.txt \
+	conv_char_to_int.h
+
+conv_char_to_int.o: conv_char_to_int.c conv_char_to_int.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c conv_char_to_int.c
+
+conv_char_to_longlong.c: repl.php conv_tmpl.c repl_conv_char_to_longlong.txt 
+	php repl.php conv_tmpl.c repl_conv_char_to_longlong.txt \
+	conv_char_to_longlong.c
+
+conv_char_to_longlong.h: repl.php conv_tmpl.h repl_conv_char_to_longlong.txt 
+	php repl.php conv_tmpl.h repl_conv_char_to_longlong.txt \
+	conv_char_to_longlong.h
+
+conv_char_to_longlong.o: conv_char_to_longlong.c conv_char_to_longlong.h $(INC1)
+	$(CC) $(CFLAGS) $(INCLUDES) -c conv_char_to_longlong.c
+
+#--------------------------------------------------------
+_title_eval.pdf: _title_eval.tex
+	eval `../latex/tools/setenv` ; make -f ../latex/tools/docdir.mk _title_eval.pdf
+
+_title_eval.tex: tmpl_title_eval.tex ${LATEX} \
+    	p_fn_diff.php title_eval_1.php
+	php title_eval_1.php; \
+	php p_fn_diff.php function fn ; \
+	php p_fn_diff.php seniority sr ; \
+	txt_sub tmpl_title_eval.tex _title_eval.tex

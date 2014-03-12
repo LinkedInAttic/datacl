@@ -1,0 +1,52 @@
+\BOOKMARK [0][-]{chapter*.2}{Q --- An Analytics Framework}{}
+\BOOKMARK [1][-]{section.0.1}{Introduction}{chapter*.2}
+\BOOKMARK [2][-]{subsection.0.1.1}{Motivation}{section.0.1}
+\BOOKMARK [2][-]{subsection.0.1.2}{Notations}{section.0.1}
+\BOOKMARK [1][-]{section.0.2}{System Capabilities}{chapter*.2}
+\BOOKMARK [2][-]{subsection.0.2.1}{Field Types}{section.0.2}
+\BOOKMARK [2][-]{subsection.0.2.2}{Environment Variables}{section.0.2}
+\BOOKMARK [1][-]{section.0.3}{Functions}{chapter*.2}
+\BOOKMARK [2][-]{subsection.0.3.1}{Accessing meta-data}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.2}{get\137nR}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.3}{Modifying meta-data}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.4}{import}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.5}{Accessing Data}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.6}{Creating Data}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.7}{Operations}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.8}{count\137ht}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.9}{s\137to\137f}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.10}{pack}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.11}{unpack}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.12}{subsample}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.13}{wisifxthenyelsez}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.14}{fop}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.15}{num\137in\137range}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.16}{f1s1opf2}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.17}{f1f2\137to\137s}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.18}{f\137to\137s}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.19}{f1opf2}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.20}{xfer}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.21}{is\137a\137in\137b}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.22}{f1opf2f3}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.23}{f1f2opf3}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.24}{crossprod}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.25}{is\137A\137in\137b}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.26}{srt\137join}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.27}{rng\137join}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.28}{count\137vals}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.29}{mk\137bins}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.30}{t1f1t2f2opt3f3}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.31}{binld}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.32}{percentiles}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.33}{rng\137sort}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.34}{app\137tbl}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.35}{sortf1f2}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.36}{no\137op}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.37}{dld}{section.0.3}
+\BOOKMARK [2][-]{subsection.0.3.38}{lkp\137sort}{section.0.3}
+\BOOKMARK [1][-]{section.0.4}{GPU Operations}{chapter*.2}
+\BOOKMARK [2][-]{subsection.0.4.1}{g\137load}{section.0.4}
+\BOOKMARK [2][-]{subsection.0.4.2}{g\137info}{section.0.4}
+\BOOKMARK [1][-]{section.0.5}{Compound Expressions}{chapter*.2}
+\BOOKMARK [2][-]{subsection.0.5.1}{Verification}{section.0.5}
+\BOOKMARK [2][-]{subsection.0.5.2}{For some later point in time}{section.0.5}

@@ -1,0 +1,45 @@
+"A0000","IN11","I"
+"A0000","IN12","int"
+"A0000","IN21","I"
+"A0000","IN22","int"
+,,-----------------------
+"A0001","IN11","I"
+"A0001","IN12","int"
+"A0001","IN21","L"
+"A0001","IN22","long long"
+,,-----------------------
+"A0002","IN11","L"
+"A0002","IN12","long long"
+"A0002","IN21","I"
+"A0002","IN22","int"
+,,-----------------------
+"A0003","IN11","L"
+"A0003","IN12","long long"
+"A0003","IN21","L"
+"A0003","IN22","long long"
+,,-----------------------
+,,-----------------------
+"wisifxthenyelsez_I4","XTYPE","I4"
+"wisifxthenyelsez_I4","ITYPE","int"
+,,-----------------------
+"wisifxthenyelsez_I8","XTYPE","I8"
+"wisifxthenyelsez_I8","ITYPE","long long"
+,,-----------------------
+"wisifxthenyelsez_I1","XTYPE","I1"
+"wisifxthenyelsez_I1","ITYPE","char"
+,,-----------------------
+"wisifxthenyelsez_I2","XTYPE","I2"
+"wisifxthenyelsez_I2","ITYPE","short"
+,,-----------------------
+"wisifxthenyelsez_F4","XTYPE","F4"
+"wisifxthenyelsez_F4","ITYPE","float"
+,,-----------------------
+"issrtI1","INTYPE1","I1"
+"issrtI1","INTYPE2","char"
+"issrtI2","INTYPE1","I2"
+"issrtI2","INTYPE2","short"
+"issrtI4","INTYPE1","I4"
+"issrtI4","INTYPE2","int"
+"issrtI8","INTYPE1","I8"
+"issrtI8","INTYPE2","long long"
+,,-----------------------

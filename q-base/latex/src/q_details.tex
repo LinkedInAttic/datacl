@@ -1,0 +1,56 @@
+\startreport{Q --- Internals}
+\reportauthor{Ramesh Subramonian}
+
+\newcommand{\YES}{\checkmark}
+
+\section{Meta-Data}
+
+\subsection{Tables}
+Record type is \verb+TBL_TYPE+. Fields are 
+\bi
+\item {\sf L} nR, non-negative \(0 \Rightarrow \) no columns
+\item {\sf S} name, unique, non-null --- internal name 
+\item {\sf S} dispname, unique --- display name 
+\ei
+
+\subsection{Columns}
+
+Record type is \verb+FLD_TYPE+. Fields are 
+\be
+\item {\sf I} tbl\_id, non-negative. Foreign key to tbl
+\item is\_external, integer, non-null, 
+\(0 \Rightarrow false, 1 \Rightarrow true\), default 0
+\item sort\_type, integer, non-null, values are 
+\be
+\item unknown, default
+\item ascending
+\item descending
+\item unsorted
+\ee
+\item nn\_fld\_id --- self ``fk''
+\item parent\_id --- self ``fk''
+\item fldtype. Values are 
+\be
+\item char
+\item short
+\item int
+\item float
+\item double
+\item longlong
+\item string
+\ee
+\item filename   (without path information)
+\item dictionary (without path information)
+\ee
+
+\subsection{Constraints}
+
+\be
+\item \(T[i].nR > 0 \Rightarrow \exists j: F[j].tbl\_id = i\)
+\item \(F[i].nn\_fld\_id \geq 0 \Rightarrow \exists ! k: F[k].parent\_id = i\)
+\item \(F[i].fldtype = S \Leftrightarrow  F[i].dictionary \neq \bot\)
+\item \(F[i].fldtype = S \Leftrightarrow  F[i].filename = \bot\)
+\ee
+
+
+

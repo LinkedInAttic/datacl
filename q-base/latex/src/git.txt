@@ -1,0 +1,5 @@
+cd ~/WORk/Qgit/qtils/
+git add -A
+git commit -m "Small change"
+git push origin master
+git log

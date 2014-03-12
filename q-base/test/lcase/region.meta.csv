@@ -1,0 +1,18 @@
+id,int,4
+xid,int,4
+rstrnum_lkp_id,int,4
+xrstrnum_lkp_id,int,4
+description,char string,0
+xdescription,char string,0
+region_org_lkp_id,int,4
+xregion_org_lkp_id,int,4
+parent_region_id,int,4
+xparent_region_id,int,4
+country_lkp_id,int,4
+xcountry_lkp_id,int,4
+population,int,4
+xpopulation,int,4
+latitude,float,4
+xlatitude,float,4
+longitude,float,4
+xlongitude,float,4

@@ -1,0 +1,66 @@
+{
+   "domain": "cnc",
+   "dataset": "mentions",
+    "metrics":
+    [
+        {"metric": "pageviews.count", "next_operator": "/"},
+        {"metric": "memberid"}
+    ],
+     "filters":
+      [
+         {
+            "CountryId":
+            {
+                "operator": "equals",
+                "values":
+                [
+                    "30",
+                    "31",
+                    "2"
+                ]
+            },
+            "HasLanguages":
+            {
+                "operator": "not_equals",
+                "values":
+                [
+                    "1"
+                ]
+            },
+            "HasPositions":
+            {
+                "operator": "equals",
+                "values":
+                [
+                    "1"
+                ]
+            }
+         },
+        {
+            "Xcountry":
+            {
+                "operator": "not_equals",
+                "values":
+                [
+                    "united kingdom",
+                    "russia"
+                ]
+            },
+            "Xlanguage":
+            {
+                "operator": "equals",
+                "values":
+                [
+                    "en",
+                    "es",
+                    "fr"
+                ]
+            }
+        }
+    ],
+    "group_by":
+    [{
+            "dimension": "Country",
+            "limit" : 10
+    }]
+ }

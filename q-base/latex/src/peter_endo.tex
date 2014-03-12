@@ -1,0 +1,267 @@
+\usepackage{hyperref}
+\startreport{Network Endorsements}
+\reportauthor{Ramesh Subramonian}
+
+\section{Introduction}
+
+The aim of this anlaysis is to find, for a given member, 
+the most common endorsements 
+\be
+\item being made {\bf by} the member's {\bf network}
+\item being made {\bf to} the member's {\bf network}
+\ee
+
+\section{Raw Input}
+
+\subsection{TC}
+\label{TC}
+
+\(T_C\) contains connections. It has fields
+\be
+\item from --- from member ID 
+\item   to --- from member ID 
+\ee
+
+\subsection{TE}
+\label{T_E}
+
+\(T_E\) contains endorsements. It has fields
+\be
+\item from --- from member ID 
+\item   to --- from member ID 
+\item endorsement text
+\item status --- integer, \TBC
+\item t\_create --- time made (Unix epoch time in seconds)
+\item t\_mod --- time accepted (Unix epoch time in seconds)
+\ee
+
+
+\section{Data Structures}
+
+\subsection{TC}
+\label{TC_plp}
+
+\(T_C\) contains connections. It has fields
+\be
+\item from --- from member ID 
+\item   to --- from member ID 
+\item TC\_id --- primary key with values 0, 1, \ldots
+\ee
+constructed so that 
+\be
+\item ascending on field {\tt from} (primary)
+\item ascending on field {\tt to} (secondary)
+\item \(T_C[i].from \leq T_C[i+1].from\)
+\item \(T_C[i].from = T_C[i+1].from \Rightarrow
+T_C[i].to < T_C[i+1].to\)
+\ee
+
+\subsection{TM}
+\label{T_M}
+
+\(T_M\) contains members. It has fields
+\be
+\item mid --- member ID
+\item \(T_{C_{lb}}\) --- foreign key into \(T_C\)
+\item \(T_{C_{ub}}\) --- foreign key into \(T_C\)
+\item \(T_{f_{lb}}\) --- foreign key into \(T_f\)
+\item \(T_{f_{ub}}\) --- foreign key into \(T_f\)
+\item \(T_{t_{lb}}\) --- foreign key into \(T_t\)
+\item \(T_{t_{ub}}\) --- foreign key into \(T_t\)
+\item fk\_lkp\_endo --- foreign key into lkp\_endo
+\ee
+constructed so that 
+\be
+\item \(0 \leq T_M[i].T_{C_{lb}} < T_M[i].T_{C_{ub}} \leq |T_C|\)
+\item \(\forall j: T_M[i].T_{C_{lb}} \leq j < T_M[i].T_{C_{ub}}
+\Rightarrow T_C[j].from = T_M[i].mid\)
+\ee
+
+\subsection{lkp\_endo}
+\label{lkp_endo}
+
+Contains endorsements 
+\be
+\item idx --- primary key 
+\item text --- description
+\ee
+
+\section{T\_to\_uq\_endo}
+\label{T_to_uq_endo}
+
+\(T^U_t\) contains number of endorsements to a member. It has fields
+\be
+\item mid --- member ID
+\item fk\_lkp\_endo --- endorsement (foreign key to lkp\_endo)
+\item cnt --- number of times this member was endorsed for this
+endorsement
+\ee
+constructed so that it is sorted ascending on mid (primary) and
+ascending on fk\_lkp\_endo (secondary)
+
+\section{T\_from\_uq\_endo}
+\label{T_from_uq_endo}
+
+\(T^U_f\) contains number of endorsements from a member. Similar to
+Section~\ref{T_to_uq_endo}
+
+\section{T\_to\_endo}
+\label{T_to_endo}
+
+\(T_t\) contains endorsements to a member. It has fields
+\be
+\item mid --- member ID
+\item fk\_lkp\_endo --- endorsement (foreign key to lkp\_endo)
+\item idx --- primary key
+\ee
+constructed so that it is sorted ascending on mid (primary) and
+ascending on fk\_lkp\_endo (secondary)
+
+\section{T\_from\_endo}
+\label{T_from_endo}
+
+\(T_f\) contains endorsements from a member. It is similar to 
+Section~\ref{T_to_endo}.
+
+\newpage
+
+\section{UI Schematics}
+
+In both UIs (Sections~\ref{ui_network}, ~\ref{ui_scysm}), 
+nothing really gets going until we select a member (and, for
+Section~\ref{ui_network}, a direction). These selections are called
+the {\bf context}. We will use
+\be
+\item MMMM to represent the member
+\item DDDD to represent the direction, can be either {\bf from} or {\bf
+  to}
+\item EEEE to represent the endorsement
+\ee
+
+The descriptions of the UI represent a
+logical layout --- it should, in no way, be intepreted as the actual
+look-and-feel.
+
+\section{UI --- Network Activity}
+\label{ui_network}
+
+
+\subsection{Select Context: Member and Direction}
+\label{Select_Member}
+
+\bi
+\item Member can be selected with auto-complete or with box where you can enter
+\verb+member_sk+. 
+\item Direction can be either received or given, defaults to received
+\ei
+A selection here leads to Section~\ref{Popular_Endorsements}.
+
+\subsection{Popular Endorsements}
+\label{Popular_Endorsements}
+
+This looks like Table~\ref{tbl_popular_endorsements}. The inputs to
+creating this table are (i) member (ii) direction
+The first column is
+clickable. Doing so takes us to Section~\ref{Popular_Endorsees}. 
+API is shown below.
+\begin{verbatim}
+curl --url http:172.18.42.75:8080/dp/endo1.php \
+       	--data-urlencode mid='MMMM' --data-urlencode dirn='DDDD'
+\end{verbatim}
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l|l|l|} \hline \hline
+{\bf Endorsement} & {\bf Number Received or Given} & {\bf Num Members}
+\\ \hline \hline
+\url{endorsement 1} & \(n^R_1\) & \(m^R_1\) \\ \hline 
+\url{endorsement 2} & \(n^R_2\) & \(m^R_2\) \\ \hline
+--- & --- & --- \\ \hline
+\hline
+\end{tabular}
+\caption{Endorsements received and given (sorted descending on number
+    receieved)}
+\label{tbl_popular_endorsements}
+\end{table}
+
+\subsection{Popular Endorsees}
+\label{Popular_Endorsees}
+
+This looks like Table~\ref{tbl_popular_endorsees}. The inputs to
+creating this table are (i) member (the context) (ii) direction and (iii) an
+endorsement. 
+It contains members in the network of the context member who 
+received (or were given) a particular endorsement. It is sorted descending 
+on number receieved (or given).
+The first column is
+clickable. Doing so takes us to Section~\ref{Select_Member}
+API is shown below.
+\begin{verbatim}
+curl --url http:172.18.42.75:8080/dp/endo1.php \
+       	--data-urlencode mid='MMMM' --data-urlencode dirn='DDDD' \
+       	--data-urlencode endo='EEEE' 
+\end{verbatim}
+
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l|l|} \hline \hline
+{\bf Member} & {\bf Number Received or Given} \\ \hline \hline
+\url{member 1} & \(n_1\) \\ \hline 
+\url{member 2} & \(n_2\) \\ \hline 
+--- & --- \\ \hline
+\hline
+\end{tabular}
+\caption{Members who received (or were given) a particular endorsement (sorted descending on number)}
+\label{tbl_popular_endorsees}
+\end{table}
+
+
+\section{UI --- SCYSM }
+\label{ui_scysm}
+
+
+Starts with Section~\ref{Select_Member}. Selecting a member takes us to
+Section~\ref{Suggested_Introductions}
+
+\subsection{Suggested Introductions}
+\label{Suggested_Introductions}
+
+This looks like Table~\ref{tbl_suggested_introductions}. 
+Clicking on either column 1 or 2 takes us to Section~\ref{Select_Member}.
+Clicking on column 3 takes us to Section~\ref{Common_Endorsements}.
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l|l|l|} \hline \hline
+{\bf Member 1} & {\bf Member 2} & {\bf Why? } \\ \hline
+\hline
+\url{member 11} & \url{member 21} & \url{reason 1} \\ \hline
+\url{member 12} & \url{member 22} & \url{reason 2} \\ \hline
+--- & --- & --- \\ \hline
+\hline
+\end{tabular}
+\caption{Members who should be introduced}
+\label{tbl_suggested_introductions}
+\end{table}
+
+
+\subsection{Common Endorsements}
+\label{Common_Endorsements}
+
+Clicking on either column 1 to Section~\ref{Popular_Endorsees}.
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l|l|l|} \hline \hline
+{\bf Endorsement} & {\bf Count for \url{Member 1}} & {\bf Count for
+  \url{Member 2}} \\ \hline \hline 
+\url{Endorsement 1} & \(n_{1,1}\) & \(n_{1,2}\) \\ \hline 
+\url{Endorsement 2} & \(n_{2,1}\) & \(n_{2,2}\) \\ \hline 
+--- & --- & --- \\ \hline
+\hline
+\end{tabular}
+\caption{Endorsements common to member 1 and member 2}
+\label{tbl_common_endorsements}
+\end{table}
+

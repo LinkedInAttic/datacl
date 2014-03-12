@@ -1,0 +1,90 @@
+Notations:
+I1 = char
+I2 = short
+I4 = int
+I8 = long long
+
+Operations to be supported on the GPU
+
+==================================================================
+read-only operations are as follows. 
+They return a string that is parsed by the caller
+
+int
+list_free_mem(
+	size_t *ptr_free_mem
+	)
+
+int
+list_num_registers(
+  int *ptr_num_reg
+  )
+/* returns the number of integers */
+
+int
+list_free_registers(
+)
+/* returns a colon separated list of free integers */
+
+==================================================================
+/* Following operations set up data on the GPU */
+
+int
+free(
+int reg_num
+)
+/* Deletes data on device associated with register */
+
+int load(
+  const char *filename,
+  int reg_num
+  )
+/* transfers data in file to register on device */
+
+
+int store(
+  const char *filename,
+  int reg_num
+  )
+/* transfers data from register on device to file */
+
+int init(
+  int reg_num
+  size_t num_bytes
+  )
+/* Allocates memory on device and associates it with specified register */
+
+==================================================================
+int
+f1s1opf2(
+	int reg1,
+	char *str_scalar,
+	char *str_op,
+	int reg2
+	)
+/* reg2[i] = reg1[i] op scalar */
+We need to implement the following for funnel analysis
+(a) reg1 is an I2 array, scalar is an I2 integer, op is == 
+(b) reg1 is an I1 array, scalar is an I1 integer, ops are { ==, >= }
+
+int
+f1f2opf3(
+	int reg1,
+	char *str_scalar,
+	char *str_op,
+	int reg2
+	)
+/* reg3[i] = reg1[i] op reg2[i] */
+We need to implement the following
+(a) reg1 and reg2 are type I1 , op = '&&'
+
+int
+f_to_s(
+	int reg1,
+	char *str_op
+	)
+/* return op(reg1) */
+We need to implement
+(a) reg1 is of type I1 and op = sum
+We need to implement the following
+(a) reg1 and reg2 are type I1 , op = '&&'

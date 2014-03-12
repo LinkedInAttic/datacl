@@ -1,0 +1,58 @@
+Which database to use?
+Need to set environment variable Q_DOCROOT
+
+How to reset the DB
+sqlite3 $Q_DOCROOT < docroot.sql    
+
+
+Logging:
+Set the environment variable Q_LOGFILE.
+We will log all calls to Q to this log file. This is a CSV file
+Field 1: status
+Field 2: time of call (seconds)
+Field 3: duration of call (micro-seconds)
+Field 4: function
+Field 5,6,...: arguments to function
+--=================================================================
+docroot.sql contains schema for tables
+Name of table limited to 32 characters 
+	(alphanumeric + underscore)
+Name of field limited to 32 characters 
+	(alphanumeric + underscore)
+--=================================================================
+A field has the following properties
+o primary or auxiliary
+o There are 2 kinds of auxiliary fields
+	nn
+	sizeof
+
+
+
+auxtype = sz      => fldtype  = int
+auxtype = nn      => fldtype  = bool
+auxtype = hash    => fldtype  = int
+
+fldtype = I int     => n_sizeof = sizeof(int)
+fldtype = l long    => n_sizeof = sizeof(long)
+fldtype = C char    => n_sizeof = sizeof(char)
+fldtype = B char    => n_sizeof = sizeof(bool)
+fldtype = F float    => n_sizeof = sizeof(float)
+fldtype = D float    => n_sizeof = sizeof(double)
+fldtype = W wchar_t => n_sizeof = sizeof(wchar_t)
+
+auxtype  = null => parent_id  = null
+auxtype != null => parent_id != null
+
+For char fields (whether single char, multiple char fixed length or multiple
+char variable length), there is no nn field as an aux field. We use the sz
+field instead to determine whether the value is null
+
+All other fields (bool, int, float, double) can have nn fields but cannot have
+sz fields. They do not need to have nn fields.
+
+--======================================================
+To see details of schema
+sqlite3 db1.sq3
+sqlite> select * from sqlite_master;
+
+--======================================================

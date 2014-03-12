@@ -1,0 +1,7 @@
+i2,I2,"is_load=[true]:is_all_def=[false]"
+f4,F4,"is_load=[true]:is_all_def=[false]"
+i1,I1,"is_load=[true]:is_all_def=[false]"
+s1,SV,"is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[dict1]"
+i4,I4,"is_load=[false]:is_all_def=[false]"
+s2,SV,"is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[dict2]"
+s3,SV,"is_load=[true]:is_all_def=[false]:is_dict_old=[false]:dict=[dict3]"

@@ -1,0 +1,9 @@
+FLAGS= -lpthread -DTHREADED
+
+all: qhttpd
+
+qhttpd: qhttpd.c
+	gcc -g -std=c99 -Wall -pedantic ${FLAGS} -o qhttpd qhttpd.c
+
+clean:
+	rm -f qhttpd

@@ -1,0 +1,1 @@
+{"RemoteException":{"exception":"IllegalArgumentException","javaClassName":"java.lang.IllegalArgumentException","message":"Invalid value for webhdfs parameter \"op\": No enum const class org.apache.hadoop.hdfs.web.resources.GetOpParam$Op.LISTSTATUS\\"}}

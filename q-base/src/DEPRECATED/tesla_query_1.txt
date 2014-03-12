@@ -1,0 +1,22 @@
+|| 
+( 
+  [ is_hr == TRUE ] ; 
+  && 
+  ( 
+    [ is_recruiter == FALSE ] ; 
+    [ date_reg >=&&<= 10000:40000 ] ; 
+    [ country == 227 ] ; 
+  ) ; 
+  [ connections >= 123 ] ; 
+  && 
+  ( 
+    [ is_recruiter == TRUE ] ; 
+    [ date_reg <||> 15000:40000 ] ; 
+    [ country == 227 ] ; 
+    || 
+    (
+      [ connections >= 456 ] ;
+      [ connections <= 78 ] ;
+    ) ;
+  ) ;
+) ;

@@ -1,0 +1,5 @@
+"A0000","TYPE","char"
+"A0001","TYPE","int"
+"A0002","TYPE","float"
+"A0003","TYPE","long long"
+"A0004","TYPE","bool"

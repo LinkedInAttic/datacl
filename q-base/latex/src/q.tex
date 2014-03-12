@@ -1,0 +1,2274 @@
+\startreport{Q --- An Analytics Framework}
+\reportauthor{Ramesh Subramonian}
+
+\newcommand{\YES}{\checkmark}
+
+
+\section{Introduction}
+
+Q is a vector language, designed for efficient implementation
+of counting, sorting and data transformations. It uses a single data
+structure --- a table.
+
+\subsection{Motivation}
+
+I will motivate the need for Q by quoting from two of my Gods --- Codd and
+Iverson. I could be accused of quoting scripture for my purpose (see
+below) and it is true that I am being selective in my extracts.
+However, that does not detract from their essential verity.
+
+\begin{verse}
+The devil can cite Scripture for his purpose. \\ 
+An evil soul producing holy witness \\ 
+Is like a villain with a smiling cheek, \\
+A goodly apple rotten at the heart:
+\end{verse}
+
+\subsubsection{Extracts from Codd}
+
+{\tt 
+The most important motivation for the research work that resulted in the
+relational model was the objective of providing a sharp and clear
+boundary between the logical and physical aspects of database
+management. We call this the {\em data independence objective}.
+
+A second objective was to make the model structurally simple, so that
+all kinds of users and programmers could have a common understanding of
+the data, and could therefore communicate with one another about the
+database. We call this the {\em communicability objective}.
+
+A third objective as to introduce high level language concepts *but not
+specific syntax) to enable users to express operations upon large chunks
+of information at a time. This entailed providing a foundation for
+set-oriented processing (i.e., the ability to express in a single
+statement the processing of multiple sets of records at a time). We
+call this the {\em set-processing objective}.
+
+To satisfy these three objectives, it was necessary to discard all those
+data structuring concepts (e.g., repeating groups, linked structures)
+that were not familiar to end users and to take a fresh look at
+the addressing of data.
+}
+
+We have deviated from Codd's preference for the relational model.
+Instead, we choose to drop down one level to the table. As Codd writes:
+
+{\tt 
+  Tables are at a lower level of abstraction than relations, since they
+    give the impression that positional (array-type) addressing is
+    applicable (which is not true of \(n\)-ary relations), and they fail
+    to show that the information content of a table is independent of
+    row order. Nevertheless, even with these minor flaws, tables are the
+    most important conceptual representation of relations, because they
+    are universally understood.
+
+}
+
+Lastly, in designing Q, we wanted it to be a data model as Codd defines
+one
+
+{\tt
+A data model is a combination of at least three components:
+  \be
+  \item A collection of data structure types (the building blocks);
+\item A collection of operators or rules of inference, which can be
+  applied to any valid instances of the data types listed in (1), to
+  retrieve, derive, or modify data from any parts of those structures in
+  any combinations desired;
+\item A collection of general  integrity rules, which implicitly or
+  explicitly define the set of consistent database states or changes of
+  states or both
+  \ee
+
+}
+
+\subsubsection{Extracts from Iverson}
+
+The importance of language has been stated over the centuries. Iverson
+quotes the following from Whitehead:
+
+{\tt By relieving the brain of all unnecessary work, a good notation
+  sets it free to concentrate on more advanced problems, and in effect
+    increases the mental power of the race}
+
+In the same vein, he quotes Babbage:
+
+{\tt The quantity of meaning compressed into small space by algebraic
+  signs, is another circumstance that facilitates the reasonings we are
+    accustomed to carry on by their aid}
+
+I would hesitate to claim that Q meets any of the following criteria
+that Iverson lays down for good notation. But it is  definitely the
+guiding principle and aspirational goal for Q.
+
+{\tt 
+\be
+\item Ease of expressing constructs arising in problems. If it is to be
+effective as a tool of thought, a notation must allow convenient
+expression not only of notions arising directly from a problem, but also
+of those arising in subsequent analysis, generalization and
+specialization.
+
+\item Suggestivity. A notation will be said to be suggestive if the
+forms of the expressions arising in one set of problems suggests related
+expressions which find application in other problems.
+
+\item Ability to subordinate detail. Brevity is achieved by
+subordinating detail, and we will consider three important ways of doing
+this
+\bi
+\item the use of arrays
+\item the assignment of names to functions and variables
+\item the use of operators
+\ei
+
+\item Economy. Economy requires that a large number of ideas be
+expressible in terms of a relatively small vocabulary. 
+
+\item Amenability to formal proofs
+
+\ee
+}
+
+
+\subsection{Notations}
+\input{notations.tex}
+
+\section{System Capabilities}
+
+\subsection{Field Types}
+\label{Field_Types}
+\bd
+\item [B]  bit 
+\item [I1] 1-byte signed integer
+\item [I2] 2-byte signed integer
+\item [I4] 4-byte signed integer
+\item [I8] 8-byte signed integer
+\item [F4] 4-byte float
+\item [F8] 8-byte float
+\item [SC]  string. Fixed length.
+\item [SV]  string. Variable length. Must have columns len, off in same
+table that allow us to identify value in a particular cell.
+\ed
+Note that if a string can be treated as a label, then we replace it
+by an I4 integer which is foreign key to field {\tt idx} in a dictionary table. 
+
+\be
+\item If an operation is expected to create a table \(T\) and a table
+by that name exists, then the original table is first deleted. Examples
+of operations that create tables are
+\be
+\item add table --- Section~\ref{add_tbl}
+\item load from CSV --- Section~\ref{dld}
+\ee
+\item 
+If an operation is expected to create a field with name \(f\) and a
+field with such a name exists, then the old field is deleted {\bf after}
+the operation is performed and replaced by the newly created field. 
+\item A table has a non-null, unique name.
+must be unique. 
+\item A field has a non-null name that is unique within a table.
+\item Most operations cannot be performed on the nn field of a primary
+field. When this is possible, we will say so explicitly. 
+\ee
+
+\begin{notation}
+\(alldef(f)\) means that all values of \(f\) are defined. Hence, \(f\)
+  cannot have an {\tt nn} field.
+\end{notation}
+
+I have disabled this invariant. Need to be sure that it is okay to do
+so.
+\begin{invariant}
+SC field cannot have a nn field.
+\end{invariant}
+
+\subsection{Environment Variables}
+
+\bd
+\item [Q\_DOCROOT] Name of directory where meta data is stored. 
+Needs to be unique for each table space. 
+\item [Q\_DATA\_DIR] Name of directory where data is stored
+Needs to be unique for each table space. 
+\item [Q\_RUN\_TIME\_CHECKS] If it is set, then we execute run time.
+\ed
+
+%-----------------------------------------------------
+
+\section{Functions}
+
+\subsection{Accessing meta-data}
+
+\subsubsection{file\_to\_fld}
+\label{file_to_fld}
+
+Input is \(n\), positive integer. Output is \verb+<tbl>:<fld>+ if there
+is a field with this as its file number.
+
+\subsubsection{list\_files}
+\label{list_files}
+
+Arguments are
+\be
+\item \(D\) --- data directory (if not specified, then environment
+    variable \verb+Q_DATA_DIR+ is used)
+\ee
+
+Returns list of files in the docroot that are in this directory. Output
+format is:
+\be
+\item is\_external --- 1 means that it is owned by somebody else; else, 0
+\item file\_name  --- unique, non-null string
+\ee
+
+%--------------------------------------------------------------
+\subsubsection{dump}
+\label{dump}
+
+Arguments are
+\be
+\item name of file into which tables are dumped
+\item name of file into which fields are dumped
+\ee
+
+Creates CSV files of meta-data.
+
+%--------------------------------------------------------------
+\subsubsection{list\_tbls}
+\label{list_tbls}
+
+Returns list of tables in the docroot as a 3-column CSV text file
+\be
+\item  tbl ID
+\item name
+\item display name
+\ee
+
+%--------------------------------------------------------------
+\subsubsection{orphan\_files}
+\label{orphan_files}
+
+Arguments are
+\be
+\item \(D\) --- data directory (if not specified, then environment
+    variable \verb+Q_DATA_DIR+ is used)
+\ee
+
+Returns list of files in the data directory that are not in meta data. 
+
+%----------------------------------------------------------
+\subsubsection{is\_tbl}
+\label{is_tbl}
+Arguments 
+\be
+\item \(T\) --- table
+\ee
+If table \(T\) exists, output is \(1, tbl\_id)\). Else, 
+output is \((0, -1)\)
+
+%--------------------------------------------------------------
+\subsubsection{is\_fld}
+\label{is_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+If table \(T\) exists and field \(f\) exists in table \(T\), 
+output is \(1, fld\_id)\). Else, output is \((0, -1)\)
+
+%--------------------------------------------------------------
+\subsubsection{is\_aux\_fld}
+\label{is_aux_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(auxtype\) --- can be {\tt nn, len, off}
+\ee
+
+Returns \(1, fld\_id)\) if 
+\be
+\item \(f\) exists in \(T\) 
+\item \(f\) is a primary field 
+\item \(f\) has an auxiliary field of type auxtype
+\ee
+Else, returns \(0, -1)\)
+
+\subsubsection{describe}
+\label{describe}
+
+Arguments
+\be
+\item \(T\) --- table
+\item \(f\) --- field 
+\item \(attribute\) --- 
+\ee
+There are 3 invocation types
+\be
+\item Only \(T\) specified.  For each field, we print
+\be
+\item ID
+\item name
+\item field type --- Section~\ref{Field_Types}
+\item is external?
+\item is fk? If so, print tbl ID; else, print -1
+\ee
+\item \(T, f\) specified. For that field, we print
+\be
+\item name
+\item fname
+\item fldtype
+\item parent ID
+\item nn fld ID 
+\item dict tbl ID 
+\item srttype
+\item is external?
+\item count --- only if field is I1 or B; else, -1 
+\ee
+
+\item All three specified. Prints that attribute of that field of that
+table
+\ee
+
+\subsection{get\_nR}
+\label{get_nR}
+Arguments
+\be
+\item \(T\) --- table
+\ee
+Returns number of rows in table \(T\)
+
+
+\subsection{Modifying meta-data}
+%---------------------------------------------------------------
+\subsubsection{rename}
+\label{rename}
+Two styles of invocation. 
+\be
+\item to rename a table 
+\be
+\item \(T_1\) --- old name of table
+\item \(T_2\) --- new name. If such a table exists, it is deleted
+\ee
+\item to rename a field 
+\be
+\item \(T_1\) --- name of table
+\item \(f_1\) --- old name of field 
+\item \(f_2\) --- new name of field. If such a field exists, it is
+deleted
+\ee
+\ee
+
+\subsubsection{drop\_nn\_fld}
+\label{drop_nn_fld}
+\be
+\item \(T\) 
+\item \(f\)
+\ee
+
+If \(T.f\) has an {\tt nn} field, it is deleted i.e., all values of
+\(f\) are now defined. It is important to be sure that you know the
+value of the field in its undefined state. Usually, this will be 0, but
+you had better be damn sure!
+
+
+\subsubsection{del\_tbl}
+\label{del_tbl}
+
+Arguments
+\be
+\item \(T\) --- table
+\ee
+
+Restrictions
+\be
+\item No other field should depend on this table
+\ee
+
+Deletes table \(T\) and all fields in \(T\)
+
+Can also be invoked as \verb+ q del_tbl tbl1:tbl2+
+
+Can also be invoked as \verb+ q delete tbl1:tbl2+
+
+\subsubsection{del\_fld}
+\label{del_fld}
+
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\ee
+
+Deletes field \(f\) in table \(T\). If \(f\) is a primary field, then
+all auxiliary fields (if any) are deleted as well. If \(is\_external = 0\), then the corresponding file is {\bf not} deleted; else, it is deleted.
+
+Can also be invoked as \verb+ q del_tbl tbl fld1:fld2+
+
+Can also be invoked as \verb+ q delete tbl fld1:fld2+
+%------------------------------------------------------------
+
+%% \subsubsection{set\_nR}
+%% \label{set_nR}
+%% Arguments
+%% \be
+%% \item \(T\) --- table
+%% \item \(n_R\) --- positive integer
+%% \ee
+%% 
+%% Sets number of rows in table \(T\) to \(n_R\). Can be done only when
+%% there are no fields in table. 
+
+\subsubsection{set\_meta}
+\label{set_meta}
+Arguments
+\be
+\item \(T\) 
+\item \(f\) 
+\item \(attr\) 
+\item \(value\) 
+\ee
+
+Sets attribute \(a\) of field \(f\) in table \(T\) to value \(v\). If
+\(f\) is null, then it sets attribute \(a\) of table \(T\).
+Options for \(a\) are
+\bd
+\item [cnt] --- sets count. \(f.fldtype \in\{B, I1\}\)
+\item [srttype] --- can be set to {\tt unknown, ascending, descending,
+  unsorted}
+\item [fldtype] --- can be set to {\tt I1, I2, I4, I8, F4, F8}
+\item [is\_dict\_tbl] --- can be set to true or false (table attribute)
+\ed
+
+\subsection{import}
+\label{import}
+Arguments are
+\be
+\item \(D_{from}\) --- from docroot 
+\item \(T_{from}\)
+\item \(T_{to}\)
+\ee
+Copies the table \(T_{from}\) from the docroot to the current docroot,
+       \(D_{to}\)
+Notes
+\be
+\item \(D_{from} \neq D_{to}\)
+\item If \(T_{to}\) exists in \(D_{to}\), then it is deleted
+\item If we delete a field in \(D_{to}\) or the entire table itself,
+there is no impact on \(T_{from}\) in \(D_{from}\). (As an
+  implementation note, this is because we mark the imported fields with
+  an \verb+is_external+ flag and we do not allow modifications of these
+  files. This is specially important for operations which modify the
+  underyling storage like Section~\ref{fop}.)
+\ee
+
+%--------------------------------------------------------------
+%--------------------------------------------------------------
+\subsection{Accessing Data}
+\subsubsection{pr\_fld}
+
+\label{pr_fld}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item selection is \(f_c\) or \(lb:ub\) --- condition field or range. 
+If null, all rows printed
+\item output file name. If null, writes to stdout
+\ee
+
+Prints all rows of field \(f\) of table \(T\). Behavior of print can be
+modified by specifying third parameter as either
+\be
+\item \(f_c\) --- printing of \(T[i].f\) is suppressed if \(T[i].f_c = false\).
+\item \(lb:ub\) --- we print rows with lb as lower bound inclusive and
+ub as upper bound exclusive
+\ee
+
+If range is specified, following must be satisified
+\be
+\item \(lb > 0 \)
+\item \(ub \leq n_R\)
+\item \(lb < ub\)
+\ee
+
+\subsubsection{bindmp}
+\label{bindmp}
+Arguments are
+\be
+\item \(T\) --- input table
+\item \(f_1:f_2:\ldots f_N\) --- list of fields separated by colon. Must
+have at least one field
+\item \(f_c\) --- boolean field in \(T_1\) optional
+\item \(F\) --- output file to be created
+\item \(D\) --- output directory in which file is to be created. If
+null, current working directory is used. 
+\ee
+
+Creates file \(F\) by dumping the desired fields, a row at a time. The
+\(i^{th}\) row is output if either (i) \(f_c = \bot\) or (ii) 
+  \(f_c \neq \bot \wedge f_c[i] = 1\) 
+
+Restrictions are
+\be
+\item \(fldtype(f_i) \in \{ I1, I2, I4, I8, F4, F8\}\)
+\item \(alldef(f_i)\)
+\item \(f_c \neq \bot \Rightarrow fldtype(f_c) = I1\)
+\ee
+
+%--------------------------------------------------------------
+\subsection{Creating Data}
+
+\subsubsection{add\_tbl}
+\label{add_tbl}
+Arguments 
+\be
+\item \(T\) --- table
+\item \(n_R\) --- number of rows. Must be specified.
+\ee
+Creates a table with name \(T\). If a table with such a name exists, it
+will be deleted.
+
+%----------------------------------------------------
+
+\subsubsection{add\_fld}
+\label{add_fld}
+
+Creates field \(f\) in table \(T\), whose values are stored in specified
+data file.  Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item attributes --- string. This is a colon separated concatenation of
+\verb+name=value+ pairs where the names are
+\be
+\item \verb+file+ --- name of file which contains data for field 
+\item \verb+dir+ --- directory in which file exists
+\item \verb+fldtype+ --- see Section~\ref{Field_Types} ( however, string
+    is not allowed)
+\ee
+\ee
+
+Error conditions
+\be
+\item \(T.n_R = 0 \)
+\item If \(T.f\) exists, it will be over-written.
+\item name of file must not be similar to internal files i.e., first
+character is underscore and others are digits
+\ee
+
+%----------------------------------------------------
+
+\subsubsection{dup\_fld}
+\label{dup_fld}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f_1\) --- field in \(T\)
+\item \(f_2\) --- newly created field in \(T\)
+\ee
+
+Creates \(f_2\) in\(T\) which is a clone of \(f_1\). Requires
+\be
+\item \(f_1 \neq f_2\)
+\item \(f_1.fldtype \not \in \{B, S\}\)
+\ee
+
+%----------------------------------------------------
+
+\subsubsection{mk\_idx}
+\label{mk_idx} 
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(fldtype \in \{I1, I2, I4, I8\}\)
+\ee
+Creates a field \(f\) of specified type which starts at 0 and
+increments by 1.
+
+%----------------------------------------------------
+\subsubsection{get\_val}
+\label{get_val}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(i\) --- index 
+\ee
+
+Returns \(T[i].f\). 
+
+Restrictions are
+\be
+\item \(0 \leq i < |T|\)
+\item \(fldtype(f) \in \{I1, I2, I4, I8, F4, F8\}\)
+\ee
+%----------------------------------------------------
+
+\subsubsection{set\_val}
+\label{set_val}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field
+\item \(l:u\) --- range, such that \(0 \leq l < u < nR\) 
+\item \(v\) --- value 
+\ee
+
+\(\forall i: l \leq i < u, T[i].f = v\)
+
+Restrictions are
+\be
+\item \(fldtype(f) \in \{I1, I2, I4, I8\}\)
+\ee
+
+\subsubsection{copy\_tbl}
+\label{copy_tbl}
+
+Creates \(T_2\) with as many rows as in \(T_1\) and copies all fields
+from \(T_1\) to \(T_2\) using Section~\ref{copy_fld}. Note that string
+fields do not get copied. Also, you cannot specify a conditional field.
+
+LIMITATIONS: SC and SV fields do not get copied over
+
+%----------------------------------------------------
+
+\subsubsection{copy\_fld}
+\label{copy_fld}
+
+Creates field \(f_2\) table \(T_2\) by copying
+\(T[i].f\) to \(T_2\) if \(T_1[i].f_c = true\). The order is preserved
+in the copy operation.
+Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field 
+\item \(f_c\) or \(l:u\) --- optional condition field or range 
+\item \(T_2\) --- output table 
+\item \(f_2\) --- newly created output field 
+\ee
+Restrictions are
+\be
+\item If \(T_2\) does not exist, it will be created
+\item If \(T_2\) exists
+\be
+\item If no selection specified, \(|T_1| = |T_2|\). 
+\item If selection specified as \(f_c\), then \(NumVal(T_1.f_c, true), = |T_2|\)
+\item If selection specified as \(l:u\), then \(|T_2| = u - l\)
+\ee
+\item \(Type(f_1)\) must be one of {\tt I1, I2, I4, I8, F4, F8}
+\ee
+
+\subsubsection{copy\_fld\_ranges}
+\label{copy_fld_ranges}
+
+Simiar to Section~\ref{copy_fld} but uses a set of ranges instead of a 
+condition field.  Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field in \(T_1\)
+\item \(T_r\) --- range table 
+\item \(f_l\) --- lower bound field in \(T_r\)
+\item \(f_u\) --- upper bound field in \(T_r\)
+\item \(T_2\) --- output table 
+\item \(f_2\) --- output field in \(T_2\)
+\ee
+Restrictions are
+\be
+\item If \(T_2\) does not exist, it will be created
+\item \(0 \leq T_r[i].lb < T_r[i].ub \leq |T_1| \)
+\item If \(T_2\) exists, \(\sum (T_r[i].ub - T_r[i].lb) = |T_2|\)
+\item Field type of \(f_1\) must be one of {\tt I1, I2, I4, I8, F4, F8}
+\item \(fldtype(f_l) = fldtype(f_u) = I8\)
+\item \(alldef(f_l), alldef(f_u)\)
+\ee
+
+\subsubsection{mv\_fld}
+\label{mv_fld}
+
+Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field 
+\item \(T_2\) --- output table 
+\ee
+Moves field \(f\) from table \(T_2\) to \(T_1\)
+
+Restrictions
+\be
+\item \(|T_1| = |T_2|\)
+\item \(T_1 \neq = T_2\)
+\item \(fldtype(f_1) \in \{I1, I2, I4, I8, F4, F8\}\)
+\ee
+
+\subsubsection{mk\_nn\_fld}
+\label{mk_nn_fld}
+
+Arguments are
+\be
+\item \(T_S\) --- input table 
+\item \(f_S\) --- input field 
+\item \(T_D\) --- output table 
+\item \(f_D\) --- output field 
+\ee
+
+Makes field \(f_S\) the {\tt nn} field of field \(f_D\). Note that
+\(f_S\) will cease to exist.
+
+Restrictions
+\be
+\item \(|T_S| = |T_D|\)
+\item It is okay for \(T_S = T_D\)
+\item \(fldtype(f_S) = \{B, I1\} \) 
+\item \(alldef(f_S)\)
+\item \(f_S\) must not be in use by any other field 
+\ee
+
+\subsubsection{break\_nn\_fld}
+\label{break_nn_fld}
+
+Arguments are
+\be
+\item \(T_S\) --- input table 
+\item \(f_S\) --- input field 
+\item \(T_D\) --- output table 
+\item \(f_D\) --- output field 
+\ee
+
+Makes field \(f_D\) from the {\tt nn} field of field \(f_S\). At
+end,\(alldef(f_S) = true\)
+
+Restrictions
+\be
+\item \(alldef(f_S) = false\)
+\item It is okay for \(T_S = T_D\)
+\item \(fldtype(f_D) = \{B, I1\} \) 
+\item \(f_S \neq f_D\)
+\ee
+
+%----------------------------------------------------
+
+\subsection{Operations}
+\subsubsection{regex\_match}
+\label{regex_match}
+
+Arguments are
+\be
+\item \(T\)
+\item \(f\)
+\item \(r\) --- regular expression
+\item \(k\) --- kind of match 
+\item \(f_C\) --- newly created condition field in \(T\)
+\ee 
+
+\be
+\item \(fldtpye(f_C) = I1\)
+\item \(fldtpye(f) \in \{SC, SV\}\)
+\item \(k \in \{exact\}\) (other kinds of matches to be supported)
+\ee
+
+\subsubsection{stride}
+\label{stride}
+Arguments are 
+\be
+\item \(T_S\) --- source table
+\item \(f_S\) --- input field 
+\item \(i_0\) --  starting position
+\item \(m\)   --  stride
+\item \(T_D\) --- destination table
+\item \(f_D\) --- count field 
+\item \(n_D\) --- number of rows in destination table.
+\ee
+
+Selects every \(m^{th}\) value of \(T_S.f_S\) starting from index \(i_0\).
+Creates \(T_D\) with a single column \(f_D\) and \(n_D\) rows as
+\(T_D[i].f_D = T_S[i*m + n].f_S\).
+\bi
+\item \(0 \leq n < n_S\)
+\item \(0 \leq m < n_S\)
+\item 
+\(n_D\) will be reduced from the desired value so that
+\((n_D-1)*m + n < |T_S|\)
+\ei
+
+\be
+\item \(fldtype(f_S) \in \{I4, I8\}\)
+\item \(alldef(f_S)\)
+\ee
+
+%---------------------------------------------------------------
+
+\subsubsection{count}
+\label{count}
+Arguments are 
+\be
+\item \(T_S\) --- source table
+\item \(f_S\) --- input field 
+\item \(f_c\) --  optional condition field in \(T_S\).
+\item \(f_D\) --- destination table
+\item \(f_D\) --- count field 
+\ee
+
+\(T_D[j].f_D = |T_S[i].f_S = j|\)
+
+\(f_c \neq \bot \Rightarrow T_D[j].f_D = |T_S[i](f_S = j, f_C = 1)\)
+
+Restrictions are 
+\be
+\item \(f_S\) has no {\tt nn} field 
+\item fldtype of \(f_D\) is {\tt I1, I2, I4, I8}
+\item \(|T_D| \leq I4_{max}\). For good peformance, it should be quite small.
+\item \(|T_S| \leq I4_{max}\). 
+\item \(fldtype(f_D) = I4\)
+\item \(0 \leq f_S < |T_D| \) --- \(f_S\) must be thought of as an
+index into \(T_D\)
+\ee
+
+%---------------------------------------------------------------
+
+\subsubsection{countf}
+\label{countf}
+Arguments are 
+\be
+\item \(T_S\) --- source table
+\item \(f_I\) --- field that serves as index into \(T_D\)
+\item \(f_V\) --- field whose values are to be accumulated
+\item \(f_c\) --  optional condition field in \(T_S\).
+\item \(f_D\) --- destination table
+\item \(f_D\) --- count field 
+\item whether to run safe or not, optional field, default true.
+Specified as \verb+safe_mode=[true]+
+\ee
+
+Section~\ref{count} is a special case of this operator where \(f_V =
+  1\).
+\be
+\item  \(f_C = \bot \Rightarrow 
+T_D[j].f_D = \sum_i \delta(j, T_S[i].f_I) \times T_S[i].f_V\)
+\item  \(f_C \neq \bot \Rightarrow 
+T_D[j].f_D = \sum_i f_C[i] \delta(j, T_S[i].f_I) \times T_S[i].f_V\)
+\ee
+
+Restrictions are 
+\be
+\item \(f_S\) has no {\tt nn} field 
+\item fldtype of \(f_D\) is {\tt I1, I2, I4, I8}
+\item \(|T_D| \leq I4_{max}\). For good peformance, it should be quite small.
+\item \(|T_S| \leq I4_{max}\). 
+\item \(fldtype(f_D) = I4\)
+\item \(0 \leq f_S < |T_D| \) --- \(f_S\) must be thought of as an
+index into \(T_D\)
+\item If safe mode is false, then we do not check each value of \(f_I\)
+  to see whether it is in the range \([0, |T_D|-1]\). Can lead to
+  segfaults if you do not know what you are doing!
+\ee
+
+%--------------------------------------------------------------
+
+\subsection{count\_ht}
+\label{count_ht}
+
+The function {\tt count} in Section~\ref{count} is useful when 
+the range of values is \(0, 1, \ldots, |T_2|-1\). When one
+does not know the range of values, \verb+count_ht+ is useful.
+
+Arguments are 
+\be
+\item \(T_S\) --- source table
+\item \(f_S\) --- input field 
+\item \(f_C\) --- condition field  (optional)
+\item \(f_D\) --- destination table
+\ee
+
+Creates table \(T_D\) with 2 fields, {\tt value} and {\tt count}.
+
+\be
+\item \(|T_D| < 2^{21}\). Important limitation of current implementation.
+\item \(T_S \neq T_D\)
+\item \(f_S \neq f_C\)
+\item \(fldtype(f_S) \in \{I1 I2, I4, I8\}\)
+\item \(T_D.value \subseteq T_S.f_S\)
+\item \(T_D[j].count = |T_S[i].f_S = T_D[j].value\)
+\item \(fldtype(value) = fldtype(f_S)\)
+\item \(fldtype(count) = \) smaller of {\tt I4, I8}. Note that I8 used
+only if some value occurs more than \(I4_{max}\) times.
+\ee
+
+
+Restrictions are 
+\be
+\item Number of distinct values of \(f_S\) must be less than \(2^{20}\).
+This limitation should be lifted.
+\item For any particular value of \(f_S\), the number of rows with that
+value must be \(leq I4_{max}\)
+\item Note that \(T_D\) might be empty. Caller needs to check.
+\ee
+
+%--------------------------------------------------------------
+
+\subsection{s\_to\_f}
+\label{s_to_f}
+Produces a field from a scalar. Arguments are 
+\be
+\item \(T\) 
+\item \(f\) 
+\item how to create the field 
+\ee
+
+The following options are supported
+\bd
+\item [CONST] In this case a value must be a provided.
+Restrictions
+\be
+\item fldtype is {\tt I1, I2, I4, F4, I8}
+\ee
+\item [SEQ]   In this case, a starting value and an increment must be
+provided. 
+Restrictions
+\be
+\item fldtype is {\tt I2, I4, I8}
+\item No overflow/underflow of values e.g., if fldtype is I1,
+  then values produced must be in range \([-128, 127]\)
+\ee
+\ed
+
+Operations supported for Section~\ref{s_to_f} are in
+Table~\ref{tbl_s_to_f}
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf B} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8}
+& {\bf F4 } & {\bf F8} \\ \hline \hline
+const       &      & \YES & \YES & \YES & \YES & \YES &    \\ \hline
+seq         &      &      & \YES & \YES & \YES &      &    \\ \hline
+set\_labels &      &      &      & \YES &      &      &    \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for s\_to\_f}
+\label{tbl_s_to_f}
+\end{table}
+
+%--------------------------------------------------------------
+\subsection{pack}
+\label{pack}
+
+Arguments are
+\be
+\item \(T\)
+\item \(f_1:f_2:f_3 \ldots f_N\) --- input fields
+\item \(n_1:n_2:n_3 \ldots f_N\) --- non-negative integers indicating shift
+amount
+\item \(fldtype\) --- type of output field \(f_o\)
+\item \(f_o\)  --- output field created
+\ee
+
+Creates \(f_o\) in \(T\) by performing an ``or'' of 
+(i) \(f_1\) shifted left by \(n_1\), 
+(ii) \(f_2\) shifted left by \(n_2\), \ldots
+
+Restrictions
+\be
+\item \(2 \leq N \leq 8 \)
+\item \(fldtype(f_o) \in \{I4, I8\}\)
+\item all input fields must be alldef
+\item fldtypes of all input fields must be in \(\{I1, I2, I4, I8\}\)
+\item \(f_i \geq 0 \) --- no negative values in input 
+\item Output field not one of input fields
+\item \(fldtype(f_o) = I4 \Rightarrow fldtype(f_i) \neq I8\)
+\ee
+
+%--------------------------------------------------------------
+\subsection{unpack}
+\label{unpack}
+
+Arguments are
+\be
+\item \(T\)
+\item \(f_I\)  --- input field 
+\item \(n_1:n_2:n_3 \ldots n_N\) --- non-negative integers indicating shift
+amount
+\item \(m1:m2:m3\) --- number of bits for each input field 
+\item \(t1:t2:t3\) --- types of output fields
+\item \(f_1:f_2:f_3 \ldots f_N\) --- output fields 
+\ee
+
+Creates field \(f_i\) in \(T\) of type \(t_i\) by (unsigned) shifting
+\(f_I\) \(n_i\) bits to the right and then ``and-ing'' it with a mask
+which is all zeroes with the \(m_i\) least signicant bits being 1. 
+
+
+Restrictions
+\be
+\item \(2 \leq N \leq 8 \)
+\item \(fldtype(f_I) \in \{I4, I8\}\)
+\item input field must be alldef
+\item fldtypes of all output fields must be in \(\{I1, I2, I4, I8\}\)
+\item Output field not one of input fields
+\item \(fldtype(f_i) = I1 \Rightarrow m_i \leq 7\)
+\item \(fldtype(f_i) = I2 \Rightarrow m_i \leq 15\)
+\item \(fldtype(f_i) = I4 \Rightarrow m_i \leq 31\)
+\item \(fldtype(f_i) = I8 \Rightarrow m_i \leq 63\)
+\item \(fldtype(f_I) = I4 \Rightarrow fldtype(f_i) \neq I8\)
+\ee
+
+
+%--------------------------------------------------------------
+\subsection{subsample}
+\label{subsample}
+
+\be
+\item \(T_1\) --- input table (has \(n_1\) rows)
+\item \(f_1\) --- input field 
+\item \(n_2\) --- number of rows in output table
+\item \(T_2\) --- output table
+\item \(f_2\) --- output field 
+\ee
+
+Creates table \(T_2\) with single field \(f_2\) which contains \(0 < n_2 <
+n_1\) rows of \(T_1.f_1\) selected at random. 
+\be
+\item \(fldtype(f_1) \in \{ I4, I8\}\)
+\item \(fldtype(f_2) = fldtype(f_2)\)
+\item \(alldef(f_1)\)
+\item This is not completely uniformly at random because of need to
+cilk-ify the loop. So, what we do is to break the input into blocks and
+then select uniformly at random from each block.
+\ee
+
+%--------------------------------------------------------------
+%
+\subsection{wisifxthenyelsez}
+\label{wisifxthenyelsez}
+
+\be
+\item \(T\) --- table
+\item \(w\) --- output field 
+\item \(x\) --- boolean field 
+\item \(y\) --- input field (or scalar)
+\item \(z\) --- input field (or scalar)
+\ee
+
+Creates field \(w\), whose type is same as that of field \(y\) or \(z\),
+depending on which is specified. 
+Algorithm in Figure~\ref{pseudo_code_wisifxthenyelsez}. Restrictions
+\be
+\item \(fldtype(y) = fldtype(z)\)
+\item \(fldtype(y) \in \{I1, I2, I4, I8, F4\}\)
+\item It is possible for one of \(y\) or \(z\) (but not both) to be a scalar.
+In that case, the type of \(w\) is the type of the field that is not a
+scalar. 
+\ee
+
+\begin{figure}
+\centering
+\fbox{
+\begin{minipage}{15cm}
+\begin{tabbing} \hspace*{0.25in} \=  \hspace*{0.25in} \= \kill
+{\bf if} \(T_x[i] = \bot\) then \+ \\
+  \(T_w[i] \la \bot \) \- \\
+{\bf else} \+  \\
+  {\bf if} \(T_x[i] = true\) then \+  \\
+    \(T_w[i] \la T_y[i] \) \- \\
+  {\bf else} \+  \\
+    \(T_w[i] \la T_z[i] \) \- \\
+  {\bf endif} \-  \\
+{\bf endif} 
+\end{tabbing}
+\end{minipage}
+}
+\label{pseudo_code_wisifxthenyelsez}
+\caption{Pseudo-code for wisifxthenyelsez}
+\end{figure}
+
+
+%--------------------------------------------------------------
+
+\subsection{fop}
+\label{fop}
+Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field in \(T\). Modified in situ
+\item \(\circ\)  --- operation on \(f\) 
+\ee
+
+Restrictions are
+\be
+\item \(alldef(f)\)
+\item \(internal(f)\)
+\ee
+
+Operations supported for Section~\ref{fop} are in
+Table~\ref{tbl_fop}
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf B} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8}
+& {\bf F4 } & {\bf F8} \\ \hline \hline
+permute        &      &      &      & \YES & \YES &      &    \\ \hline
+sort           &      &      &      & \YES & \YES &      &    \\ \hline
+saturate       &      & \YES & \YES & \YES & \YES &      &    \\ \hline
+zero\_after\_n & \YES &      &      &      &      &      &    \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for fop}
+\label{tbl_fop}
+\end{table}
+
+
+\be
+%----------------------------------------------
+\item permute {\tt op=[permute]}
+Field types supported are {\tt I4}. Does random permutation.
+%----------------------------------------------
+\item sort ascending, {\tt op=[sort]:order=[asc]}. 
+Field types supported are {\tt I4, I8}
+%----------------------------------------------
+\item sort descending {\tt op=[sort]:order=[dsc]}
+Field types supported are {\tt I4, I8}
+%----------------------------------------------
+\item saturate {\tt op=[saturate]:maxval=[user specified]}
+Field types supported are {\tt I1, I2, I4, I8}. 
+
+\(T[i].f \leftarrow max(T[i].f, maxval)\)
+%----------------------------------------------
+\item zero\_after\_n {\tt op=[zero\_after\_n]:n=[M]}
+\bi
+\item Field types supported are {\tt B}. 
+\item \(0 < M < |T|\)
+\item Starting with \(i = |T|-1\) and decrementing \(i\) by 1, set 
+\(T[i].f \leftarrow 0\) as long as \(\sum_{j=1}^{j=i-1}T[i].f > n\).
+Note that we might include \(m \geq n\) 1's but \(m < n+64\). 
+\ei
+\ee
+
+%--------------------------------------------------------------
+
+\subsection{num\_in\_range}
+\label{num_in_range}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_1\) --- field in \(T_1\)
+\item \(T_2\)
+\item \(f_{lb}\) --- field in \(T_2\)
+\item \(f_{ub}\) --- field in \(T_2\)
+\item \(f_C\) --- newly created field in \(T_2\)
+\ee
+
+Consider the \(i^{th}\) row of \(T_2\). 
+Let \(l = T_2[i].lb, u = T_2[i].ub\). Then, \(T_2[i].cnt\) counts the
+number of rows of \(T_1\) where \(l \leq f_1 \leq u\)
+
+Restrictions
+\be
+\item More efficient when \(srttype(f_1) = asc\)
+\item \(f_{lb} \neq f_{ub}\)
+\item ranges specified by \(f_{lb},  f_{ub}\) are non-overlapping
+\item \(fldtype(f_1) = fldtype(f_{lb}) = fldtype(f_{ub}) = I4\)
+\item \(alldef(f_1), alldef(f_{lb}), alldef(f_{ub})\)
+\item \(T_2[j].f_{lb} \leq T_2[j].f_{ub}\)
+\item \(|T_1| < I4_{max}\)
+\item \(fldtype(f_C) = I4\)
+\item Recommend usage of this only when \(|T_2|\) is small. In
+particular, \(|T_2| \leq 4096\)
+\item \(srttype(f_{lb}) = srttype(f_{ub}) = \) ascending
+\ee
+
+\subsection{f1s1opf2}
+\label{f1s1opf2}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_1\)
+\item scalar (or colon separated list of scalars)
+\item \(f_2\)
+\ee
+
+Operations supported for Section~\ref{f1s1opf2} are in
+Table~\ref{tbl_f1s1opf2}
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8}
+& {\bf F4 } & {\bf F8} \\ \hline \hline
+\verb=+=      & \YES & \YES & \YES & \YES & \YES &    \\ \hline
+\verb+-+      &      &      & \YES & \YES & \YES &    \\ \hline
+\verb+*+      &      &      & \YES & \YES & \YES &    \\ \hline
+\verb+/+      &      &      & \YES & \YES & \YES &    \\ \hline
+\verb+%+      &      &      & \YES & \YES &      &    \\ \hline
+\verb+&+      & \YES &      & \YES & \YES &      &    \\ \hline
+\verb+|+      & \YES &      & \YES & \YES &      &    \\ \hline
+\verb+^+      & \YES &      & \YES & \YES &      &    \\ \hline
+\verb+>+      & \YES &      & \YES & \YES & \YES &    \\ \hline
+\verb+<+      & \YES &      & \YES & \YES & \YES &    \\ \hline
+\verb+>=+     & \YES &      & \YES & \YES & \YES &    \\ \hline
+\verb+<=+     & \YES &      & \YES & \YES & \YES &    \\ \hline
+\verb+!=+     & \YES &      & \YES & \YES & \YES &    \\ \hline
+\verb+==+     & \YES & \YES & \YES & \YES & \YES &    \\ \hline
+\verb+<<+     &      &      & \YES & \YES &      &    \\ \hline
+\verb+>>+     &      &      & \YES & \YES &      &    \\ \hline
+\verb+<=||>=+ &      &      & \YES &      &      &    \\ \hline
+\verb+>&&<+   &      &      & \YES &      &      &    \\ \hline
+\verb+>=&&<=+ &      &      & \YES &      &      &    \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f1s1opf2}
+\label{tbl_f1s1opf2}
+\end{table}
+
+
+
+%--------------------------------------------------------------
+
+\subsection{f1f2\_to\_s}
+\label{f1f2_to_s}
+Produces a scalar from 2 fields. Arguments are 
+\be
+\item \(T\) --- table
+\item \(f_1\) --- field in \(T\). 
+\item \(f_2\) --- field in \(T\). 
+\item \(\circ\)  --- operation on \(f\) 
+\ee
+\bd
+\item [\(circ = sum\)]. Add up the values of \(f_2\) where \(f_1 = 1\)
+\be
+\item \(fldtype(f_1) = I1\)
+\item \(fldtype(f_2) = \{I1, I2, I4, I8\}\)
+\item \(alldef(f_1), alldef(f_2)\)
+\ee
+\ed
+
+%--------------------------------------------------------------
+
+\subsection{f\_to\_s}
+\label{f_to_s}
+Produces a scalar from a field. Arguments are 
+\be
+\item \(T\) --- table
+\item \(f\) --- field in \(T\). 
+\item \(\circ\)  --- operation on \(f\) 
+\ee
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf B} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8}
+\\ \hline \hline
+{\bf min}        &      & \YES & \YES & \YES & \YES \\ \hline
+{\bf max}        &      & \YES & \YES & \YES & \YES \\ \hline
+{\bf sum}        & \YES & \YES & \YES & \YES & \YES \\ \hline
+{\bf is\_sorted} &      & \YES & \YES & \YES & \YES \\ \hline
+{\bf get\_idx}   &      & \YES & \YES & \YES & \YES \\ \hline
+{\bf approx\_uq} &      &      &      & \YES &      \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f\_to\_s}
+\label{tbl_f_to_s}
+\end{table}
+
+Operations supported are in Table~\ref{tbl_f_to_s}. The acronym mms
+stands for min, max, sum.
+Depending on the operation, output is as follows
+\be
+\item is sorted --- ascending, descending, unsorted, unknown
+\item get\_idx --- call looks like \verb+op=[get_idx]:val=[v]+ 
+
+Returns \(i\) such that \(T[i].f = v\). If no \(i\) satisifes the
+inequality, -1 is returned. If more than 1 satisifies it, an aribtrary
+one is returned.
+
+Current restrictions are
+\be
+\item \(Type(f)\) = {\tt I1, I2, I4, I8}
+\item \(f\) has no {\bf nn} field 
+\ee
+
+\item min --- \(n_1:n_2\) where \(n_1\) is min value and \(n_2\) is
+number of non-null values
+\item max --- \(n_1:n_2\) where \(n_1\) is max value and \(n_2\) is
+number of non-null values
+\item sum --- \(n_1:n_2\) where \(n_1\) is sum       and \(n_2\) is
+number of non-null values
+\item mms --- \(n_1:n_2:n_3:n_4\) where \(n_1\) is min, \(n_2\) is max,
+  \(n_3\) is sum and \(n_4\) is number of non-null values
+\ee
+
+%-------------------------------------------------------------
+
+\subsection{f1opf2}
+\label{f1opf2}
+
+Arguments are 
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\)
+\item \(\circ\)  --- operation to b performed on \(f_1\)
+\item \(f_2\) --- newly created field in \(T_1\)
+\ee
+
+Creates field \(f_1\) in \(T_1\) by performing operation \(\circ\) on
+\(f_1\) in \(T_1\). 
+Operations supported are in Table~\ref{tbl_f1opf2}. Detailed
+explanations in Section~\ref{details_f1opf2}.
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf Operation} & {\bf B} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8} & {\bf F4 } & {\bf F8} \\ \hline \hline
+{\bf conv    }  & \YES & \YES &      & \YES & \YES & \YES & \YES \\ \hline
+{\bf bitcount}  &      &      &      & \YES & \YES &      &   \\ \hline
+{\bf sqrt    }  &      &      &      &      & \YES &      & \YES  \\ \hline
+{\bf abs     }  &      &      &      &      &      &      & \YES  \\ \hline
+{\bf reciprocal}&      &      &      &      & \YES &      & \YES \\ \hline
+\verb+!+        &      & \YES &      & \YES &      &      &   \\ \hline
+\verb=++=       &      &      &      & \YES &      &      &   \\ \hline
+\verb+--+       &      &      &      & \YES &      &      &   \\ \hline
+\verb+~+        &      & \YES &      & \YES &      &      &   \\ \hline
+{\bf hash}      &      &      &      & \YES & \YES &      &   \\ \hline
+{\bf shift   }  &      & \YES & \YES & \YES & \YES &      &   \\ \hline
+{\bf cum     }  &      & \YES & \YES & \YES & \YES &      &   \\ \hline
+{\bf smear   }  &      & \YES &      &      &      &      &   \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f1opf2}
+\label{tbl_f1opf2}
+\end{table}
+
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l|}  \hline \hline
+{\bf From} & {\bf To} \\ \hline \hline
+B  & I1 \\ \hline 
+\hline
+I1 & B \\ \hline 
+I1 & I4 \\ \hline 
+I1 & I8 \\ \hline 
+\hline
+I2 & I4 \\ \hline 
+I2 & I8 \\ \hline 
+%
+\hline
+I4 & I1 \\ \hline 
+I4 & I2 \\ \hline 
+I4 & I8 \\ \hline 
+I4 & F4 \\ \hline 
+%
+\hline
+I8 & I1 \\ \hline 
+I8 & I4 \\ \hline 
+I8 & F4 \\ \hline 
+%
+\hline
+F4 & I4 \\ \hline 
+F4 & I8 \\ \hline 
+F4 & F8 \\ \hline 
+\hline
+\end{tabular}
+\caption{Supported conversions for f1opf2}
+\label{tbl_conversions}
+\end{table}
+
+
+\subsubsection{Details for f1opf2}
+\label{details_f1opf2}
+We explain each of the operations below
+\bd
+\item [CONV] Converts from one type to another. Supported conversions
+are in Table~\ref{tbl_conversions}
+\item [BITCOUNT] 
+Counts the number of bits.
+Example \verb+op=bitcount+
+\(Type(f_2) = I4\)
+\item [SQRT] 
+Operation is \(\sqrt{x}\). 
+Example \verb+op=sqrt+
+\(Type(f_2) = Type(f_1)\)
+\item [NEGATION] Toggles bits. 
+Example is \verb+op=!+
+\(Type(f_2) = Type(f_1)\)
+\item [ONE's COMPLEMENT] 
+Takes one's complement. 
+Example is \verb+op=~+
+\(Type(f_2) = Type(f_1)\)
+\item [INCREMENT]
+Increments by 1
+Example is \verb~op=++~
+\(Type(f_2) = Type(f_1)\)
+\item [DECREMENT]
+Decrements by 1
+Example is \verb~op=--~
+\(Type(f_2) = Type(f_1)\)
+\item [CUM] 
+Accumulates the values of \(f_1\).  Notes
+\be
+\item 
+\(i = 0 \Rightarrow f_2[i] = f_1[i]\); else, \(f_2[i] = f_1[i] + f_2[i-1]\)
+\item \(alldef(f_1)\)
+\item user has to specify argument {\tt newtype} which specifies
+\(fldtype(f_2)\) and which can be {\tt I4, I8}
+\item \(fldtype(f_1) = \{I1, I2, I4, I8\}\)
+\ee
+
+\item [SHIFT] Shifts the values up or down up to a maximum of 16
+Example is \verb+op=shift:val=N+. In this case,
+\(f_2[i] = f_1[i+N]\). If \(N > 0 \), then it like a shift down
+of the column i.e., the first \(N\) values of \(f_2\) are set to {\tt
+  newval}. 
+  If
+\(N < 0\), then it is like a shift up and the last \(N\) values will be
+set to {\tt newval}. 
+Note that \(N \neq 0\). Currently, \(|N| \leq 16\).
+
+%% \item [HASH] hashes input value. Notes
+%% \be
+%% \item \(fldtype(f_1) = \{I4, I8\}\)
+%% \item user has to specify argument {\tt seed} which is an unsigned long long
+%% \item \(fldtype(f_2) = I8\)
+%% \ee
+\item [SMEAR] ``smears'' the selection by \(n_R\) to the right and
+\(n_L\) to the left i.e., 
+\bi
+\item 
+\(f_1[i] = 1 \Rightarrow \forall j: 1 \leq j \leq n_R, f_2[i+j] \leftarrow 1\)
+  \item 
+\(f_1[i] = 1 \Rightarrow \forall j: 1 \leq j \leq n_L, f_2[i-j] \leftarrow 1\) 
+\ei
+\be
+\item user has to specify argument {\tt plus} which is the number of
+positions to the right that the selection should be smeared
+\item user has to specify argument {\tt minus} which is the number of
+positions to the right that the selection should be smeared
+\item \(n_R \geq 0\), \(n_L \geq 0\), \(n_R\) and \(n_L\) cannot both be
+0
+\item There is a maximum value for \(n_R, n_L\)
+\item \(fldtype(f_1) = fldtype(f_2) = I1\)
+\item \(alldef(f_1)\)
+\ee
+\ed
+
+There are 2 arcane statistical functions, for which \(fldtype(f_1) =
+fldtype(f_2) = F8\). They are
+\be
+\item normal cdf inverse
+\item calculation of p-value from z-value
+\ee
+
+%-------------------------------------------------------------
+\subsection{xfer}
+\label{xfer}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_S\) --- must exist in \(T_1\)
+\item \(T_2\)
+\item \(f_{idx}\) --- must exist in \(T_2\)
+\item \(f_D\) --- newly created in \(T_2\)
+\ee
+
+Creates \(f_D\) in \(T_2\) with same type as \(f_S\) as follows.
+\(T_2[i].f_D \leftarrow T_1[T_2[i].f_{idx}].f_S\)
+
+Restrictions
+\be
+\item \(0 \leq T_2[i].f_{idx} < |T_2|\)
+\item \(fldtype(f_S) \in \{ I1, I2, I4, I8, F4, F8, SC\}\)
+\item \(fldtype(f_{idx}) = I4\)
+\ee
+
+%-------------------------------------------------------------
+
+\subsection{is\_a\_in\_b}
+\label{is_a_in_b}
+
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\). 
+\item \(T_2\) --- table
+\item \(f_2\) --- field in \(T_2\). 
+\item \(f_c\) --- newly created condition field in \(T_1\). 
+\item \(f_S\) --- source field in \(T_2\)
+\item \(f_D\) --- destination field in \(T_1\)
+\ee
+
+One of 
+\be
+\item 
+\(\forall i: T[i].f_1 \in T_2.f_2 \Rightarrow T[i].f_c \leftarrow true\)
+\item \(\exists j: T_2[j].f_2 = T_1[i].f_1 \Rightarrow T_1[i].f_D
+\leftarrow T_2[j].f_S\)
+\ee
+
+Restrictions
+\be
+\item \(Type(f_c) = I1\)
+\item Either specify \(f_c\) or specify \(f_S, f_D\) but not both
+\be
+\item \(f_c = \bot \Rightarrow f_S \neq \bot \wedge f_D \neq \bot\)
+\item \(f_c \neq \bot \Rightarrow f_S = \bot \wedge f_D = \bot\)
+\ee
+\item \(fldtype(f_1) = fldtype(f_2)\)
+\item \(fldtype(f_1) = \) {\tt I1, I2, I4, I8}
+\item \(f_2\) has no null values
+\item \(f_2\) is sorted in ascending order
+\ee
+
+\subsection{f1opf2f3}
+elabel{f1opf2f3}
+
+Arguments are 
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\)
+\item \(\circ\)  --- operation to be performed on \(f_1\)
+\item \(f_2\) --- field in \(T_1\)
+\item \(f_3\) --- newly created field in \(T_1\)
+\ee
+
+Creates field \(f_2, f_3\) in \(T_1\) by performing operation \(\circ\) on
+\(f_1\) in \(T_1\). 
+
+Restrictions
+\be
+\item \(fldtype(f_1) = I8\)
+\item \(fldtype(f_2) = fldtype(f_3)= I4\)
+\item \(op = unconcat\). Breaks up the input 8-byte integer into 2
+4-byte integers
+\ee
+
+\subsection{f1f2opf3}
+\label{f1f2opf3}
+
+Arguments are 
+\be
+\item \(T_1\) --- table
+\item \(f_1\) --- field in \(T_1\)
+\item \(f_2\) --- field in \(T_1\)
+\item \(\circ\)  --- operation to be performed on \(f_1\)
+\item \(f_3\) --- newly created field in \(T_1\)
+\ee
+
+Creates field \(f_3\) in \(T_1\) by performing operation \(\circ\) on
+\(f_1\, f_2\) in \(T_1\). 
+Operations supported are in Table~\ref{tbl_f1f2opf3}. 
+\begin{table}[hb]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|l|l||l|}  \hline \hline
+{\bf Operation} & {\bf B} & {\bf I1} & {\bf I2} & {\bf I4} & {\bf I8} & {\bf F4 } & {\bf F8} & {\bf Type\((f_3)\)}\\ \hline \hline
+ concat    &      &      &      & \YES &      &      &   & I8 \\ \hline
+\verb=+=   &      &      & \YES & \YES & \YES & \YES &   & \\ \hline
+\verb+--+  &      &      & \YES & \YES & \YES & \YES &   & \\ \hline
+\verb+*+   &      &      &      & \YES & \YES & \YES &   & \\ \hline
+\verb+/+   &      &      &      & \YES & \YES & \YES &   & \\ \hline
+\verb+%+   &      &      &      & \YES & \YES &      &   & \\ \hline
+\verb+&&+  & \YES & \YES &      &      &      &      &   & \\ \hline
+\verb+||+  & \YES & \YES &      &      &      &      &   & \\ \hline
+\verb+>+   &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+<+   &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+>=+  &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+<=+  &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+!=+  &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+==+  &      &      &      & \YES & \YES & \YES &   & I1 \\ \hline
+\verb+&&!+ & \YES &      &      &      & \YES &      &   & \\ \hline
+\verb+&+   &      &      &      & \YES & \YES &      &   & \\ \hline
+\verb+|+   &      &      &      & \YES & \YES &      &   & \\ \hline
+\verb+^+   &      &      &      & \YES & \YES &      &   & \\ \hline
+\verb+<<+  &      &      &      & \YES & \YES &      &   & \\ \hline
+\verb+>>+  &      &      &      & \YES & \YES &      &   & \\ \hline
+\hline
+\end{tabular}
+\caption{Supported Operations for f1f2opf3}
+\label{tbl_f1f2opf3}
+\end{table}
+
+Most operations in Section~\ref{f1f2opf3} are self-explanatory. Here are
+the rest
+\be
+\item concat \(f_3 \leftarrow (f_1 << 32) | f_2 \)
+\item \verb+&&!+ \(f_3 \leftarrow (f_1 \wedge (\neg f_2) \)
+  \ee
+
+Restrictions
+\be
+\item \(Type(f_1) = Type(f_2)\)
+\item \(Type(f_3) = Type(f_1)\), except when otherwise noted in last
+column of Table~\ref{tbl_f1f2opf3}
+\ee
+
+\subsection{crossprod}
+\label{crossprod}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_{11}\) --- field in \(T_1\) 
+\item \(f_{12}\) --- field in \(T_1\) 
+\item \(T_2\)
+\item \(f_{21}\) --- newly created field in \(T_2\) 
+\item \(f_{22}\) --- newly created field in \(T_2\) 
+\item \(T_{aux}\) --- optional 
+\item \(f_{cnt}\) --- optional 
+\item \(mode\)
+\ee
+
+Creates a new table \(T_2\) with fields \(f_{21}\) and \(f_{22}\).  
+If such a table exists, it is deleted. 
+
+Mode can be one of
+\be
+\item complete
+\item upper triangular 
+\item upper triangular minus diagonal
+\ee
+
+To understand this operation, start by assuming that \(T_{aux} = \bot\).
+Let \(n_2 = |T_2|, n_1 = |T_1|\). 
+Assume \(f_{11} = (1, 2, 3)\)
+and    \(f_{21} = (4, 5, 6)\)
+\be
+\item mode = {\tt COMPLETE}. 
+\(n_2 = n_1 \times n_1\). 
+\((f_{21}, f_{22}) = \{
+(1,4), (1, 5), (1, 6), 
+(2,4), (2, 5), (2, 6), 
+(3,4), (3, 5), (3, 6)\}
+\)
+\item mode {\tt UPPER TRIANGULAR }. 
+\(n_2 = \frac{n_1 \times (n_1+1)}{2}\).
+\((f_{21}, f_{22}) = \{
+(1,4), (1, 5), (1, 6), 
+       (2, 5), (2, 6), 
+               (3, 6)\}
+\)
+\item mode = {\tt UPPER TRIANGULAR MINUS DIAGONAL}. 
+\(n_2 = \frac{n_1 \times (n_1-1)}{2}\).
+\((f_{21}, f_{22}) = \{
+       (1, 5), (1, 6), 
+               (2, 6)
+                     \}
+\)
+  \ee
+
+Restrictions
+\be
+\item \(n_1 \geq 2\) 
+\item \(T_{aux}  = \bot \Leftrightarrow f_{cnt} = \bot\)
+\item \(alldef(f_{11}), alldef(f_{12}) \)
+\item \(fldtype(f_{11}) = fldtype(f_{12}) = I4\)
+\item \(fldtype(f_{21}) \leftarrow I4\)
+\item \(fldtype(f_{22}) \leftarrow I4\)
+\ee
+
+
+\subsection{is\_A\_in\_b}
+\label{is_A_in_b}
+
+\be
+\item \(T_A\) --- table
+\item \(l_A\) --- link field in \(T_A\)
+\item \(T_B\) --- table
+\item \(l_A\) --- link field in \(T_B\)
+\item \(f_c\) --- newly created field in \(T_A\)
+\ee
+
+Restrictions
+\be
+\item \(srttype(l_A) = srttype(l_B = \) ascending
+\item \(alldef(l_A) = alldef(l_B = \) true
+\item \(fldtype(l_A) = fldtype(l_B \)
+\item \(fldtype(l_A) \in \{I4, I8\}\)
+\item \(fldtype(l_B) \in \{I4, I8\}\)
+\ee
+Creates field \(f_c \in T_A\), such that 
+\be
+\item \(alldef(f_c) = \) true
+\item \(fldtype(f_c) = I1\)
+\item \(T_A[i].f_c = true \Rightarrow \exists j: T_A[i].l_A =
+T_B[j].l_B\)
+\ee
+
+Considerations
+\be
+\item Current implementation best used when \(T_A\) is large and \(T_B\)
+is small. This could be fixed when we bring meta data to bear.
+\ee
+
+\subsection{srt\_join}
+\label{srt_join}
+
+\be
+\item \(T_s\) --- table
+\item \(l_s\) --- link field in \(T_1\)
+\item \(f_s\) --- source field in \(T_1\)
+\item \(T_d\) --- table
+\item \(l_d\) --- link field in \(T_2\)
+\item \(f_d\) --- newly created field in \(T_2\)
+\item \(m\) --- type of join. 
+\ee
+
+\be
+\item 
+\(m = \) {\tt reg, min, max, sum, cnt, and, or}
+\ee
+
+
+Let \(T_d[i].l_d = v_d\). \(T'_s = T_s[l_s = v_d]\). 
+Then, \(T_s' = \phi \Rightarrow T_d[i] = \bot\).  Depending on the mode, 
+\bd
+\item [reg] \(T_d[i].f_d \in T_s'.f_s\). If \(|T'_s] > 0 \), then an
+arbitrary value in it is used.
+\item [min] \(T_d[i].f_d = min(T_s'.f_s)\)
+\item [max] \(T_d[i].f_d = max(T_s'.f_s)\)
+\item [sum] \(T_d[i].f_d = \Sigma(T_s'.f_s)\)
+\item [and] \(T_d[i].f_d = and(T_s'.f_s)\)
+\item [or ] \(T_d[i].f_d = or(T_s'.f_s)\)
+\item [cnt] \(T_d[i].f_d = |T_s'|)\)
+\ed
+
+\subsection{rng\_join}
+\label{rng_join}
+
+\be
+\item \(T_s\) --- source table
+\item \(l_s\) --- source field in \(T_1\)
+\item \(f_l\) --- lower bound field in \(T_1\)
+\item \(f_u\) --- upper bound field in \(T_1\)
+\item \(T_d\) --- destination table
+\item \(l_d\) --- link field in \(T_2\)
+\item \(f_d\) --- newly created field in \(T_2\)
+\ee
+
+%
+\be
+\item \(|T_s| \leq I4_{max}\)
+\item \(f_l \neq f_u\)
+\item \(l_s \neq f_u\)
+\item \(l_s \neq f_l\)
+\item \(fldtype(f_l) = fldtype(l_u) = fldtype(l_d) = I4\)
+\item \(srttype(f_l) = srttype(l_u) = srttype(l_d) = asc\)
+\item \(alldef(l_s),   alldef(l_u),   alldef(l_d)\)
+\item \(fldtype(f_d) = I4\)
+\item \(l_s \neq \bot \Rightarrow alldef(l_s), fldtype(l_s) = I4\)
+\item \(T_S[j].f_l \leq T_S[j].f_u\)
+\ee
+
+Let \(v = T_D[i].l_d\). If \(\not \exists j: T_S[j].f_l \leq v \leq
+T_S[j].f_u \Rightarrow T_D[i].f_d = \bot\). Else, 
+\bi
+\item \(f_l = \bot \Rightarrow T_D[i].f_d = j\)
+\item \(f_l \neq \bot \Rightarrow T_D[i].f_d = T_S[j].f_l\)
+\ei
+
+
+%-----------------------------------------------------------
+
+\subsection{count\_vals}
+\label{count_vals}
+
+Arguments are 
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- input field  in \(T_1\)
+\item \(f^c_1\) --- optional counter field in \(T_1\)
+\item \(T_2\) --- output table 
+\item \(f_2\) --- output field in \(T_1\)
+\item \(f^c_2\) --- counter field in \(T_2\)
+\ee
+
+Restrictions
+\be
+\item \(Type(f_1) = Type(f_2\)
+\item \(Type(f_1) = \) {\tt I4, I8}
+\item \(Type(f^c_2) = \) {\tt I4}. This means that 
+\be
+\item if \(f^c_1\) is not provided, then the maximum number of 
+occurrences of any value in \(f_1\) is \(I4_{max}\)
+\item if \(f^c_1\) is provided, similar restriction (see below)
+\ee
+\ee
+
+We create a table \(T_2\) where \(f_2\) is the unique, non-null values
+of \(f_1\) in \(T_1\). If \(f^c_1\) is not specified, \(f^c_2[i] =
+|T_1[f_1 = T_2[f^c-2[i]]|\), the number of times the corresponding
+value of \(f_1\) occurred in \(T_1\). If it is specified, then the
+output is computed in much the same way but weighted by \(f^c_1\). In
+other words, let \(T_2[j].f_2 = V\). Then, 
+\begin{displaymath}
+T_2[j].f^c_2 = \sum_i T_1[i].f^c_1[i] \times \delta(T_1[i].f_1, V) 
+\end{displaymath}
+
+\subsubsection{Enhancements}
+Do not create an output count field if not desired. % TODO
+
+%-----------------------------------------------------------
+
+\subsection{mk\_bins}
+\label{mk_bins}
+
+Arguments are
+\be
+\item \(T_1\)
+\item \(f_1\)
+\item \(T_2\) --- newly created table 
+\item \(n_2\) --- desired number of bins
+\ee
+
+Creates \(n_2'\) rows in \(T_2\) (where \(1 \leq n_2' \leq n_2\)) with columns
+\be
+\item \verb+lb+  Type is I4
+\item \verb+ub+  Type is I4
+\item \verb+cnt+ Type is I8
+\ee
+such that 
+\be
+\item \(cnt > 0 \)
+\item \(lb < ub \)
+\item \(cnt\) is as evenly distributed as possible
+\item \(n_2'\) is as close to \(n_2\) as possible
+\item \(\sum T_2[i].cnt = |T_1|\)
+\ee
+
+Restrictions
+\be
+\item \(alldef(f_1)\) 
+\item \(srttype(f_1) = asc\) 
+\item \(fldtype(f_1) = I4\)
+\item Currently, we use a greedy algorithm that can result in the bin
+sizes being not as evenly distributed as one would like them to be.
+\ee
+
+%-----------------------------------------------------------
+
+\subsection{t1f1t2f2opt3f3}
+\label{t1f1t2f2opt3f3}
+
+Arguments are
+\be
+\item \(T_1\)
+\item \(f_1\)
+\item \(T_2\) 
+\item \(f_2\)
+\item \(\circ\) operation to be performed
+\item \(T_3\) 
+\item \(f_3\)
+\ee
+
+Creates field \(T_3\) with single column \(f_3\) of same type as input
+fields. 
+
+Restrictions
+\be
+\item Supported operations for \(\circ\) are 
+\be
+\item \(A \cup B\) --- union
+\item \(A \cap B\) --- intersection
+\item \(A - B\) --- \verb+a_minus_b+
+\item pvalcalc --- Calculation of \(p\)-value
+\ee
+\item \(srttype(f_1) = srttype(f_2) = asc\) 
+\item \(fldtype(f_1) = fldtype(f_2)  \in \{I4, I8\}\)
+\item \(alldef(f_1),  alldef(f_2)\)
+\item Because of input restrictions, 
+  \(fldtype(f_3) \leftarrow fldtype(f_1)\) and \(srttype(f_3) = asc\)
+\ee
+
+%-------------------------------------------------------------
+
+\subsection{binld}
+\label{binld}
+Similar to bindmp in Section~\ref{bindmp}.
+Arguments are
+\be
+\item \(T\) --- table to be created
+\item \(f_1:f_2:\ldots f_N\) --- list of fields separated by colon. Must
+have at least one field
+\item \(t_1:t_2:\ldots t_N\) --- where \(t_i\) is specifier of field
+type for field \(f_i\). 
+\item \(F\) --- input file to be read
+\item \(D\) --- input directory from which file is to be read. If
+null, current working directory is used. 
+\ee
+
+Creates table \(T\) from file \(F\). Restrictions are 
+\be
+\item \(fldtype(f_i) \in \{I1, I2, I4, I8, F4, F8\}\)
+\item \(alldef(f_i)\)
+\ee
+
+\subsection{percentiles}
+\label{percentiles}
+Arguments are
+\be
+\item \(T_I\) --- input table
+\item \(f\)   --- field in input table
+\item \(T_O\) --- output table 
+\item \(n\) --- desired number of rows in output table
+\ee
+\bi
+\item Breaks input into \(n\) bins of equal size, last bin being potentially
+larger than others. 
+\item Creates \(T_O\), where every row corresponds to a bin, 
+with 4 fields --- min, max, avg, cnt.
+\be
+\item \(min[i]\) is smallest value in bin \(i\)
+\item \(max[i]\) is largest value in bin \(i\)
+\item \(cnt[i]\) is number of values in bin \(i\)
+\item \(avg[i]\) is average value in bin \(i\)
+\ee
+\ei
+
+
+Restrictions
+\be
+\item \(fldtype(f) \in \{I4, I8, F4, F8\}\)
+\item \(alldef(f)\)
+\item \(srttype(f) = ascending\)
+\item \(2 \leq n < min(|T|, 1000)\)
+\ee
+
+\subsection{rng\_sort}
+\label{rng_sort}
+
+Sorts \(f_1\) in \(T_1\) in batches specified by \(T_2\)
+\be
+\item \(f_{lb}\) --- lower bound field in \(T_2\) 
+\item \(f_{ub}\) --- upper bound field in \(T_2\) 
+\item \(mode\) --- {\tt A} for ascending, {\tt D} for descending
+\ee
+
+The rows of \(T_2\) denote non-overlapping ranges in \(T_1\). These
+ranges are sorted independently.
+
+Restrictions
+\be
+\item \(fldtype(f_1) \in \{I4, I8\}\)
+\item \(fldtype(f_{lb})  = fldtype(f_{ub}) = I8\)
+\item \(alldef(f_1), alldef(f_{lb}), alldef(f_{ub})\) 
+\item \(external(f_1) = false\)
+\item \(0 < T_2[i].f_{lb} < T_2[i].f_{ub} \leq |T_1|\)
+\ee
+
+\subsection{app\_tbl}
+\label{app_tbl}
+
+Appends table \(T_2\) to \(T_1\). \(T_2\) is untouched. 
+Arguments are
+\be
+\item \(T_1\) --- destination table 
+\item \(T_2\) --- source table
+\ee
+Restrictions are
+\be
+\item Every field in \(T_1\) must be present in \(T_2\) and have same
+type in both \(T_1\) and \(T_2\)
+\item Allowable field types are {\tt I1, I2, I4, I8, F4, F8}
+\item All fields in \(T_1\) are internal (not external)
+\item Note that it is possible for \(T_1 = T_2\)
+\ee
+
+\subsection{sortf1f2}
+\label{sortf1f2}
+
+Arguments are
+\be
+\item \(T_1\) --- input table 
+\item \(f_1\) --- primary input field 
+\item \(f_2\) --- secondary input field 
+\item \(srttype\) --- see below
+\ee
+Restrictions are
+\be
+\item \(f_1 \neq f_2\)
+\item \(alldef(f_1), internal(f_1)\)
+\item \(alldef(f_2), internal(f_2)\)
+\item \(fldtype(f_1) = \{I4, I8\}\)
+\item \(fldtype(f_2) = \{I4, I8\}\)
+\item srttype must be one of 
+\be
+\item \verb+A_+ --- \(f_1\) primary ascending and \(f_2\) drag along
+\item \verb+AA+ --- \(f_1\) primary ascending and \(f_2\) secondary ascending
+\item \verb+AD+ --- \(f_1\) primary ascending and \(f_2\) secondary descending
+\item \verb+D_+ --- \(f_1\) primary descending and \(f_2\) drag along
+\item \verb+DA+ --- \(f_1\) primary descending and \(f_2\) secondary ascending
+\item \verb+DD+ --- \(f_1\) primary descending and \(f_2\) secondary descending
+\ee
+\item Currently only \verb+A_+ and \verb+D)+ implemented
+\ee
+
+\subsection{no\_op}
+\label{no_op}
+
+As expected, does nothing. Although it writes a line to the log file. 
+
+\subsection{dld}
+\label{dld}
+
+Meta data file has 3 columns
+\be
+\item field name. Must be alphanumeric.
+\item field type. See Section~\ref{Field_Types}, except for
+\be
+\item {\tt B}
+\item {\tt SC}
+\ee
+\item auxiliary information about the field. This is optional. It can
+contain the following
+\be
+\item \verb+is_load=[true|false]+ Whether to load field or not. Default
+is true.
+\item \verb+is_all_def=[true|false]+ Whether all values are defined or
+not. Default is false. If we discover that all values are defined,
+then we can drop the {\tt nn} field that is created to mark undefined
+values.
+\item \verb+is_null_if_missing=[true|false]+ This is used for fields
+that are lookups into an existing dictionary. Default is false.  
+\bi
+\item When
+set to true, if we find a value that is not in the dictionary, we mark
+it as null.  
+\item When set to false, if we find a value that is not in the
+dictionary, we quit the dld operation.
+\item \verb+is_dict_old=[true|false]+ Whether to use an existing
+directory or create a new one.
+\ei
+\ee
+\ee
+When {\tt fldtype = SV}, it is converted into I4 and we use
+\verb+dict_tbl_id+ to denote the lookup table used to map ints to
+strings.
+
+\begin{invariant}
+\(is\_load = false \Rightarrow dict = \bot\)
+\end{invariant}
+
+\begin{invariant}
+\(is\_null\_if\_missing = true \Rightarrow is\_dict\_old = true \)
+\end{invariant}
+
+\begin{invariant}
+Consider 2 fields being loaded in a given table. If both are going to
+create a new table, the tables must be different. 
+\(is\_dict\_old_i = false \wedge is\_dict\_old_j = false \Rightarrow dict_i
+\neq dict_j\)
+\end{invariant}
+
+\subsubsection{Input Restrictions}
+\label{Input_Restrictions}
+
+\be
+\item 
+When reading a CSV file, the length of a text field is limited to 32767
+characters.
+\ee
+
+%% \subsection{get\_t2f2\_val}
+%% \label{get_t2f2_val}
+%% Arguments are 
+%% \be
+%% \item \(T_D\) --- destination table 
+%% \item \(l_D\) --- link field in destination table 
+%% \item \(T_S\) --- source table 
+%% \item \(l_S\) --- link field in source table 
+%% \item \(f_S\) --- field in source table
+%% \item \(f_D\) --- newly created field in destination table
+%% \ee
+%% 
+%% 
+%% Let \(T_D[i].l_D = l_d\). 
+%% If \(\exists j : T_S[j].l_S = l_d\), then let \(T_D[i].f_D
+%% \leftarrow T_D[j].f_S\); else, \(T_D[i] = \bot\)
+%% If there are multiple values of \(j\), then an arbitrary one is
+%% selected. 
+%% Restrictions
+%% \be
+%% \item \(fldtype(l_D) = fldtype(l_S)\)
+%% \item \TBC
+%% \ee
+% 
+\subsection{lkp\_sort}
+\label{lkp_sort}
+
+Arguments are 
+\be
+\item \(T_1\)
+\item \(f_1\) --- input field to be sorted
+\item \(T_2\) --- table with information about number of each value of
+\(f_1\)
+\item \(f_{cnt}\) --- field in \(T_2\)
+\item \(f_{idx}\) --- newly created field in \(T_1\) {\bf OPTIONAL}.
+\(fldtype(T_1.f_{idx}) = I8, alldef(T_1.f_{idx})\)
+\item \(f_{srt}\) --- newly created field in \(T_1\)
+\(fldtype(T_1.f_{srt}) = I4, alldef(T_1.f_{srt})\)
+\ee
+
+This is an ascending sort which does a one-pass sort provided one knows
+the distribution of the data. For example, let us say that we have a
+field \(f_{cnt}\) in table \(T_2\) such that the \(i^{th}\) row 
+tells us the number of values of \(f_1\) that are \(= i\).
+Then \(f_{srt}\) is a permutation of
+\(f_1\) in sorted order ascending and \(f_{idx}\) is created as if we did a
+drag-along of the index field \(0, 1, 2, \ldots\)
+
+Restrictions
+\be
+\item \(fldtype(f_{cnt}) = I8\)
+\item \(fldtype(f1) = I8\)
+\item \(alldef(f_{cnt}) alldef(f_1)\)
+\item \(0 \leq T_1.f_1 < |T_2| \)
+\ee
+
+%------------------------------------------------------
+\section{GPU Operations}
+
+As a convention, all GPU operations will start with \verb+g_+
+We will use {\tt D} to indicate device and {\tt H} to indicate host.
+
+I have not fully understood how to share the GPU across multiple
+concurrent Q invocations. Need to think through this further. 
+
+\subsection{g\_load}
+\label{g_load}
+
+Arguments are 
+\be
+\item \(T\)   --- string, table
+\item \(f_H\) --- string, field
+\item \(f_D\) --- string, register name 
+\ee
+
+Internally, this is translated to the following load operation
+\be
+\item file name ---  string, name of binary file which contains data 
+to be loaded
+\item field type --- string, Can be any of \verb+B, I1, I2, I4, I8, F4, F8+
+\item \(n_R\). Number of rows. Uses for book-keeping.
+\item \(r\) --- register number. 
+\item over write or not --- Could be 
+\be
+\item \verb+N+ means operation fails if register is in use or 
+\item \verb+Y+ means free register if in use and then perform operation
+\ee
+\ee
+
+Above operation fails if any of the validations fail e.g.,
+\be
+\item file not found
+\item \(r\) not a valid registe number. Valid numbers are currently
+\([0, 31]\)
+\item Insufficient space on device
+\item \ldots
+\ee
+
+\subsection{g\_info}
+\label{g_info}
+
+Prints following meta data to stdout for each GPU register that is in use.
+
+\be
+\item index
+\item Size in bytes
+\item File name from which it was loaded 
+\item Table name from which it was loaded 
+\item Field name from which it was loaded 
+\item Logical name provided to it by Q 
+\ee
+
+\section{Compound Expressions}
+\label{Compound}
+
+The motivation behind compound statements is allowing users to take
+get the benefits of strip-mining. The user needs to issue the command
+{\tt q start\_compound} to denote that subsequent commands will be part of
+a compound expression. None of the subsequent commands are executed
+(they are simply recorded) until the user issues a {\tt q
+  stop\_compound} statement.
+
+At this time, they are first verified and then executed.
+
+\subsection{Verification}
+\be
+\item Only one table should be referenced. We will relax this gradually
+to allow operations like count which read from one table and write to
+another. 
+\item Given above limitation, the table referenced should be the same in
+each statement 
+\item operations should come from a limited set. They are either 
+\be
+\item regular e.g., \verb+q <op> <tbl> .......+
+\be
+\item \verb+s_to_f+
+\item \verb+f1opf2+
+\item \verb+f1s1opf2+
+\item \verb+f1f2opf3+
+\ee
+\item reduction e.g., \verb+A=`q <op> <tbl> .....`+. In this case,
+{\tt A} is the destination of the reduction 
+\be
+\item \verb+f_to_s+
+\item \verb+f1f2_to_s+
+\ee
+\ee
+\item ephemeral fields are suffixed with the prime character i.e.,
+  \verb+[']+. ephemeral fields must be created before they are referenced 
+\item all non-ephemeral fields that are referenced must either exist
+prior to the start of the compound expression or must be created in a
+statement preceding the one in which it is referenced
+\item reduction operations, if any, should come at end
+\item the destinations of reduction operations should be unique
+\ee
+
+
+
+\subsection{For some later point in time}
+
+A compound statement is of the form
+\begin{verbatim}
+x' = a + b; y' = (int)x'; z' = x' > y'; w = z' ? e : f
+\end{verbatim}
+which is the same as Figure~\ref{fig_compound}. Note that any variable
+with a prime is a temporary variable. Hence, in this example, a column
+called \(w\) is created but columns \((x', y', z')\) are not created.
+Some limitations of a compound statement
+\be
+\item All the assignments, except the last one, must be to temporary
+variables
+\item The last assignment must be a to a permanent variable
+\item Each assignment is separated by a semi-colon
+\item The maximum number of assignments is 16. This is an arbitrary
+number, which can be increased when we are more comfortable.
+\ee
+
+
+
+\begin{figure}[hb]
+\centering
+\fbox{
+\begin{minipage}{15cm}
+\begin{tabbing} \hspace*{0.25in} \=  \hspace*{0.25in} \= \kill
+{\bf for} \(i \leftarrow 0\) {\bf to} \(|T| -1 \) {\bf do} \+ \\
+   \(x' \leftarrow a[i] + b[i] \) \\
+   \(y' \leftarrow (int)x' \) \\ 
+  {\bf if } \(x' > y' \) {\bf then} \+ \\
+    \(z' \leftarrow true \) \- \\
+  {\bf else} \+ \\ 
+    \(z' \leftarrow false \) \- \\
+  {\bf endif} \\
+  {\bf if } \(z' == true\) {\bf then} \+ \\
+    \(w[i] \leftarrow e[i] \) \- \\ 
+  {\bf else} \+ \\ 
+    \(w[i] \leftarrow f[i] \) \- \\ 
+  {\bf endif} \- \\
+{\bf endfor} \\ 
+\end{tabbing}
+\end{minipage}
+}
+\caption{Explanation of compound statement}
+\label{fig_compound}
+\end{figure}
+
+

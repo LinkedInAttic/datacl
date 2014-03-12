@@ -1,0 +1,4 @@
+fk_lkp_col,str,"is_load=[true]:is_all_def=[true]:is_dict_old=[true]:dict=[lkp_op_col]"
+seg_pos,I4,
+fk_lkp_lbl,str,"is_load=[true]:is_all_def=[true]:is_dict_old=[true]:dict=[lkp_op_lbl]"
+percentage,I4,
