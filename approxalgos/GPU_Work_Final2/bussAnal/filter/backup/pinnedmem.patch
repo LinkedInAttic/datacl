@@ -1,0 +1,134 @@
+diff --git a/src/main.cu b/src/main.cu
+index 3e2ebb7..74d93c1 100644
+--- a/src/main.cu
++++ b/src/main.cu
+@@ -13,6 +13,9 @@
+ using namespace std;
+ 
+ #define N 1e8
++#define MEMORY_ALIGNMENT  4096
++#define ALIGN_UP(x,size) ( ((size_t)x+(size-1))&(~(size-1)) )
++
+ 
+ typedef double myType;
+ 
+@@ -65,6 +68,65 @@ void filterGPU_wrap(T h_data[], size_t dataSize, const T val, char h_bitvec[], C
+ 
+ }
+ 
++// gpu wrapper function -- uses pinned memory
++template <class T, class Compare>
++void filterGPU_wrap_pin(T h_data[], size_t dataSize, const T val, char h_bitvec[], Compare comp)
++{
++
++    cudaDeviceProp deviceProp;
++
++    // This will pick the best possible CUDA capable device
++    int devID = findCudaDevice(0, NULL);
++    
++    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, devID));
++
++    cout << "Total global memory : " << deviceProp.totalGlobalMem << endl;
++    
++    // allocate device memory
++    myType *d_data;
++//    checkCudaErrors(cudaMalloc((void **) &d_data, dataSize * sizeof(myType) ));
++    // copy host memory to device
++//    checkCudaErrors(cudaMemcpy(d_data, h_data, dataSize * sizeof(myType), cudaMemcpyHostToDevice));
++
++
++
++//    myType* h_data_p = (myType *) ALIGN_UP(h_data, MEMORY_ALIGNMENT);
++//    checkCudaErrors(cudaHostRegister(h_data_p, dataSize * sizeof(myType), cudaHostRegisterMapped));
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_data, (void *)h_data, 0));
++
++
++
++    // allocate device memory for result
++    char *d_bitvec;
++//    checkCudaErrors(cudaMalloc((void **) &d_bitvec, dataSize * sizeof(char)));
++//    h_bitvec = (char *) ALIGN_UP(h_bitvec, MEMORY_ALIGNMENT);
++//    checkCudaErrors(cudaHostRegister(h_bitvec, dataSize * sizeof(char), cudaHostRegisterMapped));
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_bitvec, (void *)h_bitvec, 0));
++
++    // Kernel configuration, where a one-dimensional
++    // grid and one-dimensional blocks are configured.
++    dim3 dimGrid(NBLOCKS);
++    dim3 dimBlock(NTHREADS);
++
++    // execute the kernel
++    filterGPU<<< dimGrid, dimBlock >>>(d_data, dataSize, val, d_bitvec, comp);
++
++    cudaThreadSynchronize();
++
++    // check if kernel execution generated and error
++    getLastCudaError("Kernel execution failed");
++
++    // copy result from device to host
++//    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, dataSize * sizeof(char), cudaMemcpyDeviceToHost));
++
++    // free device memory
++//    checkCudaErrors(cudaFree(d_data));
++//    checkCudaErrors(cudaFree(d_bitvec));
++
++//    cudaDeviceReset();
++
++}
++
+ template <typename T>
+ void data_generate(T* datavec, size_t dataSize)
+ {
+@@ -81,12 +143,21 @@ int main(int argc, char **argv)
+     struct timeval start, end;
+ 
+     // data array
+-    myType *h_data = (myType *) malloc(N * sizeof(myType));
++//    myType *h_data = (myType *) malloc(N * sizeof(myType) + MEMORY_ALIGNMENT);
+     // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(N * sizeof(char));
++//    char *h_bitvec = (char *) malloc(N * sizeof(char) + MEMORY_ALIGNMENT);
++//    char *h_bitvec_p = (char *) malloc(N * sizeof(char) + MEMORY_ALIGNMENT);
+     // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(N * sizeof(char));
++//    char *bitvec = (char *) malloc(N * sizeof(char));
++
++    myType *h_data;
++    char* h_bitvec;
+ 
++    checkCudaErrors(cudaHostAlloc((void **)&h_data, N * sizeof(myType), cudaHostAllocMapped));
++    // allocate mem for the gpu result on host side
++    checkCudaErrors(cudaHostAlloc((void **)&h_bitvec, N * sizeof(char), cudaHostAllocMapped));
++    // allocate mem for cpu result array for verification
++    char *bitvec = (char *) malloc(N * sizeof(char));
+ 
+     // initalize the memory
+     data_generate( h_data, N );
+@@ -103,7 +174,7 @@ int main(int argc, char **argv)
+ 
+     gettimeofday(&start, NULL);
+     // run on gpu
+-    filterGPU_wrap <myType> ( h_data, N, val, h_bitvec, opFuncNew);
++    filterGPU_wrap_pin <myType> ( h_data, N, val, h_bitvec, opFuncNew);
+     gettimeofday(&end, NULL);
+ 
+     double timeDiff_us = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
+@@ -119,7 +190,7 @@ int main(int argc, char **argv)
+     {
+ 	    if(bitvec[i] != h_bitvec[i])
+ 	    {
+-		    cout << "Results dont match!!! at " << i << " gpu: " << bitvec[i] << " cpu: " << h_bitvec[i] << endl;
++		    cout << "Results dont match!!! at " << i << " gpu: " << h_bitvec[i] << " cpu: " << bitvec[i] << endl;
+ 		    break;
+ 	    }
+     }
+@@ -128,8 +199,8 @@ int main(int argc, char **argv)
+     cout << "Time Taken by CPU: " << timeDiff_us / 1000 << "ms" << endl;
+ 
+     // free host memory
+-    free(h_data);
+-    free(h_bitvec);
++//    free(h_data);
++//    free(h_bitvec);
+     free(bitvec);
+ 
+     return 0;

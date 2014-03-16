@@ -1,0 +1,146 @@
+0. HOW TO USE
+===========
+Prerequisites:
+- NVIDIA CUDA Toolkit/SDK v.5.0
+- NVIDIA CUDA Samples (helper_cuda.h, helper_functions.h - typically installed in <CUDA_DIR>/samples/common/inc/)
+
+Instructions:
+to run:
+make
+./<exec>
+
+to delete:
+make clean
+
+
+
+I. FILTER
+===========
+
+Use case description:
+-----------------
+Let us consider a filter operation which takes in an input array, a given value and a comparison function and returns a boolean array which has either 0 or 1 based on whether the results of the comparison between each element of the input array and the value was true or not respectively. There are a few things here - the input array can be of any data type, and also the comparator function can be anything among a subset of allowed functions. Traditionally, one has to code up many fns, each of a combination of input data type and comparator. 
+
+Implementation details:
+-----------------
+We implement this by using a couple of C++ features:
+1) Templates
+http://www.cplusplus.com/doc/tutorial/templates/
+2) Functors
+A functor is an function object whose operation can be dynamically modified. A good introduction can be found here:
+http://www.stanford.edu/class/cs106l/course-reader/Ch13_Functors.pdf
+
+GPU Variants:
+The program has 3 different variants for testing different features of the GPU executing the same filter operation:
+
+1) Normal kernel execution which also handles cases where the data size is > GPU global memory. In this case, it allocates a portion (currently half) of the available global memory each time and pushes as much data each time and processes it. We handle cases when the data size is > GPU global memory by sending the data in batches.
+template <class T, class Compare>
+void filterGPU_wrap(T h_data[], size_t numElem, const T val, char h_bitvec[], Compare comp)
+
+2) Kernel call with pinned/page-locked memory using cudaHostRegister() - This is one of the techniques in which page-locked memory can be used. i.e. by page-locking a range of memory allocated by malloc(). For details, see:
+http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#page-locked-host-memory
+template <class T, class Compare>
+void filterGPU_wrap_pin(T h_data[], size_t numElem, const T val, char h_bitvec[], Compare comp)
+
+3) Kernel call with pinned/page-locked memory using cudaHostAlloc() - this is the other way where we do the page-locking duing allocation. This, when tested doesnt seem to handle cases when the data size > GPU global memory.
+template <class T, class Compare>
+void filterGPU_wrap_regPin(T h_data[], size_t numElem, const T val, char h_bitvec[], Compare comp)
+
+
+Result/performance:
+-----------------
+
+Experiment with
+Number of data elements = 5e8
+Size of dictionary = 5000
+data type = long long
+
+-----------------------------------------------------
+
+Time Taken by GPU (version 1): 1456ms
+Time Taken by GPU (version 2: pinned mem using cudaHostRegister): 8668ms
+Time Taken by GPU (version 3: pinned mem using cudaHostAlloc()): 5634ms
+Time Taken by CPU: 5167ms
+
+-----------------------------------------------------
+
+
+
+The results of the first version looks good, however the timings of the pinned memory versions are puzzling. It looks like it takes more time than even the CPU version, and also they cant handle cases when data size > GPU global memory. According to the manual, these memory transfers should be automatically handled if we used mapper page-locked memory, however it doesn't appear to be so.
+TODO: This still needs some figuring out.
+
+
+We also tested performance without using functors, and just using a direct comparison operator in the code to see if the functor version takes more time since it is an additional function call. However, the timings were quite similar indicating that we dont lose much performance by using functors. It is also possible that the compiler does some optimization to translate these functors into the corresponding operators and this is why we dont see much difference in the timings. Either way it seems to be safe to use functors - makes the code look much cleaner, and we dont suffer any performance hit.
+
+Experiment with
+Number of data elements = 1e9
+Size of dictionary = 5000
+data type = double
+-----------------------------------------------------
+
+Time Taken by GPU with functor: 1543.4ms
+Time Taken by GPU without functor: 1572.55ms
+Time Taken by CPU: 12414.9ms
+
+-----------------------------------------------------
+
+
+
+II. FILTER (IN)
+===========
+
+
+Use case description:
+-----------------
+The filter_in function searches for the existence of each element of input array in a given dictionary array and returns 1(true) or 0(false) based on whether the data was found or not. We implement this using a binary search on the dictionary array for each element in the input array.
+
+Implementation Details: 
+-----------------
+GPU Implementation Variants:
+There are 2 variants:
+1) Use global memory to store the dictionary
+template <class T>
+void filterInGPU_wrap(T h_data[], size_t numElem, T h_dict[], size_t numElemDict, char h_bitvec[])
+2) Use constant memory to store the dictionary
+template <class T>
+void filterInGPU_conMem_wrap(T d_data[], size_t numElem, T h_dict[], size_t numElemDict, char d_bitvec[])
+
+There are pros and cons of using constant memory:
+Pros:
+- For read-only operations, its much faster than global memory
+
+Cons:
+- Max size of constant memory is only 64KB on most/all GPUs, that comes to about 8000 DP numbers. So, the dictionary array size cannot exceed this.
+- Constant memory is optimized for broadcast, so only if all cores access same portion of the memory accesses are faster, if not they are serialized and will be slower than global memory.
+- Not sure if we can use templates since constant memory is to be declared as a global variable.
+
+The below is an extract from a blog about constant memory, just pasting here for future use:
+Use Constant memory in the following cases
+o   When you know, your input data will not change during the execution
+o   When you know, your all thread will access data from same part of memory
+
+Should not use Constant memory in the following cases
+o   When you know, your input data will be change during the execution
+o   When you know, your all thread will not access data from same part of memory.
+o   When your data is not read only. For example “output” memory space should not be constant.   
+
+Summary:
+Currently, the biggest issue is that if constant memory is used it is probably not possible to handle all data types or templates. Also, there will be a limitation on the max size of the dictionary array. However, the performance seems to be much better than that of the global memory version.
+
+
+Performance analysis:
+-----------------
+Experiment with
+Number of data elements = 5e8
+Size of dictionary = 5000
+data type = long long
+
+-----------------------------------------------------
+
+Time Taken by GPU (dictionary in global memory): 4995ms
+Time Taken by GPU (dictionary in constant memory): 5101ms
+Time Taken by CPU: 70414ms
+
+-----------------------------------------------------
+
+We seem to get similar timings for both global and constant memory - this is probably due to the fact that our memory access pattern doesnt ensure all threads access the same portion of memory, so the accesses to constant memory get serialized.

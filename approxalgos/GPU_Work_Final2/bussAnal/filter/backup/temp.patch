@@ -1,0 +1,65 @@
+diff --git a/test.cu b/test.cu
+index 865f82a..1df6374 100644
+--- a/test.cu
++++ b/test.cu
+@@ -12,7 +12,7 @@
+ #include "filter.h"
+ using namespace std;
+ 
+-#define N 1000000
++#define N 10000000
+ 
+ typedef long long myType;
+ 
+@@ -43,6 +43,7 @@ struct opFunctor{
+ };
+ */
+ 
++//Functors for 2-obj comparison
+ template <class T>
+ struct opGreater{
+         public:
+@@ -50,6 +51,43 @@ struct opGreater{
+ 		{ return (a > b); }
+ };
+ 
++template <class T>
++struct opGreaterEqual{
++        public:
++		__host__ __device__ bool operator() (const T &a, const T &b)
++		{ return (a >= b); }
++};
++
++template <class T>
++struct opLesser{
++        public:
++		__host__ __device__ bool operator() (const T &a, const T &b)
++		{ return (a < b); }
++};
++
++template <class T>
++struct opLesserEqual{
++        public:
++		__host__ __device__ bool operator() (const T &a, const T &b)
++		{ return (a <= b); }
++};
++
++template <class T>
++struct opNotEqual{
++        public:
++		__host__ __device__ bool operator() (const T &a, const T &b)
++		{ return (a != b); }
++};
++
++template <class T>
++struct opEqual{
++        public:
++		__host__ __device__ bool operator() (const T &a, const T &b)
++		{ return (a == b); }
++};
++
++
++//Filter GPU Kernel
+ template <class T, class Compare> 
+ __global__ void filterKernel(T *data, size_t dataSize, const T val, char *bitvec, Compare comp) 
+ { 

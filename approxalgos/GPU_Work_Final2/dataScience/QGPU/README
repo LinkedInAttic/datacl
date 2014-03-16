@@ -1,0 +1,304 @@
+Q GPU Engine:
+===============================
+Authors:
+-----------------
+Bharath Pattabiraman
+Ramesh Subramonian (rsubramonian@linkedin.com)
+-----------------
+
+This is a package that uses GPU-acceleration to expedite Q
+data processing operations. Q is a vector language, designed for efficient counting, implementation of couting, sorting and data transformations. It uses a single basic data structure - a table. A table is a collection of fields. For a detailed documentation of Q, please contact Ramesh.
+
+
+Prerequisites:
+===============================
+1. CUDA compatible GPU (has been tested with compute capability 2.0 device
+- Tesla C2075)
+2. CUDA nvcc compiler (has been tested with cuda 5.0)
+For installation instructions, please follow the installation guide:
+https://developer.nvidia.com/cuda-downloads
+3. curl (http://curl.haxx.se/)
+4. thrust (http://docs.nvidia.com/cuda/thrust/index.html)
+
+To verify if your gpu is CUDA compatible or not, check here:
+https://developer.nvidia.com/cuda-gpus
+
+When you install cuda, you can also install cuda sdk/samples. The
+deviceQuery utility which is typically located in
+<CUDA_SAMPLES_DIR>/bin/linux/release
+is useful for getting information about your GPU. For example, for the GPU I used, it returned the following:
+
+Device 0: "Tesla C2075"
+  CUDA Driver Version / Runtime Version          5.0 / 5.0
+  CUDA Capability Major/Minor version number:    2.0
+  Total amount of global memory:                 5375 MBytes (5636554752 bytes)
+  (14) Multiprocessors x ( 32) CUDA Cores/MP:    448 CUDA Cores
+  GPU Clock rate:                                1147 MHz (1.15 GHz)
+  Memory Clock rate:                             1566 Mhz
+  Memory Bus Width:                              384-bit
+  L2 Cache Size:                                 786432 bytes
+  Max Texture Dimension Size (x,y,z)             1D=(65536), 2D=(65536,65535), 3D=(2048,2048,2048)
+  Max Layered Texture Size (dim) x layers        1D=(16384) x 2048, 2D=(16384,16384) x 2048
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       49152 bytes
+  Total number of registers available per block: 32768
+  Warp size:                                     32
+  Maximum number of threads per multiprocessor:  1536
+  Maximum number of threads per block:           1024
+  Maximum sizes of each dimension of a block:    1024 x 1024 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 65535
+  Maximum memory pitch:                          2147483647 bytes
+  Texture alignment:                             512 bytes
+  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)
+  Run time limit on kernels:                     Yes
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Enabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device PCI Bus ID / PCI location ID:           5 / 0
+  Compute Mode:
+     < Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) >
+
+deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 5.0, CUDA Runtime Version = 5.0, NumDevs = 2, Device0 = Tesla C2075
+
+
+Instructions to compile and run:
+===============================
+Compile:
+-----------------
+make clean
+make
+
+Run:
+-----------------
+./QGPU
+
+This starts the QGPU http server. To exit, press Ctrl+C :)
+
+
+GPU Engine Overall Functioning:
+===============================
+To understand why the GPU engine works the way it does, it is important
+to mention how we started and the results of our experiments.
+
+The GPU is extremely fast at processing data since it has many cores and
+the processing is done in parallel. However, the data which needs to be processed needs to be first
+transported to the GPU from the CPU. This is done through the PCI
+Express (2.0) bus. We initially made some measurements, and on average the
+bandwidth of the bus was observed to be 4GB/s.
+(The bandwidth measurement utility in the gpu_bandwidth_test directory
+can be used to verify this, or rerun any new tests. There is also a
+similar utility in the CUDA samples which can also be used for this
+purpose.)
+
+Suppose we want to accelerate a function f1f2opf3 which sums two fields
+and returns an output field, in the serial version of Q, one would read both
+of the input fields from disk performs the operation and then store the output field back to disk. If we translate this directly to a GPU-accelerated version, we'll do the reading and writing to disk and, for processing the data, we'll have to transport the data into the GPU and do the processing in parallel in the GPU, and retransport back the results. It turns out that the cost we pay for the data transfer is not really paid off by the processing speed, primarily because the computations that need to be done in most of these functions are not particularly large or complex, and hence the speedup gained by the computations is not high enough to compensate for the time spent on the data transfer. So if we were to invoke a process for each Q call which does the above mentioned, we would not get a significant speedup - and this is what we
+observed during our preliminary stages of the project.
+
+This made us switch to use cases such as interactive analysis, where the data once loaded can be reused multiple times in which case we have to pay the data transfer cost only once. This made us adopt the following mechanism.
+The GPU engine will be not be a process that is created and destroyed as
+required, but one that will be always active so that the data loaded
+wont be destroyed as long as any operations on it is being performed. To
+do this, the GPU engine will be running as a http server, and any
+queries/operations need to come in as a http request.
+
+
+GPU Engine Details:
+-------------------------------
+The GPU engine maintains a number of "registers" which are essentially
+memory pointers where one can allocate and store Q fields (done by a
+load command). While loading data, once also needs to specify metadata
+associated with the field which is used by various other functions. Examples of metadata include number of rows, data type etc. The metadata is stored in the disk, in the directory specified in the $Q_DOCROOT environment variable. Also, data is assumed to be present in the QGPU directory. The reason for storing the metadata on the disk as opposed to memory is that to follow a similar convention as Q does, as well as for smoother interaction between the client and server in cases where both are run on the same machine. 
+So, one needs to set these envt variables before starting the server. In bash this can be done by:
+
+export Q_DOCROOT=<path>
+
+There is also another envt variable $Q_DATA_DIR which is not currently
+used, but needs to be set for the code to work
+export Q_DATA_DIR=<path>
+
+During a load, one also specifies a GPU/device name for the field which is to
+be loaded. Internally, the QGPU server maintains a mapping between the
+names and the GPU registers. But from a user perspective. one does not have to worry about the numbers, and always only need to refer to the registers/field using its name. 
+
+Computations on the data are performed by GPU kernels which process data in parallel. These use a 1-D data decomposition since the data fields are always 1-D. GPU kernels need 2 configuration parameters - number of blocks and number of threads per block. These are specified by the macros NBLOCKS and NTHREADS in qgpu_server_kernels.h.
+
+For all operations, we need to handle data with different data types (I1, I2, I4, I8 etc.) and also a number of operations (+, -, ==, min etc.). To handle these in an elegant and concise manner, we use templates for handling the data types and functors for the operators. One can find online documentation in case one is interested to learn more about these. All of the GPU kernels are templated to allow any data type and the functors take care of the possibility of any operator as input.
+
+Currently, all functions use only binary operations, and we have a functor named bin_functor (qgpu_server_kernels.h) for this purpose. Given an operation, get_op_for_str() can be used to get the corresponding opcode (an integer value corresponding to the operation) which can be used to initialize the bin_functor and passed in as argument to the kernel. 
+
+The list of GPU-accelerated data processing functions is mentioned in
+one of the subsequent sections.
+
+Typically all results after operations are either fields which are
+stored in a register, which can be pushed out to file using a store
+operation; or single values (in case of a reduce operation, for example) where the output is sent back using a http response.
+
+
+Functions/Modules Overview:
+===============================
+This package implements GPU-accelerated versions of a subset of functions used by Q. The functions available can be classified into:
+
+Ones that read or modify meta-data:
+--------------
+list_free_mem
+list_num_registers
+list_free_registers
+list_used_registers
+describe_register
+
+Ones that read/write data:
+--------------
+load
+store
+add_fld
+del_fld
+
+Ones that operate on data:
+---------------
+f1s1opf2
+f1f2opf3
+f_to_s
+f1f2_to_s
+f1_shift_f2
+count
+count_f
+join
+sort
+
+For debugging:
+----------------
+print_reg_data
+print_data_to_ascii_file
+
+
+For a detailed description of these functions, please refer to their definitions in qgpu_server.h
+Each of these functions have a specified number of arguments which can
+be seen in gen_reqd_str(), or qgpu().
+
+How To Use:
+===============================
+The entire GPU code is embedded and compiled with a http server code. Once started, the server starts running listening on port specified by the GPU_PORT global variable/macro.
+
+On the client side, one can use the curl utility to send a http request.
+Lets take an example.
+Say we want to load data from file foo.bin, with 100000 rows, of data type I4(int), and you want to store this into a register and give it a name abc. There are a some more info you need to store which make sense only because this has been designed such that the client side also uses the same metadata info. These includ h_fld which is the name of this field in the table, and redundant info such as the filesize which can essentially be calculated from the number of rows and data type.
+Ok, so given this, the corresponding Q command would be look like:
+
+gq load nR=100000 fldtype=I4 filesz=400000 d_fld=abc filename=foo.bin tbl=T1 h_fld=xyz
+
+To figure out the exact keywords to use on the left side of the =, one
+needs to take a look at gen_reqd_str() in qgpu.cpp. 
+Once this query is written, one needs to translate it into a
+corresponding url encoding. One can use the qtils utility in the utils
+directory for this purpose. In shell this can be done by:
+
+instr="gq load nR=100000 fldtype=I4 filesz=400000 d_fld=abc filename=foo.bin tbl=T1 h_fld=xyz"
+outstr=`qtils urlencode "$instr"`
+
+qtils produces something which looks like:
+gq+load+nR%3d100000+fldtype%3dI1+filesz%3d100000+d_fld%3da+filename%3d1e5_incr_mod100_I1.bin+tbl%3dT1+h_fld%3da
+
+
+then finally use curl to send the request 
+curl --url "localhost:8080/gq?COMMAND=$outstr"
+
+Here we assume that the client is running on the same machine as the
+server (hence our usage of localhost), and on port 8080. For a general
+case, our command would be
+
+curl --url "<server-ip-address>:<qgpu-server-port-num>/gq?COMMAND=<command>"
+
+Any response from the QGPU server will be displayed on the client side
+in the format { "msg" : "<message>" }.
+
+
+For future development/modification to the code:
+===============================
+Assumptions/Limitations:
+-----------------
+1. The bin_functor which performs binary operations is tricky since the
+two input data variables can be of different datatypes, but the functor
+is templated for a single datatype. In addition, the
+output can also be of different datatype, however this is not such a big
+issue since the output will just be typecasted accordingly.
+If the inputs are of a datatype that are of higher precision than the
+functor, the typecasting might go wrong and result in incorrect results.
+Hence, for all operations where the inputs might be of different
+datatypes, we currently use the largest precision datatype functor.
+For example, if the data we are dealing with are of integral type, it is
+recommended to use long long functor.
+
+2. Currently, for f_to_s, in the case where the operation to be done is
+a sum, we currently use an optimized GPU kernel which is on average 2X
+faster that the regular f_to_s kernel. However, this kernel has a
+limitation. It is fast due to the fact that the partial results per
+thread block are not stored in the global memory, and instead written
+back direcrlt to the final result variable using CUDA atomic operations. However, since these atomic operation functions allow the final result only to be unsigned for integral datatypes, this will work correctly only if the input values are unsigned (they need not be unsigned datatypes, but as long as the values are non-negative, it'll still work).
+This can be turned off by setting the _USE_OPT_REDUCE_SUM macro in
+qgpu_server.cu to 0.
+
+3. For the count functions, the same limitation as above holds. But,
+since here we are computing a histogram, I am hoping these values will
+be positive in most cases.
+
+4. Most functions can currently handle only integral datatypes (I1, I2,
+I4 and I8). While floating point datatypes will only be an easy
+addition, they are currently not implemented. TODO.
+
+5. In f_to_s and f1f2_to_s, we assume that the output will always be
+long long (since currently we support only integral datatypes).
+
+6. Since, count is the same as count_f where the values array is a list
+of all ones, to avoid duplication, we implement count by creating a
+temporary array of all ones. It is to be noted that when count is
+called, there has to be at least one free register for creating this
+temporary array. If not, it will throw an error. Of course, the register
+is released once the function is done.
+
+7. The datatypes and operations allowed by each function, and other
+limitations are as follows:
+
+f1s1opf2 (all integral types, all ops)
+f1f2opf3 (all integral types, all ops, f1 and f2 have to be of same type)
+f_to_s (all integral types, ops = sum, max and min)
+f1f2_to_s (all integral types, ops = sum, max and min)
+f1_shift_f2 (all integral types)
+count (I1, I2, I4, but all input values have to be non-negative)
+count_f (I1, I2, I4, but all input values have to be non-negative, output buffer can have at most 4096 elements)
+join (all integral types)
+sort (all integral types)
+
+
+Known Issues/TODOs:
+-----------------
+1. Makefile has some minor issue, and fails to compile sometimes when source files are changed. As a temporary fix, make clean each time before make, or do make twice.
+
+2. In case a new binary operation needs to be added, one has to follow 2 steps:
+A. add the operation in the binop_functor's operator() method
+B. add the corresponding number in the switch statement in the function get_op_for_str
+TODO: This can be changed to enum in future, will make life easier.
+
+3. Referring to point 3 in limitations above, the inputs to count_f in
+reality need not be all non-negative, especially the values in the value array can be negative as well. Currently, our version of count_f assumes the values are non-negative. This needs to be fixed.
+
+4. The sort function uses thrust library, and it takes a long time to
+compile, and is currently commented out. This can be optionally disabled by scommenting out the 
+NVCCFLAGS      += -D_GPU_SORT 
+line from the Makefile.
+
+Some important global variables/macros
+-----------------
+src/gqhttp.c :
+GPU_PORT 	-	port on which the qgpu server runs
+rs_src/g_meta_data.c :
+G_GPU_REG_SIZE	-	number of GPU registers to be used
+rs_src/qtypes.h :
+GPU_REG_TYPE 	-	structure template for storing metadata and
+GPU register pointer
+src/qgpu_server_kernels.h :
+NTHREADS	- 	number of threads per block
+NBLOCKS		- 	number of blocks
+

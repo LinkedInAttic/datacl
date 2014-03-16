@@ -1,0 +1,68 @@
+f1s1opf2
+1e5_incr_mod100_I1.bin
+
+f1f2opf3
+1e5_incr_mod100_I1.bin
+1e5_allones_I1.bin
+
+f1f2_to_s
+1e5_incr_mod100_I1.bin
+1e5_evenones_I1.bin
+
+f1_shift_f2
+1e5_incr_mod100_I1.bin
+
+count
+1e5_histdata_I1.bin
+1e5_evenones_I1.bin
+
+count_f
+1e5_histdata_I1.bin
+1e5_evenones_I1.bin
+1e5_all10s_I1.bin
+
+join
+1.8M_mult3_I4.bin
+1.8M_val_I4.bin
+1.8M_mult2_I4.bin
+
+
+=============================
+
+#increasing values from 0 to 100, after 100 goes back again to 0 and
+repeats
+1e5_incr_mod100_I1.bin
+f1s1opf2
+f1f2opf3
+f1f2_to_s
+f1_shift_f2
+
+#all ones
+1e5_allones_I1.bin
+f1f2opf3
+
+#ones at even and zeros at odd positions
+1e5_evenones_I1.bin
+f1f2_to_s
+count
+count_f
+
+#random numbers between 0 and 10
+1e5_histdata_I1.bin
+count_f
+
+# all 10s
+1e5_all10s_I1.bin
+count_f
+
+#multiples of 3
+1.8M_mult3_I4.bin
+join
+
+#all 10s
+1.8M_val_I4.bin
+join
+
+#multiples of 2
+1.8M_mult2_I4.bin
+join

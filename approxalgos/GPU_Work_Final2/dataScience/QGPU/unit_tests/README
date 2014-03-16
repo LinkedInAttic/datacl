@@ -1,0 +1,36 @@
+QGPU Unit tests:
+===============================
+
+Currently the unit tests cover all functionality, and perform tests with
+I1 and I4 datatypes. To cover other datatypes would be a simple
+extension. The test scripts for each of the functions are located under
+the appropriate directories, and the tests are name test*.sh. If reqd,
+once could easily create additional tests following the same pattern as
+existing tests.
+
+To run unit tests, please follow these steps:
+-------------------------------
+1. Make sure the QGPU server is setup to read files from the unit tests
+data directory. To do this, on the server side, set the Q_DOCROOT envt variable to the unit_tests/data directory.
+
+export Q_DOCROOT=<path_to_QGPU>/unit_tests/data
+
+2. On the client side, generate the test data files. The script generate_test_data.sh does this. Just run it. 
+(Please note, the tests need the qtils utility which encodes a given
+command into a URL. The path of this utility has to be available in
+$PATH. If not, please add it. The qtils utility has been provided in the
+utils directory along with this package. To add that to the path, do
+export PATH=$PATH:<path_to_QGPU>/utils
+)
+
+source generate_test_data.sh
+
+3. Run the unit tests. The script run_unit_tests.sh does this. Just run
+it.
+
+source run_unit_tests.sh
+
+4. For cleanup, we've provided a script cleanup.sh which deletes the
+test data.
+
+source cleanup.sh

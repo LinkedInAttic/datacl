@@ -1,0 +1,404 @@
+diff --git a/Makefile b/Makefile
+index baa2f7d..b909519 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@ CC 	= nvcc
+ LD	= nvcc
+ 
+ INC = -I/usr/local/cuda/samples/common/inc/
+-NVCCFLAGS 	= -arch=sm_20
++NVCCFLAGS 	= -arch=sm_20 -g -G
+ LDFLAGS	=
+ LIBS 	=
+ 
+diff --git a/src/main.cu b/src/main.cu
+index 3e2ebb7..451a17b 100644
+--- a/src/main.cu
++++ b/src/main.cu
+@@ -12,9 +12,40 @@
+ #include "filter.cuh"
+ using namespace std;
+ 
+-#define N 1e8
++#define N 5e8
+ 
+-typedef double myType;
++typedef long long myType;
++
++template <typename T>
++size_t getMaxAvailGpuMem()
++{
++
++	const size_t Mb = 1<<20; // Assuming a 1Mb page size here
++
++	size_t available, total;
++	cudaMemGetInfo(&available, &total);
++
++	T *buf_d = 0; 
++	size_t nwords = available / sizeof(T);
++	size_t words_per_Mb = Mb / sizeof(T);
++
++cout << " AVAIL = " << nwords << endl;
++cout << " PERWO = " << words_per_Mb << endl;
++
++	while(cudaMalloc((void**)&buf_d,  nwords * sizeof(T)) == cudaErrorMemoryAllocation)
++	{
++		nwords -= words_per_Mb;
++		if( nwords  < words_per_Mb)
++		{
++			// signal no free memory
++			break;
++		}
++	}
++
++	cudaDeviceReset();
++	return nwords;
++
++}
+ 
+ // gpu wrapper function
+ template <class T, class Compare>
+@@ -28,18 +59,115 @@ void filterGPU_wrap(T h_data[], size_t dataSize, const T val, char h_bitvec[], C
+     
+     checkCudaErrors(cudaGetDeviceProperties(&deviceProp, devID));
+ 
+-    cout << "Total global memory : " << deviceProp.totalGlobalMem << endl;
++    long long globalmem = deviceProp.totalGlobalMem;
++
++//    cout << "Total global memory : " << globalmem << endl;
+     
++    // Kernel configuration, where a one-dimensional
++    // grid and one-dimensional blocks are configured.
++    dim3 dimGrid(NBLOCKS);
++    dim3 dimBlock(NTHREADS);
++
++size_t available, total;
++cudaMemGetInfo(&available, &total);
++
++
++//cout << "--=------> Max avail mem = " << getMaxAvailGpuMem<myType>() << endl;
++
++//    long long maxNumElem = globalmem / sizeof(myType);
++    long long maxNumElem = available / sizeof(myType) /2;
++    long long numiter = ( dataSize + (maxNumElem -1) ) / maxNumElem;
++
++/*
++cout << "available " << available / sizeof(myType) << endl;
++cout << "total " << total / sizeof(myType) << endl;
++cout << "maxNumElem " << maxNumElem << endl;
++cout << "dataSize " << dataSize << endl;
++cout << "allocated " << MIN(maxNumElem, dataSize) << endl;
++*/
++
++
+     // allocate device memory
+     myType *d_data;
+-    checkCudaErrors(cudaMalloc((void **) &d_data, dataSize * sizeof(myType) ));
++    checkCudaErrors(cudaMalloc((void **) &d_data, MIN(maxNumElem, dataSize) * sizeof(myType) ));
++
++    // allocate device memory for result
++    char *d_bitvec;
++    checkCudaErrors(cudaMalloc((void **) &d_bitvec, MIN(maxNumElem, dataSize) * sizeof(char)));
++
++    long long dataRem = dataSize;
++    for(int i=0; i<numiter; i++)
++    {
++	    long long offset = i * maxNumElem;
++	    long long currDataSize = MIN(dataRem, maxNumElem);
++
++//	    cout << "offset = " << offset << "   max num elem = "<< maxNumElem << " data rem = " << dataRem << "  dsize = " << dataSize << endl;
++
++	    // copy host memory to device
++	    checkCudaErrors(cudaMemcpy(d_data, (h_data + offset), currDataSize * sizeof(myType), cudaMemcpyHostToDevice));
++
++	    // execute the kernel
++	    filterGPU<<< dimGrid, dimBlock >>>(d_data, currDataSize, val, d_bitvec, comp);
++
++	    cudaDeviceSynchronize();
++
++	    // check if kernel execution generated and error
++	    getLastCudaError("Kernel execution failed");
++
++	    // copy result from device to host
++	    checkCudaErrors(cudaMemcpy((h_bitvec + offset), d_bitvec, currDataSize * sizeof(char), cudaMemcpyDeviceToHost));
++
++	    dataRem = dataRem - currDataSize;
++
++    }
++
++//cout << "---------> DONE" << endl;
++
++    // free device memory
++    cudaFree(d_data);
++    cudaFree(d_bitvec);
++
++    cudaDeviceReset();
++
++}
++
++
++
++
++// gpu wrapper function -- uses pinned memory
++template <class T, class Compare>
++void filterGPU_wrap_pin(T h_data[], size_t dataSize, const T val, char h_bitvec[], Compare comp)
++{
++
++    cudaDeviceProp deviceProp;
++
++    // This will pick the best possible CUDA capable device
++    int devID = findCudaDevice(0, NULL);
++
++    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, devID));
++
++    cout << "Total global memory : " << deviceProp.totalGlobalMem << endl;
++
++    // allocate device memory
++    myType *d_data;
++//    checkCudaErrors(cudaMalloc((void **) &d_data, dataSize * sizeof(myType) ));
+     // copy host memory to device
+-    checkCudaErrors(cudaMemcpy(d_data, h_data, dataSize * sizeof(myType), cudaMemcpyHostToDevice));
++//    checkCudaErrors(cudaMemcpy(d_data, h_data, dataSize * sizeof(myType), cudaMemcpyHostToDevice));
++
++
++
++//    myType* h_data_p = (myType *) ALIGN_UP(h_data, MEMORY_ALIGNMENT);
++//    checkCudaErrors(cudaHostRegister(h_data_p, dataSize * sizeof(myType), cudaHostRegisterMapped));
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_data, (void *)h_data, 0));
++
+ 
+ 
+     // allocate device memory for result
+     char *d_bitvec;
+-    checkCudaErrors(cudaMalloc((void **) &d_bitvec, dataSize * sizeof(char)));
++//    checkCudaErrors(cudaMalloc((void **) &d_bitvec, dataSize * sizeof(char)));
++//    h_bitvec = (char *) ALIGN_UP(h_bitvec, MEMORY_ALIGNMENT);
++//    checkCudaErrors(cudaHostRegister(h_bitvec, dataSize * sizeof(char), cudaHostRegisterMapped));
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_bitvec, (void *)h_bitvec, 0));
+ 
+     // Kernel configuration, where a one-dimensional
+     // grid and one-dimensional blocks are configured.
+@@ -55,16 +183,79 @@ void filterGPU_wrap(T h_data[], size_t dataSize, const T val, char h_bitvec[], C
+     getLastCudaError("Kernel execution failed");
+ 
+     // copy result from device to host
+-    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, dataSize * sizeof(char), cudaMemcpyDeviceToHost));
++//    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, dataSize * sizeof(char), cudaMemcpyDeviceToHost));
+ 
+     // free device memory
+-    cudaFree(d_data);
+-    cudaFree(d_bitvec);
++//    checkCudaErrors(cudaFree(d_data));
++//    checkCudaErrors(cudaFree(d_bitvec));
++//    cudaDeviceReset();
++
++}
++
++
++
++// gpu wrapper function
++template <class T, class Compare>
++void filterGPU_wrap_regPin(T h_data[], size_t dataSize, const T val, char h_bitvec[], Compare comp)
++{
++
++    cudaDeviceProp deviceProp;
++
++    // This will pick the best possible CUDA capable device
++    int devID = findCudaDevice(0, NULL);
++
++    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, devID));
++
++//    cout << "Total global memory : " << deviceProp.totalGlobalMem << endl;
++
++    myType *d_data;
++    char *d_bitvec;
++
++    checkCudaErrors(cudaHostRegister(h_data, dataSize * sizeof(myType), cudaHostRegisterMapped));
++    checkCudaErrors(cudaHostRegister(h_bitvec, dataSize * sizeof(char), cudaHostRegisterMapped));
++
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_data, (void *)h_data, 0));
++    checkCudaErrors(cudaHostGetDevicePointer((void **)&d_bitvec, (void *)h_bitvec, 0));
++
++
++    // allocate device memory
++//    checkCudaErrors(cudaMalloc((void **) &d_data, dataSize * sizeof(myType) ));
++    // copy host memory to device
++//    checkCudaErrors(cudaMemcpy(d_data, h_data, dataSize * sizeof(myType), cudaMemcpyHostToDevice));
++
++
++    // allocate device memory for result
++//    checkCudaErrors(cudaMalloc((void **) &d_bitvec, dataSize * sizeof(char)));
++
++    // Kernel configuration, where a one-dimensional
++    // grid and one-dimensional blocks are configured.
++    dim3 dimGrid(NBLOCKS);
++    dim3 dimBlock(NTHREADS);
++
++    // execute the kernel
++    filterGPU<<< dimGrid, dimBlock >>>(d_data, dataSize, val, d_bitvec, comp);
++
++    cudaThreadSynchronize();
++
++    // check if kernel execution generated and error
++    getLastCudaError("Kernel execution failed");
++
++    checkCudaErrors(cudaHostUnregister(h_data));
++    checkCudaErrors(cudaHostUnregister(h_bitvec));
++
++    // copy result from device to host
++//    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, dataSize * sizeof(char), cudaMemcpyDeviceToHost));
++
++    // free device memory
++//    cudaFree(d_data);
++//    cudaFree(d_bitvec);
+ 
+     cudaDeviceReset();
+ 
+ }
+ 
++
++
+ template <typename T>
+ void data_generate(T* datavec, size_t dataSize)
+ {
+@@ -77,13 +268,15 @@ void data_generate(T* datavec, size_t dataSize)
+ 
+ int main(int argc, char **argv)
+ {
+-	// timers
++    // timers
+     struct timeval start, end;
+ 
+     // data array
+     myType *h_data = (myType *) malloc(N * sizeof(myType));
+     // allocate mem for the gpu result on host side
+     char *h_bitvec = (char *) malloc(N * sizeof(char));
++    // allocate mem for the gpu result (pinned mem) on host side
++    char *h_bitvec_pin = (char *) malloc(N * sizeof(char));
+     // allocate mem for cpu result array for verification
+     char *bitvec = (char *) malloc(N * sizeof(char));
+ 
+@@ -110,6 +303,19 @@ int main(int argc, char **argv)
+     cout << "Time Taken by GPU: " << timeDiff_us / 1000 << "ms" << endl;
+ 
+ 
++
++
++    gettimeofday(&start, NULL);
++    // run on gpu
++    filterGPU_wrap_regPin <myType> ( h_data, N, val, h_bitvec_pin, opFuncNew);
++    gettimeofday(&end, NULL);
++
++    timeDiff_us = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
++    cout << "Time Taken by GPU (pinned mem using cudaHostRegister): " << timeDiff_us / 1000 << "ms" << endl;
++
++
++
++
+     gettimeofday(&start, NULL);
+     // run on host for comparison
+     filter<myType> (h_data, (size_t)N, val, bitvec, opFuncNew);
+@@ -117,7 +323,7 @@ int main(int argc, char **argv)
+ 
+     for(long long i=0; i < N; i++)
+     {
+-	    if(bitvec[i] != h_bitvec[i])
++	    if( (bitvec[i] != h_bitvec[i]) || (h_bitvec_pin[i] != h_bitvec[i]) )
+ 	    {
+ 		    cout << "Results dont match!!! at " << i << " gpu: " << bitvec[i] << " cpu: " << h_bitvec[i] << endl;
+ 		    break;
+@@ -130,7 +336,94 @@ int main(int argc, char **argv)
+     // free host memory
+     free(h_data);
+     free(h_bitvec);
++    free(h_bitvec_pin);
+     free(bitvec);
+ 
++
++
++
++
++
++
++
++
++
++
++
++cout << endl;
++cout << endl;
++cout << endl;
++cout << endl;
++
++    myType *h_data_p;
++    char* h_bitvec_p;
++
++    checkCudaErrors(cudaHostAlloc((void **)&h_data_p, N * sizeof(myType), cudaHostAllocMapped));
++    // allocate mem for the gpu result on host side
++    checkCudaErrors(cudaHostAlloc((void **)&h_bitvec_p, N * sizeof(char), cudaHostAllocMapped));
++    // allocate mem for cpu result array for verification
++    bitvec = (char *) malloc(N * sizeof(char));
++
++    // initalize the memory
++    data_generate( h_data_p, N );
++
++    val = rand();
++
++    // declare functor for comparator callback function
++//    opFunctor<myType> opFuncNew;
++//    op_t opNew = GT;
++    opcode = rand() % 5;
++    opFuncNew.setOp(opcode);
++
++    cout << "Checking for value " << val << " and opcode " << opcode << endl;
++
++    gettimeofday(&start, NULL);
++    // run on gpu
++    filterGPU_wrap_pin <myType> ( h_data_p, N, val, h_bitvec_p, opFuncNew);
++    gettimeofday(&end, NULL);
++
++    timeDiff_us = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
++    cout << "Time Taken by GPU: " << timeDiff_us / 1000 << "ms" << endl;
++
++
++    gettimeofday(&start, NULL);
++    // run on host for comparison
++    filter<myType> (h_data_p, (size_t)N, val, bitvec, opFuncNew);
++    gettimeofday(&end, NULL);
++
++
++    for(long long i=0; i < N; i++)
++    {
++            if(bitvec[i] != h_bitvec_p[i])
++            {
++                    cout << "Results dont match!!! at " << i << " gpu: " << h_bitvec_p[i] << " cpu: " << bitvec[i] << endl;
++                    break;
++            }
++    }
++
++    timeDiff_us = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
++    cout << "Time Taken by CPU: " << timeDiff_us / 1000 << "ms" << endl;
++
++    // free host memory
++//    free(h_data);
++//    free(h_bitvec);
++    free(bitvec);
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
+     return 0;
+ }

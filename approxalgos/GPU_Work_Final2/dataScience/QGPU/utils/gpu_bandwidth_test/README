@@ -1,0 +1,31 @@
+Utility to test the bandwidth of you CPU-GPU transfers (PCI-Express):
+===============================
+Authors:
+-----------------
+Bharath Pattabiraman
+Ramesh Subramonian (rsubramonian@linkedin.com)
+-----------------
+
+This utility reports the CPU-GPU bandwidth for varying data sizes.
+
+Directions:
+===============================
+We assume cuda sdk/samples are available in
+/usr/local/cuda/samples/common/inc/
+If not, change the include path accordingly.
+If you do not have the samples installed, you'll have to delete all
+occurences of checkCudaErrors() from the source file.
+
+To measure only CPU-GPU transfers set the tran_GPU2CPU macro to 0.
+To use more precise CUDA timers, declare the macro cudaTIMER.
+If you want to average over a number of iterations/transfers, set the
+appropriate value to the NUMITER macro.
+
+
+Compile:
+-----------------
+nvcc -o gpu_bandwidth_test -I/usr/local/cuda/samples/common/inc/ gpu_bandwidth_test.cpp
+
+Run:
+-----------------
+./gpu_bandwidth_test

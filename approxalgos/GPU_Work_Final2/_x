@@ -1,0 +1,6 @@
+rm -f ./dataScience/QGPU/utils/gpu_bandwidth_test/gpu_bandwidth_test.bak
+rm -f ./bussAnal/filter/Makefile.bak
+rm -f ./dataScience/QGPU/utils/gpu_bandwidth_test/mmap_vs_malloc_test.out
+rm -f ./dataScience/QGPU/utils/gpu_bandwidth_test/bandwidthtest.out
+rm -f ./dataScience/QGPU/tmp/a.out
+rm -f ./bussAnal/filter/src/dsizetest.out

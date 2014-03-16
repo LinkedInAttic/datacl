@@ -1,0 +1,1147 @@
+Index: filter/src/main.cu
+===================================================================
+--- filter.orig/src/main.cu
++++ filter/src/main.cu
+@@ -1,371 +1,44 @@
+-#include <time.h>
+ #include <iostream>
+-#include <stdlib.h>
+-#include <sys/time.h>
+-#include <cuda_runtime.h>
+-#include <string>
++#include "test_fns.hpp"
+ 
+-#include "filter.hpp"
+-#include "filter.cuh"
+ using namespace std;
+ 
+-#define NELEM 5e8
++#define NELEM 1e8
+ #define NDICT 5000
+ 
+-#define TIMETHIS(command, startTimer, endTimer)	\
+-gettimeofday(startTimer, NULL);			\
+-command;					\
+-gettimeofday(endTimer, NULL);			\
+-
+-
+-
+ typedef long long myType;
+ 
+-/**
+-* @brief get time difference between timers star and end
+-*
+-* @param start start timer - has to be struct timeval pointer
+-* @param end end timer - has to be struct timeval pointer
+-*
+-* @return time difference in millisecond
+-*/
+-double getTimeDiff( struct timeval& start, struct timeval& end )
+-{
+-    return ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000 ;
+-}
+-
+-
+-/**
+-* @brief verifies if the given arrays are identical up to dataSize elements
+-*
+-* @param arrGPU[] GPU result
+-* @param arrCPU[] CPU result
+-* @param dataSize number of elements to compare
+-*/
+-template <typename T>
+-void verifyResult( T arrGPU[], T arrCPU[], size_t dataSize )
+-{ 
+-    for(long long i=0; i < dataSize; i++)
+-    {
+-            if(arrGPU[i] != arrCPU[i])
+-            {
+-                    cout << "Results dont match!!! at " << i << " gpu: " << arrGPU[i] << " cpu: " << arrCPU[i] << endl;
+-                    break;
+-            }
+-    }
+-}
+-
+-/**
+-* @brief generates random data
+-*
+-* @tparam T template parameter
+-* @param datavec data array
+-* @param dataSize number of elements
+-*/
+-template <typename T>
+-void data_generate(T* datavec, size_t dataSize, T low, T high)
+-{
+-	for( long long i=0; i<dataSize; i++ )
+-		//generating between 0 and RAND_MAX
+-		datavec[i] = low + (high - low) * ((double) rand() / (double) RAND_MAX);
+-}
+-
+-
+-
+-
+-
+-/**
+-* @brief testing function to test and time filter (serial and GPU version) with random inputs.
+-*/
+-void testfilter()
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(NELEM * sizeof(myType));
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(NELEM * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(NELEM * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, NELEM, (myType)0, (myType)RAND_MAX );
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5;//    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap <myType> ( h_data, NELEM, val, h_bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data, (size_t)NELEM, val, bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, NELEM );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-
+-/**
+-* @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostRegister()) with random inputs.
+-*/
+-void testfilter_PinnedRegMem()
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(NELEM * sizeof(myType));
+-    // allocate mem for the gpu result (pinned mem) on host side
+-    char *h_bitvec_pin = (char *) malloc(NELEM * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(NELEM * sizeof(char));
+-
+-
+-    // initalize the memory
+-    data_generate( h_data, NELEM, (myType)0, (myType)RAND_MAX );
+-
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5; //    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap_regPin <myType> ( h_data, NELEM, val, h_bitvec_pin, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU (pinned mem using cudaHostRegister): " << getTimeDiff(start, end) << "ms" << endl;
+-
+-
+-
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data, (size_t)NELEM, val, bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec_pin, bitvec, NELEM );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec_pin);
+-    free(bitvec);
+-}
+-
+-
+-
+-
+-
+-/**
+-* @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostAlloc()) with random inputs.
+-*/
+-void testfilter_PinnedMem()
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    myType *h_data_p;
+-    char* h_bitvec_p;
+-
+-    checkCudaErrors(cudaHostAlloc((void **)&h_data_p, NELEM * sizeof(myType), cudaHostAllocMapped));
+-    // allocate mem for the gpu result on host side
+-    checkCudaErrors(cudaHostAlloc((void **)&h_bitvec_p, NELEM * sizeof(char), cudaHostAllocMapped));
+-    // allocate mem for cpu result array for verification
+-    char* bitvec = (char *) malloc(NELEM * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data_p, NELEM, (myType)0, (myType)RAND_MAX);
+-
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5;//    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap_pin <myType> ( h_data_p, NELEM, val, h_bitvec_p, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU (pinned mem using cudaHostAlloc()): " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data_p, (size_t)NELEM, val, bitvec, opFuncNew), &start, &end );
+-
+-
+-    verifyResult<char>( h_bitvec_p, bitvec, NELEM );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // free host memory
+-    free(bitvec);
+-
+-    //free device memory
+-    checkCudaErrors(cudaFreeHost(h_data_p));
+-    checkCudaErrors(cudaFreeHost(h_bitvec_p));
+-}
+-
+-
+-/**
+-* @brief testing function for filter in.
+-*/
+-void testfilterIn()
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(NELEM * sizeof(myType));
+-    // data array
+-    myType *h_dict = (myType *) malloc(NDICT * sizeof(myType));
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(NELEM * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(NELEM * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, NELEM, (myType)0, (myType)NELEM );
+-
+-    // initalize the dictionary
+-    data_generate( h_dict, NDICT, (myType)0, (myType)NELEM );
+-
+-    cout << "Checking for elements of input array in dictionary (using global memory of GPU to store the dictionary) " << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterInGPU_wrap <myType> ( h_data, NELEM, h_dict, NDICT, h_bitvec ), &start, &end );
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filterIn<myType> ( h_data, NELEM, h_dict, NDICT, bitvec ), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, NELEM );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-/**
+-* @brief testing function for filter in - this variant uses constant memory of the GPU which is a faster read-only memory.
+-*/
+-void testfilterIn_conMem()
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(NELEM * sizeof(myType));
+-    // data array
+-    myType *h_dict = (myType *) malloc(NDICT * sizeof(myType));
+-
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(NELEM * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(NELEM * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, NELEM, (myType)0, (myType)NELEM );
+-
+-    // initalize the dictionary
+-    data_generate( h_dict, NDICT, (myType)0, (myType)NELEM );
+-
+-    gettimeofday(&start, NULL);
+-    // allocate input and output data arrays
+-    myType *d_data;
+-    checkCudaErrors(cudaMalloc( (void **) &d_data, NELEM * sizeof(myType) ));
+-    char *d_bitvec;
+-    checkCudaErrors(cudaMalloc( (void **) &d_bitvec,  NELEM * sizeof(char) ));
+-
+-    // copy data array to device
+-    checkCudaErrors(cudaMemcpy(d_data, h_data, NELEM * sizeof(myType), cudaMemcpyHostToDevice));
+-
+-    cout << "Checking for elements of input array in dictionary (using constant memory of GPU to store the dictionary) " << endl;
+-
+-    // run on gpu
+-    filterInGPU_conMem_wrap <myType> ( d_data, NELEM, h_dict, NDICT, d_bitvec );
+-
+-    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, NELEM * sizeof(char), cudaMemcpyDeviceToHost));
+-    gettimeofday(&end, NULL);
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filterIn<myType> ( h_data, NELEM, h_dict, NDICT, bitvec ), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, NELEM );
+-
+-    // free device memory
+-    cudaFree(d_data);
+-    cudaFree(d_bitvec);
+-
+-    cudaDeviceReset();
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-
+-
+ int main(int argc, char **argv)
+ {
+ 
+ 
+ srand( time(NULL) );
+-/*
++
+ cout << "-----------------------------------------------------" << endl;
+ 
+-testfilter();
++testfilter<myType>(NELEM);
+ 
+ cout << endl;
+ cout << endl;
+ cout << "-----------------------------------------------------" << endl;
+ 
+-testfilter_PinnedRegMem();
++testfilter_PinnedRegMem<myType>(NELEM);
+ 
+ 
+ cout << endl;
+ cout << endl;
+ cout << "-----------------------------------------------------" << endl;
+ 
+-testfilter_PinnedMem();
++testfilter_PinnedMem<myType>(NELEM);
+ 
+ cout << endl;
+ cout << endl;
+ cout << "-----------------------------------------------------" << endl;
+-*/
+ 
+ cout << "-----------------------------------------------------" << endl;
+ cout << endl;
+ 
+-testfilterIn();
++testfilterIn<myType>(NELEM, NDICT);
+ 
+ cout << endl;
+ cout << "-----------------------------------------------------" << endl;
+@@ -374,7 +47,7 @@ cout << "-------------------------------
+ cout << "-----------------------------------------------------" << endl;
+ cout << endl;
+ 
+-testfilterIn_conMem();
++testfilterIn_conMem<myType>(NELEM, NDICT);
+ 
+ cout << endl;
+ cout << "-----------------------------------------------------" << endl;
+Index: filter/src/common.cpp
+===================================================================
+--- filter.orig/src/common.cpp
++++ filter/src/common.cpp
+@@ -1,26 +1,10 @@
++#include <sys/time.h>
++#include <stdlib.h>
++#include <iostream>
++
++using namespace std;
+ 
+ double getTimeDiff( struct timeval& start, struct timeval& end )
+ {
+ 		return ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000 ;
+ }
+-
+-
+-template <typename T>
+-void verifyResult( T arrGPU[], T arrCPU[], size_t dataSize )
+-{ 
+-		for(long long i=0; i < dataSize; i++)
+-		{
+-						if(arrGPU[i] != arrCPU[i])
+-						{
+-										cout << "Results dont match!!! at " << i << " gpu: " << arrGPU[i] << " cpu: " << arrCPU[i] << endl;
+-										break;
+-						}
+-		}
+-}
+-
+-template <typename T>
+-void data_generate(T* datavec, size_t dataSize, T low, T high)
+-{
+-  for( long long i=0; i<dataSize; i++ )
+-    datavec[i] = low + (high - low) * ((double) rand() / (double) RAND_MAX);
+-}
+Index: filter/src/common.hpp
+===================================================================
+--- filter.orig/src/common.hpp
++++ filter/src/common.hpp
+@@ -3,8 +3,6 @@ gettimeofday(startTimer, NULL);			\
+ command;					\
+ gettimeofday(endTimer, NULL);			\
+ 
+-
+-
+ /**
+ * @brief get time difference between timers star and end
+ *
+@@ -13,10 +11,7 @@ gettimeofday(endTimer, NULL);			\
+ *
+ * @return time difference in millisecond
+ */
+-double getTimeDiff( struct timeval& start, struct timeval& end )
+-{
+-		return ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000 ;
+-}
++double getTimeDiff( struct timeval& start, struct timeval& end );
+ 
+ 
+ /**
+@@ -33,12 +28,13 @@ void verifyResult( T arrGPU[], T arrCPU[
+ 		{
+ 						if(arrGPU[i] != arrCPU[i])
+ 						{
+-										cout << "Results dont match!!! at " << i << " gpu: " << arrGPU[i] << " cpu: " << arrCPU[i] << endl;
++										std::cout << "Results dont match!!! at " << i << " gpu: " << arrGPU[i] << " cpu: " << arrCPU[i] << std::endl;
+ 										break;
+ 						}
+ 		}
+ }
+ 
++
+ /**
+ * @brief generates random data
+ *
+Index: filter/src/filter.hpp
+===================================================================
+--- filter.orig/src/filter.hpp
++++ filter/src/filter.hpp
+@@ -35,19 +35,19 @@ void filter(T data[], size_t numElem, co
+ template<typename T>
+ int binarySearch(T a[], size_t n, T target) {
+ 
+-    long long low = 0;
+-    long long high = n-1;
++	long long low = 0;
++	long long high = n-1;
+ 
+-    while (low <= high) {
+-        int middle = low + (high - low)/2;
+-        if (target < a[middle])
+-            high = middle - 1;
+-        else if (a[middle] < target)
+-            low = middle + 1;
+-        else
+-            return middle;
+-    }
+-    return -1;
++	while (low <= high) {
++		int middle = low + (high - low)/2;
++		if (target < a[middle])
++			high = middle - 1;
++		else if (a[middle] < target)
++			low = middle + 1;
++		else
++			return middle;
++	}
++	return -1;
+ }
+ 
+ /**
+@@ -64,10 +64,10 @@ template <typename T>
+ void filterIn (T *inData, size_t numElem, T* inDict, size_t numElemInDict, char* outFlag)
+ {
+ 	for(unsigned long long i=0; i<numElem; i++)
+-        {
+-                if( binarySearch <T> (inDict, numElemInDict, inData[i]) == -1 )
+-                        outFlag[i] = '0';
+-                else
+-                        outFlag[i] = '1';
+-        }
++	{
++		if( binarySearch <T> (inDict, numElemInDict, inData[i]) == -1 )
++			outFlag[i] = '0';
++		else
++			outFlag[i] = '1';
++	}
+ }
+Index: filter/src/test_dataSize.cu
+===================================================================
+--- /dev/null
++++ filter/src/test_dataSize.cu
+@@ -0,0 +1,29 @@
++/*
++
++#include<sys/time.h>
++#include<iostream>
++#include<stdlib.h>
++#include<math.h>
++#include <cuda_runtime.h>
++#include <helper_cuda.h>
++#include <helper_functions.h> // helper functions for SDK examples
++
++
++int main()
++{
++  int min2Pow = 20; // starting with 1MB
++  int max2Pow = 32; // ending at 4GB
++  int numSizes = max2Pow - min2Pow + 1;
++	int ndict = 5000;
++
++  long long *dataSizes = (long long *) malloc( numSizes * sizeof(long long) );
++
++  for(int i=0; i<numSizes; dataSizes[i]=pow(2, min2Pow + i), i++);
++
++  for(int i=0; i<numSizes; i++)
++	{
++		testfilter(dataSizes[i]);
++	}
++}
++
++*/
+Index: filter/src/test_fns.cu
+===================================================================
+--- filter.orig/src/test_fns.cu
++++ /dev/null
+@@ -1,307 +0,0 @@
+-#include <time.h>
+-#include <iostream>
+-#include <stdlib.h>
+-#include <sys/time.h>
+-#include <cuda_runtime.h>
+-#include <string>
+-
+-#include "filter.hpp"
+-#include "filter.cuh"
+-using namespace std;
+-
+-#define NELEM 1e8
+-#define NDICT 5000
+-
+-
+-typedef long long myType;
+-
+-
+-
+-void testfilter(size_t nelem)
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(nelem * sizeof(myType));
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(nelem * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, nelem, (myType)0, (myType)RAND_MAX );
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5;//    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap <myType> ( h_data, nelem, val, h_bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, nelem );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-void testfilter_PinnedRegMem(size_t nelem)
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(nelem * sizeof(myType));
+-    // allocate mem for the gpu result (pinned mem) on host side
+-    char *h_bitvec_pin = (char *) malloc(nelem * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(nelem * sizeof(char));
+-
+-
+-    // initalize the memory
+-    data_generate( h_data, nelem, (myType)0, (myType)RAND_MAX );
+-
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5; //    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap_regPin <myType> ( h_data, nelem, val, h_bitvec_pin, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU (pinned mem using cudaHostRegister): " << getTimeDiff(start, end) << "ms" << endl;
+-
+-
+-
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec_pin, bitvec, nelem );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec_pin);
+-    free(bitvec);
+-}
+-
+-
+-void testfilter_PinnedMem(size_t nelem)
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    myType *h_data_p;
+-    char* h_bitvec_p;
+-
+-    checkCudaErrors(cudaHostAlloc((void **)&h_data_p, nelem * sizeof(myType), cudaHostAllocMapped));
+-    // allocate mem for the gpu result on host side
+-    checkCudaErrors(cudaHostAlloc((void **)&h_bitvec_p, nelem * sizeof(char), cudaHostAllocMapped));
+-    // allocate mem for cpu result array for verification
+-    char* bitvec = (char *) malloc(nelem * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data_p, nelem, (myType)0, (myType)RAND_MAX);
+-
+-    myType val = rand();
+-
+-    // declare functor for comparator callback function
+-    opFunctor<myType> opFuncNew;
+-    int opcode = rand() % 5;//    op_t opNew = GT;
+-    opFuncNew.setOp(opcode);
+-
+-    cout << "Checking for value " << val << " and opcode " << opcode << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterGPU_wrap_pin <myType> ( h_data_p, nelem, val, h_bitvec_p, opFuncNew), &start, &end );
+-
+-    cout << "Time Taken by GPU (pinned mem using cudaHostAlloc()): " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filter<myType> (h_data_p, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
+-
+-
+-    verifyResult<char>( h_bitvec_p, bitvec, nelem );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // free host memory
+-    free(bitvec);
+-
+-    //free device memory
+-    checkCudaErrors(cudaFreeHost(h_data_p));
+-    checkCudaErrors(cudaFreeHost(h_bitvec_p));
+-}
+-
+-
+-void testfilterIn(size_t nelem, size_t ndict)
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(nelem * sizeof(myType));
+-    // data array
+-    myType *h_dict = (myType *) malloc(ndict * sizeof(myType));
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(nelem * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, nelem, (myType)0, (myType)nelem );
+-
+-    // initalize the dictionary
+-    data_generate( h_dict, ndict, (myType)0, (myType)nelem );
+-
+-    cout << "Checking for elements of input array in dictionary (using global memory of GPU to store the dictionary) " << endl;
+-
+-    // run on gpu
+-    TIMETHIS( filterInGPU_wrap <myType> ( h_data, nelem, h_dict, ndict, h_bitvec ), &start, &end );
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filterIn<myType> ( h_data, nelem, h_dict, ndict, bitvec ), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, nelem );
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-void testfilterIn_conMem(size_t nelem, size_t ndict)
+-{
+-    // timers
+-    struct timeval start, end;
+-
+-    // data array
+-    myType *h_data = (myType *) malloc(nelem * sizeof(myType));
+-    // data array
+-    myType *h_dict = (myType *) malloc(ndict * sizeof(myType));
+-
+-    // allocate mem for the gpu result on host side
+-    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
+-    // allocate mem for cpu result array for verification
+-    char *bitvec = (char *) malloc(nelem * sizeof(char));
+-
+-    // initalize the memory
+-    data_generate( h_data, nelem, (myType)0, (myType)nelem );
+-
+-    // initalize the dictionary
+-    data_generate( h_dict, ndict, (myType)0, (myType)nelem );
+-
+-    gettimeofday(&start, NULL);
+-    // allocate input and output data arrays
+-    myType *d_data;
+-    checkCudaErrors(cudaMalloc( (void **) &d_data, nelem * sizeof(myType) ));
+-    char *d_bitvec;
+-    checkCudaErrors(cudaMalloc( (void **) &d_bitvec,  nelem * sizeof(char) ));
+-
+-    // copy data array to device
+-    checkCudaErrors(cudaMemcpy(d_data, h_data, nelem * sizeof(myType), cudaMemcpyHostToDevice));
+-
+-    cout << "Checking for elements of input array in dictionary (using constant memory of GPU to store the dictionary) " << endl;
+-
+-    // run on gpu
+-    filterInGPU_conMem_wrap <myType> ( d_data, nelem, h_dict, ndict, d_bitvec );
+-
+-    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, nelem * sizeof(char), cudaMemcpyDeviceToHost));
+-    gettimeofday(&end, NULL);
+-
+-    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    // run on host for comparison
+-    TIMETHIS( filterIn<myType> ( h_data, nelem, h_dict, ndict, bitvec ), &start, &end );
+-
+-    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
+-
+-    verifyResult<char>( h_bitvec, bitvec, nelem );
+-
+-    // free device memory
+-    cudaFree(d_data);
+-    cudaFree(d_bitvec);
+-
+-    cudaDeviceReset();
+-
+-    // free host memory
+-    free(h_data);
+-    free(h_bitvec);
+-    free(bitvec);
+-}
+-
+-
+-
+-/*
+-int main(int argc, char **argv)
+-{
+-
+-
+-srand( time(NULL) );
+-
+-cout << "-----------------------------------------------------" << endl;
+-
+-testfilter(NELEM);
+-
+-cout << endl;
+-cout << endl;
+-cout << "-----------------------------------------------------" << endl;
+-
+-testfilter_PinnedRegMem(NELEM);
+-
+-
+-cout << endl;
+-cout << endl;
+-cout << "-----------------------------------------------------" << endl;
+-
+-testfilter_PinnedMem(NELEM);
+-
+-cout << endl;
+-cout << endl;
+-cout << "-----------------------------------------------------" << endl;
+-
+-cout << "-----------------------------------------------------" << endl;
+-cout << endl;
+-
+-testfilterIn(NELEM, NDICT);
+-
+-cout << endl;
+-cout << "-----------------------------------------------------" << endl;
+-
+-
+-cout << "-----------------------------------------------------" << endl;
+-cout << endl;
+-
+-testfilterIn_conMem(NELEM, NDICT);
+-
+-cout << endl;
+-cout << "-----------------------------------------------------" << endl;
+-
+-    return 0;
+-}
+-*/
+Index: filter/src/test_fns.hpp
+===================================================================
+--- filter.orig/src/test_fns.hpp
++++ filter/src/test_fns.hpp
+@@ -1,25 +1,260 @@
++#include <iostream>
++
++#include "filter.hpp"
++#include "filter.cuh"
++#include "common.hpp"
++using namespace std;
++
+ /**
+- * * @brief testing function to test and time filter (serial and GPU version) with random inputs.
+- * */
+-void testfilter(size_t nelem);
++* @brief testing function to test and time filter (serial and GPU version) with random inputs.
++*/
++template <typename T>
++void testfilter(size_t nelem)
++{
++    // timers
++    struct timeval start, end;
++
++    // data array
++    T *h_data = (T *) malloc(nelem * sizeof(T));
++    // allocate mem for the gpu result on host side
++    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
++    // allocate mem for cpu result array for verification
++    char *bitvec = (char *) malloc(nelem * sizeof(char));
++
++    // initalize the memory
++    data_generate( h_data, nelem, (T)0, (T)RAND_MAX );
++    T val = rand();
++
++    // declare functor for comparator callback function
++    opFunctor<T> opFuncNew;
++    int opcode = rand() % 5;//    op_t opNew = GT;
++    opFuncNew.setOp(opcode);
++
++    cout << "Checking for value " << val << " and opcode " << opcode << endl;
++
++    // run on gpu
++    TIMETHIS( filterGPU_wrap <T> ( h_data, nelem, val, h_bitvec, opFuncNew), &start, &end );
++
++    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    // run on host for comparison
++    TIMETHIS( filter<T> (h_data, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
++
++    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    verifyResult<char>( h_bitvec, bitvec, nelem );
++
++    // free host memory
++    free(h_data);
++    free(h_bitvec);
++    free(bitvec);
++}
+ 
+ /**
+- * * @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostRegister()) with random inputs.
+- * */
+-void testfilter_PinnedRegMem(size_t nelem);
++* @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostRegister()) with random inputs.
++*/
++template <typename T>
++void testfilter_PinnedRegMem(size_t nelem)
++{
++    // timers
++    struct timeval start, end;
++
++    // data array
++    T *h_data = (T *) malloc(nelem * sizeof(T));
++    // allocate mem for the gpu result (pinned mem) on host side
++    char *h_bitvec_pin = (char *) malloc(nelem * sizeof(char));
++    // allocate mem for cpu result array for verification
++    char *bitvec = (char *) malloc(nelem * sizeof(char));
++
++
++    // initalize the memory
++    data_generate( h_data, nelem, (T)0, (T)RAND_MAX );
++
++    T val = rand();
++
++    // declare functor for comparator callback function
++    opFunctor<T> opFuncNew;
++    int opcode = rand() % 5; //    op_t opNew = GT;
++    opFuncNew.setOp(opcode);
++
++    cout << "Checking for value " << val << " and opcode " << opcode << endl;
++
++    // run on gpu
++    TIMETHIS( filterGPU_wrap_regPin <T> ( h_data, nelem, val, h_bitvec_pin, opFuncNew), &start, &end );
++
++    cout << "Time Taken by GPU (pinned mem using cudaHostRegister): " << getTimeDiff(start, end) << "ms" << endl;
++
++
++
++
++    // run on host for comparison
++    TIMETHIS( filter<T> (h_data, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
++
++    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    verifyResult<char>( h_bitvec_pin, bitvec, nelem );
++
++    // free host memory
++    free(h_data);
++    free(h_bitvec_pin);
++    free(bitvec);
++}
+ 
+ /**
+- * * @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostAlloc()) with random inputs.
+- * */
+-void testfilter_PinnedMem(size_t nelem);
++* @brief testing function to test and time filter (serial and GPU version with pinned memory with cudaHostAlloc()) with random inputs.
++*/
++template <typename T>
++void testfilter_PinnedMem(size_t nelem)
++{
++    // timers
++    struct timeval start, end;
++
++    T *h_data_p;
++    char* h_bitvec_p;
++
++    checkCudaErrors(cudaHostAlloc((void **)&h_data_p, nelem * sizeof(T), cudaHostAllocMapped));
++    // allocate mem for the gpu result on host side
++    checkCudaErrors(cudaHostAlloc((void **)&h_bitvec_p, nelem * sizeof(char), cudaHostAllocMapped));
++    // allocate mem for cpu result array for verification
++    char* bitvec = (char *) malloc(nelem * sizeof(char));
++
++    // initalize the memory
++    data_generate( h_data_p, nelem, (T)0, (T)RAND_MAX);
++
++    T val = rand();
++
++    // declare functor for comparator callback function
++    opFunctor<T> opFuncNew;
++    int opcode = rand() % 5;//    op_t opNew = GT;
++    opFuncNew.setOp(opcode);
++
++    cout << "Checking for value " << val << " and opcode " << opcode << endl;
++
++    // run on gpu
++    TIMETHIS( filterGPU_wrap_pin <T> ( h_data_p, nelem, val, h_bitvec_p, opFuncNew), &start, &end );
++
++    cout << "Time Taken by GPU (pinned mem using cudaHostAlloc()): " << getTimeDiff(start, end) << "ms" << endl;
++
++    // run on host for comparison
++    TIMETHIS( filter<T> (h_data_p, (size_t)nelem, val, bitvec, opFuncNew), &start, &end );
++
++
++    verifyResult<char>( h_bitvec_p, bitvec, nelem );
++
++    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    // free host memory
++    free(bitvec);
++
++    //free device memory
++    checkCudaErrors(cudaFreeHost(h_data_p));
++    checkCudaErrors(cudaFreeHost(h_bitvec_p));
++}
+ 
+ /**
+- * * @brief testing function for filter in.
+- * */
+-void testfilterIn(size_t nelem, size_t ndict);
++* @brief testing function for filter in.
++*/
++template <typename T>
++void testfilterIn(size_t nelem, size_t ndict)
++{
++    // timers
++    struct timeval start, end;
++
++    // data array
++    T *h_data = (T *) malloc(nelem * sizeof(T));
++    // data array
++    T *h_dict = (T *) malloc(ndict * sizeof(T));
++    // allocate mem for the gpu result on host side
++    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
++    // allocate mem for cpu result array for verification
++    char *bitvec = (char *) malloc(nelem * sizeof(char));
++
++    // initalize the memory
++    data_generate( h_data, nelem, (T)0, (T)nelem );
++
++    // initalize the dictionary
++    data_generate( h_dict, ndict, (T)0, (T)nelem );
++
++    cout << "Checking for elements of input array in dictionary (using global memory of GPU to store the dictionary) " << endl;
++
++    // run on gpu
++    TIMETHIS( filterInGPU_wrap <T> ( h_data, nelem, h_dict, ndict, h_bitvec ), &start, &end );
++
++    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    // run on host for comparison
++    TIMETHIS( filterIn<T> ( h_data, nelem, h_dict, ndict, bitvec ), &start, &end );
++
++    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    verifyResult<char>( h_bitvec, bitvec, nelem );
++
++    // free host memory
++    free(h_data);
++    free(h_bitvec);
++    free(bitvec);
++}
+ 
+ /**
+- * * @brief testing function for filter in - this variant uses constant memory of the GPU which is a faster read-only memory.
+- * */
+-void testfilterIn_conMem(size_t nelem, size_t ndict);
++* @brief testing function for filter in - this variant uses constant memory of the GPU which is a faster read-only memory.
++*/
++template <typename T>
++void testfilterIn_conMem(size_t nelem, size_t ndict)
++{
++    // timers
++    struct timeval start, end;
++
++    // data array
++    T *h_data = (T *) malloc(nelem * sizeof(T));
++    // data array
++    T *h_dict = (T *) malloc(ndict * sizeof(T));
++
++    // allocate mem for the gpu result on host side
++    char *h_bitvec = (char *) malloc(nelem * sizeof(char));
++    // allocate mem for cpu result array for verification
++    char *bitvec = (char *) malloc(nelem * sizeof(char));
++
++    // initalize the memory
++    data_generate( h_data, nelem, (T)0, (T)nelem );
++
++    // initalize the dictionary
++    data_generate( h_dict, ndict, (T)0, (T)nelem );
++
++    gettimeofday(&start, NULL);
++    // allocate input and output data arrays
++    T *d_data;
++    checkCudaErrors(cudaMalloc( (void **) &d_data, nelem * sizeof(T) ));
++    char *d_bitvec;
++    checkCudaErrors(cudaMalloc( (void **) &d_bitvec,  nelem * sizeof(char) ));
++
++    // copy data array to device
++    checkCudaErrors(cudaMemcpy(d_data, h_data, nelem * sizeof(T), cudaMemcpyHostToDevice));
++
++    cout << "Checking for elements of input array in dictionary (using constant memory of GPU to store the dictionary) " << endl;
++
++    // run on gpu
++    filterInGPU_conMem_wrap <T> ( d_data, nelem, h_dict, ndict, d_bitvec );
++
++    checkCudaErrors(cudaMemcpy(h_bitvec, d_bitvec, nelem * sizeof(char), cudaMemcpyDeviceToHost));
++    gettimeofday(&end, NULL);
++
++    cout << "Time Taken by GPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    // run on host for comparison
++    TIMETHIS( filterIn<T> ( h_data, nelem, h_dict, ndict, bitvec ), &start, &end );
++
++    cout << "Time Taken by CPU: " << getTimeDiff(start, end) << "ms" << endl;
++
++    verifyResult<char>( h_bitvec, bitvec, nelem );
++
++    // free device memory
++    cudaFree(d_data);
++    cudaFree(d_bitvec);
++
++    cudaDeviceReset();
+ 
++    // free host memory
++    free(h_data);
++    free(h_bitvec);
++    free(bitvec);
++}

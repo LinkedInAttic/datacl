@@ -1,0 +1,1218 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+APP	Makefile	/^APP = $(PROJ)$/;"	m
+APP	backup/Makefile	/^APP = $(PROJ)$/;"	m
+AdapterFormat	helpers/dynlink_d3d10.h	/^    D3DFORMAT AdapterFormat;$/;"	m	struct:DXUTD3D9DeviceSettings
+AdapterOrdinal	helpers/dynlink_d3d10.h	/^    UINT AdapterOrdinal;$/;"	m	struct:DXUTD3D10DeviceSettings
+AdapterOrdinal	helpers/dynlink_d3d10.h	/^    UINT AdapterOrdinal;$/;"	m	struct:DXUTD3D9DeviceSettings
+AddParam	helpers/param.h	/^        void AddParam(ParamBase *param)$/;"	f	class:ParamList
+AutoCreateDepthStencil	helpers/dynlink_d3d10.h	/^    bool AutoCreateDepthStencil; \/\/ DXUT will create the a depth stencil resource and view if true$/;"	m	struct:DXUTD3D10DeviceSettings
+AutoDepthStencilFormat	helpers/dynlink_d3d10.h	/^    DXGI_FORMAT AutoDepthStencilFormat;$/;"	m	struct:DXUTD3D10DeviceSettings
+BUFFER_OFFSET	helpers/rendercheck_gl.h	40;"	d
+BehaviorFlags	helpers/dynlink_d3d10.h	/^    DWORD BehaviorFlags;$/;"	m	struct:DXUTD3D9DeviceSettings
+CC	Makefile	/^CC = nvcc$/;"	m
+CC	backup/Makefile	/^CC = nvcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -c -g -I\/usr\/local\/cuda\/samples\/common\/inc\/ #-Wall$/;"	m
+CFLAGS	backup/Makefile	/^CFLAGS = -c -g -I\/usr\/local\/cuda\/samples\/common\/inc\/ #-Wall$/;"	m
+CFrameBufferObject	helpers/rendercheck_gl.h	/^        CFrameBufferObject(unsigned int width, unsigned int height, unsigned int Bpp, bool bUseFloat, GLenum eTarget) :$/;"	f	class:CFrameBufferObject
+CFrameBufferObject	helpers/rendercheck_gl.h	/^class CFrameBufferObject$/;"	c
+CHECKED_CALL	helpers/cuda_drvapi_dynlink.c	288;"	d	file:
+CHECK_FBO	helpers/rendercheck_gl.h	43;"	d
+CUDADRIVER	helpers/cuda_drvapi_dynlink.c	/^typedef HMODULE CUDADRIVER;$/;"	t	file:
+CUDADRIVER	helpers/cuda_drvapi_dynlink.c	/^typedef void *CUDADRIVER;$/;"	t	file:
+CUTThread	helpers/multithreading.h	/^typedef HANDLE CUTThread;$/;"	t
+CUTThread	helpers/multithreading.h	/^typedef pthread_t CUTThread;$/;"	t
+CUT_THREADEND	helpers/multithreading.h	26;"	d
+CUT_THREADEND	helpers/multithreading.h	36;"	d
+CUT_THREADPROC	helpers/multithreading.h	25;"	d
+CUT_THREADPROC	helpers/multithreading.h	35;"	d
+CUT_THREADROUTINE	helpers/multithreading.h	/^typedef unsigned(WINAPI *CUT_THREADROUTINE)(void *);$/;"	t
+CUT_THREADROUTINE	helpers/multithreading.h	/^typedef void *(*CUT_THREADROUTINE)(void *);$/;"	t
+CheckBackBuffer	helpers/rendercheck_gl.h	/^        CheckBackBuffer(unsigned int width, unsigned int height, unsigned int Bpp, bool bUseOpenGL = true) :$/;"	f	class:CheckBackBuffer
+CheckBackBuffer	helpers/rendercheck_gl.h	/^class CheckBackBuffer : public CheckRender$/;"	c
+CheckFBO	helpers/rendercheck_gl.h	/^        CheckFBO(unsigned int width, unsigned int height, unsigned int Bpp) :$/;"	f	class:CheckFBO
+CheckFBO	helpers/rendercheck_gl.h	/^        CheckFBO(unsigned int width, unsigned int height, unsigned int Bpp, CFrameBufferObject *pFrameBufferObject) :$/;"	f	class:CheckFBO
+CheckFBO	helpers/rendercheck_gl.h	/^class CheckFBO: public CheckRender$/;"	c
+CheckRender	helpers/rendercheck_gl.h	/^        CheckRender(unsigned int width, unsigned int height, unsigned int Bpp,$/;"	f	class:CheckRender
+CheckRender	helpers/rendercheck_gl.h	/^class CheckRender$/;"	c
+CheckRenderD3D10	helpers/rendercheck_d3d10.h	/^        CheckRenderD3D10() {}$/;"	f	class:CheckRenderD3D10
+CheckRenderD3D10	helpers/rendercheck_d3d10.h	/^class CheckRenderD3D10$/;"	c
+CheckRenderD3D11	helpers/rendercheck_d3d11.h	/^        CheckRenderD3D11() {}$/;"	f	class:CheckRenderD3D11
+CheckRenderD3D11	helpers/rendercheck_d3d11.h	/^class CheckRenderD3D11$/;"	c
+CheckRenderD3D9	helpers/rendercheck_d3d9.h	/^        CheckRenderD3D9() {}$/;"	f	class:CheckRenderD3D9
+CheckRenderD3D9	helpers/rendercheck_d3d9.h	/^class CheckRenderD3D9$/;"	c
+Color	helpers/paramgl.h	/^            Color(float _r, float _g, float _b)$/;"	f	struct:ParamListGL::Color
+Color	helpers/paramgl.h	/^        struct Color$/;"	s	class:ParamListGL
+CompileASMShader	helpers/nvShaderUtils.h	/^    inline GLuint CompileASMShader(GLenum program_type, const char *code)$/;"	f	namespace:nv
+CompileASMShaderFromFile	helpers/nvShaderUtils.h	/^    inline GLuint CompileASMShaderFromFile(GLenum target, const char *filename)$/;"	f	namespace:nv
+CompileGLSLShader	helpers/nvShaderUtils.h	/^    inline GLuint CompileGLSLShader(GLenum target, const char *shader)$/;"	f	namespace:nv
+CompileGLSLShaderFromFile	helpers/nvShaderUtils.h	/^    inline GLuint CompileGLSLShaderFromFile(GLenum target, const char *filename)$/;"	f	namespace:nv
+ConverterFromUByte	helpers/helper_image.h	/^    struct ConverterFromUByte<float>$/;"	s	namespace:__anon4
+ConverterFromUByte	helpers/helper_image.h	/^    struct ConverterFromUByte<unsigned char>$/;"	s	namespace:__anon4
+ConverterToUByte	helpers/helper_image.h	/^    struct ConverterToUByte<float>$/;"	s	namespace:__anon4
+ConverterToUByte	helpers/helper_image.h	/^    struct ConverterToUByte<unsigned char>$/;"	s	namespace:__anon4
+CreateFlags	helpers/dynlink_d3d10.h	/^    UINT32 CreateFlags;$/;"	m	struct:DXUTD3D10DeviceSettings
+DIRS	Makefile	/^DIRS = $(subst \/, ,$(CURDIR))$/;"	m
+DIRS	backup/Makefile	/^DIRS = $(subst \/, ,$(CURDIR))$/;"	m
+DXUTD3D10DeviceSettings	helpers/dynlink_d3d10.h	/^struct DXUTD3D10DeviceSettings$/;"	s
+DXUTD3D9DeviceSettings	helpers/dynlink_d3d10.h	/^struct DXUTD3D9DeviceSettings$/;"	s
+DXUTDeviceSettings	helpers/dynlink_d3d10.h	/^struct DXUTDeviceSettings$/;"	s
+DXUTDeviceVersion	helpers/dynlink_d3d10.h	/^enum DXUTDeviceVersion { DXUT_D3D9_DEVICE, DXUT_D3D10_DEVICE };$/;"	g
+DXUTERR_CREATINGDEVICE	helpers/dynlink_d3d10.h	119;"	d
+DXUTERR_CREATINGDEVICEOBJECTS	helpers/dynlink_d3d10.h	121;"	d
+DXUTERR_DEVICEREMOVED	helpers/dynlink_d3d10.h	123;"	d
+DXUTERR_MEDIANOTFOUND	helpers/dynlink_d3d10.h	117;"	d
+DXUTERR_NOCOMPATIBLEDEVICES	helpers/dynlink_d3d10.h	116;"	d
+DXUTERR_NODIRECT3D	helpers/dynlink_d3d10.h	115;"	d
+DXUTERR_NONZEROREFCOUNT	helpers/dynlink_d3d10.h	118;"	d
+DXUTERR_RESETTINGDEVICE	helpers/dynlink_d3d10.h	120;"	d
+DXUTERR_RESETTINGDEVICEOBJECTS	helpers/dynlink_d3d10.h	122;"	d
+DXUT_D3D10_DEVICE	helpers/dynlink_d3d10.h	/^enum DXUTDeviceVersion { DXUT_D3D9_DEVICE, DXUT_D3D10_DEVICE };$/;"	e	enum:DXUTDeviceVersion
+DXUT_D3D9_DEVICE	helpers/dynlink_d3d10.h	/^enum DXUTDeviceVersion { DXUT_D3D9_DEVICE, DXUT_D3D10_DEVICE };$/;"	e	enum:DXUTDeviceVersion
+Decrement	helpers/param.h	/^        void Decrement()$/;"	f	class:Param
+Decrement	helpers/param.h	/^        void Decrement()$/;"	f	class:ParamList
+DeviceType	helpers/dynlink_d3d10.h	/^    D3DDEVTYPE DeviceType;$/;"	m	struct:DXUTD3D9DeviceSettings
+DriverType	helpers/dynlink_d3d10.h	/^    D3D10_DRIVER_TYPE DriverType;$/;"	m	struct:DXUTD3D10DeviceSettings
+EnableQAReadback	helpers/rendercheck_gl.h	/^        virtual void EnableQAReadback(bool bStatus)$/;"	f	class:CheckRender
+Exception	helpers/exception.h	/^Exception<Std_Exception>::Exception() :$/;"	f	class:Exception
+Exception	helpers/exception.h	/^Exception<Std_Exception>::Exception(const std::string &s) :$/;"	f	class:Exception
+Exception	helpers/exception.h	/^class Exception : public Std_Exception$/;"	c
+FOPEN	helpers/helper_image.h	106;"	d
+FOPEN	helpers/helper_string.h	33;"	d
+FOPEN	helpers/helper_string.h	57;"	d
+FOPEN_FAIL	helpers/helper_image.h	109;"	d
+FOPEN_FAIL	helpers/helper_string.h	36;"	d
+FOPEN_FAIL	helpers/helper_string.h	60;"	d
+GET_PROC	helpers/cuda_drvapi_dynlink.c	298;"	d	file:
+GET_PROC_EX	helpers/cuda_drvapi_dynlink.c	227;"	d	file:
+GET_PROC_EX	helpers/cuda_drvapi_dynlink.c	268;"	d	file:
+GET_PROC_EX_V2	helpers/cuda_drvapi_dynlink.c	235;"	d	file:
+GET_PROC_EX_V2	helpers/cuda_drvapi_dynlink.c	276;"	d	file:
+GET_PROC_OPTIONAL	helpers/cuda_drvapi_dynlink.c	297;"	d	file:
+GET_PROC_REQUIRED	helpers/cuda_drvapi_dynlink.c	296;"	d	file:
+GET_PROC_V2	helpers/cuda_drvapi_dynlink.c	299;"	d	file:
+GetCurrent	helpers/param.h	/^        ParamBase *GetCurrent()$/;"	f	class:ParamList
+GetFloatValue	helpers/param.h	/^        float GetFloatValue()$/;"	f	class:Param
+GetFloatValue	helpers/param.h	/^        float GetFloatValue()$/;"	f	class:ParamList
+GetIntValue	helpers/param.h	/^        int GetIntValue()$/;"	f	class:Param
+GetIntValue	helpers/param.h	/^        int GetIntValue()$/;"	f	class:ParamList
+GetName	helpers/param.h	/^        std::string &GetName()$/;"	f	class:ParamBase
+GetParam	helpers/param.h	/^        ParamBase *GetParam(char *name)$/;"	f	class:ParamList
+GetParam	helpers/param.h	/^        ParamBase *GetParam(int i)$/;"	f	class:ParamList
+GetPercentage	helpers/param.h	/^        float GetPercentage()$/;"	f	class:Param
+GetPercentage	helpers/param.h	/^        float GetPercentage()$/;"	f	class:ParamList
+GetSize	helpers/param.h	/^        int GetSize()$/;"	f	class:ParamList
+GetTimer	helpers/timer.h	/^double GetTimer()$/;"	f
+GetValue	helpers/param.h	/^        T GetValue() const$/;"	f	class:Param
+GetValueString	helpers/param.h	/^        std::string GetValueString()$/;"	f	class:Param
+GetValueString	helpers/param.h	/^        std::string GetValueString()$/;"	f	class:ParamList
+HDRS	Makefile	/^HDRS = $(wildcard *.h)$/;"	m
+HDRS	backup/Makefile	/^HDRS = $(wildcard *.h)$/;"	m
+HELPER_CUDA_DRVAPI_H	helpers/helper_cuda_drvapi.h	14;"	d
+HELPER_CUDA_GL_H	helpers/helper_cuda_gl.h	13;"	d
+HELPER_CUDA_H	backup/helper_cuda.h	16;"	d
+HELPER_CUDA_H	helper_cuda.h	16;"	d
+HELPER_CUDA_H	helpers/helper_cuda.h	16;"	d
+HELPER_FUNCTIONS_H	backup/helper_functions.h	14;"	d
+HELPER_FUNCTIONS_H	helper_functions.h	14;"	d
+HELPER_FUNCTIONS_H	helpers/helper_functions.h	14;"	d
+HELPER_IMAGE_H	helpers/helper_image.h	14;"	d
+HELPER_MATH_H	helpers/helper_math.h	24;"	d
+HELPER_TIMER_H	helpers/helper_timer.h	14;"	d
+Increment	helpers/param.h	/^        void Increment()$/;"	f	class:Param
+Increment	helpers/param.h	/^        void Increment()$/;"	f	class:ParamList
+IsFBO	helpers/rendercheck_gl.h	/^        virtual bool IsFBO()$/;"	f	class:CheckRender
+IsList	helpers/param.h	/^        bool IsList()$/;"	f	class:Param
+IsList	helpers/param.h	/^        bool IsList()$/;"	f	class:ParamList
+IsPBO	helpers/rendercheck_gl.h	/^        virtual bool IsPBO()$/;"	f	class:CheckRender
+IsQAReadback	helpers/rendercheck_gl.h	/^        virtual bool IsQAReadback()$/;"	f	class:CheckRender
+LDFLAGS	Makefile	/^LDFLAGS =$/;"	m
+LDFLAGS	backup/Makefile	/^LDFLAGS =$/;"	m
+LIBS	Makefile	/^LIBS =$/;"	m
+LIBS	backup/Makefile	/^LIBS =$/;"	m
+LOAD_LIBRARY	helpers/cuda_drvapi_dynlink.c	/^static CUresult LOAD_LIBRARY(CUDADRIVER *pInstance)$/;"	f	file:
+LOGIC_EXCEPTION	helpers/exception.h	81;"	d
+LPCREATEDXGIFACTORY	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPCREATEDXGIFACTORY)(REFIID, void **);$/;"	t
+LPCREATEDXGIFACTORY	helpers/dynlink_d3d11.h	/^typedef HRESULT(WINAPI *LPCREATEDXGIFACTORY)(REFIID, void **);$/;"	t
+LPD3D10COMPILEEFFECTFROMMEMORY	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10COMPILEEFFECTFROMMEMORY)(void *pData, SIZE_T DataLength, LPCSTR pSrcFileName,$/;"	t
+LPD3D10CREATEDEVICE	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEDEVICE)(IDXGIAdapter *, D3D10_DRIVER_TYPE, HMODULE, UINT, UINT32,$/;"	t
+LPD3D10CREATEDEVICE1	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEDEVICE1)(IDXGIAdapter *, D3D10_DRIVER_TYPE, HMODULE, UINT,$/;"	t
+LPD3D10CREATEDEVICEANDSWAPCHAIN	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEDEVICEANDSWAPCHAIN)(IDXGIAdapter *pAdapter,$/;"	t
+LPD3D10CREATEDEVICEANDSWAPCHAIN1	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEDEVICEANDSWAPCHAIN1)(IDXGIAdapter *pAdapter,$/;"	t
+LPD3D10CREATEEFFECTFROMMEMORY	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEEFFECTFROMMEMORY)(void *pData, SIZE_T DataLength, UINT FXFlags,$/;"	t
+LPD3D10CREATEEFFECTPOOLFROMMEMORY	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATEEFFECTPOOLFROMMEMORY)(void *pData, SIZE_T DataLength, UINT FXFlags,$/;"	t
+LPD3D10CREATESTATEBLOCK	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10CREATESTATEBLOCK)(ID3D10Device *pDevice, D3D10_STATE_BLOCK_MASK *pStateBlockMask,$/;"	t
+LPD3D10STATEBLOCKMASKDIFFERENCE	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKDIFFERENCE)(D3D10_STATE_BLOCK_MASK *pA, D3D10_STATE_BLOCK_MASK *pB,$/;"	t
+LPD3D10STATEBLOCKMASKDISABLEALL	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKDISABLEALL)(D3D10_STATE_BLOCK_MASK *pMask);$/;"	t
+LPD3D10STATEBLOCKMASKDISABLECAPTURE	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKDISABLECAPTURE)(D3D10_STATE_BLOCK_MASK *pMask,$/;"	t
+LPD3D10STATEBLOCKMASKENABLEALL	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKENABLEALL)(D3D10_STATE_BLOCK_MASK *pMask);$/;"	t
+LPD3D10STATEBLOCKMASKENABLECAPTURE	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKENABLECAPTURE)(D3D10_STATE_BLOCK_MASK *pMask,$/;"	t
+LPD3D10STATEBLOCKMASKGETSETTING	helpers/dynlink_d3d10.h	/^typedef BOOL (WINAPI *LPD3D10STATEBLOCKMASKGETSETTING)(D3D10_STATE_BLOCK_MASK *pMask,$/;"	t
+LPD3D10STATEBLOCKMASKINTERSECT	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKINTERSECT)(D3D10_STATE_BLOCK_MASK *pA, D3D10_STATE_BLOCK_MASK *pB,$/;"	t
+LPD3D10STATEBLOCKMASKUNION	helpers/dynlink_d3d10.h	/^typedef HRESULT(WINAPI *LPD3D10STATEBLOCKMASKUNION)(D3D10_STATE_BLOCK_MASK *pA, D3D10_STATE_BLOCK_MASK *pB,$/;"	t
+LPD3D11CREATEDEVICE	helpers/dynlink_d3d11.h	/^typedef HRESULT(WINAPI *LPD3D11CREATEDEVICE)(IDXGIAdapter *, D3D_DRIVER_TYPE, HMODULE, UINT32, D3D_FEATURE_LEVEL *, UINT, UINT32, ID3D11Device **, D3D_FEATURE_LEVEL *, ID3D11DeviceContext **);$/;"	t
+LPD3D11CREATEDEVICEANDSWAPCHAIN	helpers/dynlink_d3d11.h	/^typedef HRESULT(WINAPI *LPD3D11CREATEDEVICEANDSWAPCHAIN)(__in_opt IDXGIAdapter *pAdapter, D3D_DRIVER_TYPE DriverType, HMODULE Software, UINT Flags, __in_ecount_opt(FeatureLevels) CONST D3D_FEATURE_LEVEL *pFeatureLevels, UINT FeatureLevels, UINT SDKVersion, __in_opt CONST DXGI_SWAP_CHAIN_DESC *pSwapChainDesc, __out_opt IDXGISwapChain **ppSwapChain, __out_opt ID3D11Device **ppDevice, __out_opt D3D_FEATURE_LEVEL *pFeatureLevel, __out_opt ID3D11DeviceContext **ppImmediateContext);$/;"	t
+LPD3DX11COMPILEFROMMEMORY	helpers/dynlink_d3d11.h	/^typedef void (WINAPI *LPD3DX11COMPILEFROMMEMORY)(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFileName, CONST D3D10_SHADER_MACRO *pDefines, LPD3D10INCLUDE pInclude,$/;"	t
+LPD3DXMATRIXLOOKATLH	helpers/dynlink_d3d10.h	/^typedef D3DXMATRIX *(WINAPI *LPD3DXMATRIXLOOKATLH)(D3DXMATRIX *pOut, CONST D3DXVECTOR3 *pEye, CONST D3DXVECTOR3 *pAt, CONST D3DXVECTOR3 *pUp);$/;"	t
+LPD3DXMATRIXPERSPECTIVEFOVLH	helpers/dynlink_d3d10.h	/^typedef D3DXMATRIX *(WINAPI *LPD3DXMATRIXPERSPECTIVEFOVLH)(D3DXMATRIX *pOut, FLOAT fovy, FLOAT Aspect, FLOAT zn, FLOAT zf);$/;"	t
+LinkGLSLProgram	helpers/nvShaderUtils.h	/^    inline GLuint LinkGLSLProgram(GLuint vertexShader, GLuint fragmentShader)$/;"	f	namespace:nv
+LinkGLSLProgram	helpers/nvShaderUtils.h	/^    inline GLuint LinkGLSLProgram(GLuint vertexShader, GLuint geometryShader, GLint inputType, GLint vertexOut, GLint outputType, GLuint fragmentShader)$/;"	f	namespace:nv
+MAX	backup/helper_cuda.h	733;"	d
+MAX	helper_cuda.h	733;"	d
+MAX	helpers/helper_cuda.h	733;"	d
+MAX	helpers/helper_cuda_drvapi.h	24;"	d
+MAX	helpers/helper_image.h	30;"	d
+MIN	helpers/helper_image.h	27;"	d
+MULTITHREADING_H	helpers/multithreading.h	13;"	d
+Motion	helpers/paramgl.h	/^        bool Motion(int x, int y)$/;"	f	class:ParamListGL
+Mouse	helpers/paramgl.h	/^        bool Mouse(int x, int y, int button=GLUT_LEFT_BUTTON, int state=GLUT_DOWN)$/;"	f	class:ParamListGL
+NV_MATH_H	helpers/nvMath.h	61;"	d
+NV_MATRIX_H	helpers/nvMatrix.h	63;"	d
+NV_PI	helpers/nvMath.h	69;"	d
+NV_QUATERNION_H	helpers/nvQuaternion.h	62;"	d
+NV_SHADER_UTILS_H	helpers/nvShaderUtils.h	23;"	d
+NV_VECTOR_H	helpers/nvVector.h	62;"	d
+OBJSCPP	Makefile	/^OBJSCPP = $(SRCS:.cpp=.o)$/;"	m
+OBJSCPP	backup/Makefile	/^OBJSCPP = $(SRCS:.cpp=.o)$/;"	m
+OBJSCU	Makefile	/^OBJSCU = $(SRCS:.cu=.cu.o)$/;"	m
+OBJSCU	backup/Makefile	/^OBJSCU = $(SRCS:.cu=.cu.o)$/;"	m
+Output	helpers/dynlink_d3d10.h	/^    UINT Output;$/;"	m	struct:DXUTD3D10DeviceSettings
+PARAMGL_H	helpers/paramgl.h	19;"	d
+PARAM_H	helpers/param.h	18;"	d
+PCFreq	helpers/timer.h	/^double PCFreq = 0.0;$/;"	v
+PGMHeaderSize	helpers/helper_image.h	/^    const unsigned int PGMHeaderSize = 0x40;$/;"	m	namespace:__anon4
+PGMvsPGM	helpers/rendercheck_gl.h	/^        virtual bool PGMvsPGM(const char *src_file, const char *ref_file, const float epsilon, const float threshold = 0.0f)$/;"	f	class:CheckRender
+PPMvsPPM	helpers/rendercheck_gl.h	/^        virtual bool PPMvsPPM(const char *src_file, const char *ref_file, const float epsilon, const float threshold = 0.0f)$/;"	f	class:CheckRender
+PROJ	Makefile	/^PROJ = $(word $(words $(DIRS)), $(DIRS))$/;"	m
+PROJ	backup/Makefile	/^PROJ = $(word $(words $(DIRS)), $(DIRS))$/;"	m
+Param	helpers/param.h	/^        Param(const char *name, T value = 0, T min = 0, T max = 10000, T step = 1, T *ptr = 0) :$/;"	f	class:Param
+Param	helpers/param.h	/^template<class T> class Param : public ParamBase$/;"	c
+ParamBase	helpers/param.h	/^        ParamBase(const char *name) : m_name(name) { }$/;"	f	class:ParamBase
+ParamBase	helpers/param.h	/^class ParamBase$/;"	c
+ParamList	helpers/param.h	/^        ParamList(const char *name = "") :$/;"	f	class:ParamList
+ParamList	helpers/param.h	/^class ParamList : public ParamBase$/;"	c
+ParamListGL	helpers/paramgl.h	/^        ParamListGL(const char *name = "") :$/;"	f	class:ParamListGL
+ParamListGL	helpers/paramgl.h	/^class ParamListGL : public ParamList$/;"	c
+PresentFlags	helpers/dynlink_d3d10.h	/^    DWORD PresentFlags;$/;"	m	struct:DXUTD3D10DeviceSettings
+RANGE_EXCEPTION	helpers/exception.h	85;"	d
+RUNTIME_EXCEPTION	helpers/exception.h	77;"	d
+Read	helpers/param.h	/^        void Read(std::istream &stream)$/;"	f	class:Param
+Read	helpers/param.h	/^        void Read(std::istream &stream)$/;"	f	class:ParamList
+Render	helpers/paramgl.h	/^        void Render(int x, int y, bool shadow = false)$/;"	f	class:ParamListGL
+Reset	helpers/param.h	/^        void Reset()$/;"	f	class:Param
+Reset	helpers/param.h	/^        void Reset()$/;"	f	class:ParamList
+ResetAll	helpers/param.h	/^        void ResetAll()$/;"	f	class:ParamList
+SDK_CHECK_ERROR_GL	helpers/helper_cuda_gl.h	144;"	d
+SRCS	Makefile	/^SRCS = $(SRCSCPP) $(SRCSCU)$/;"	m
+SRCS	backup/Makefile	/^SRCS = $(SRCSCPP) $(SRCSCU)$/;"	m
+SRCSCPP	Makefile	/^SRCSCPP = $(wildcard *.cpp)$/;"	m
+SRCSCPP	backup/Makefile	/^SRCSCPP = $(wildcard *.cpp)$/;"	m
+SRCSCU	Makefile	/^SRCSCU = $(wildcard *.cu)$/;"	m
+SRCSCU	backup/Makefile	/^SRCSCU = $(wildcard *.cu)$/;"	m
+SSCANF	helpers/helper_image.h	112;"	d
+SSCANF	helpers/helper_string.h	39;"	d
+SSCANF	helpers/helper_string.h	63;"	d
+STRCASECMP	helpers/helper_string.h	23;"	d
+STRCASECMP	helpers/helper_string.h	47;"	d
+STRCPY	helpers/helper_string.h	29;"	d
+STRCPY	helpers/helper_string.h	53;"	d
+STRINGIFY	helpers/cuda_drvapi_dynlink.c	201;"	d	file:
+STRING_HELPER_H	helpers/helper_string.h	14;"	d
+STRNCASECMP	helpers/helper_string.h	26;"	d
+STRNCASECMP	helpers/helper_string.h	50;"	d
+SetActive	helpers/paramgl.h	/^        void SetActive(bool b)$/;"	f	class:ParamListGL
+SetBarColorInner	helpers/paramgl.h	/^        void SetBarColorInner(float r, float g, float b)$/;"	f	class:ParamListGL
+SetBarColorOuter	helpers/paramgl.h	/^        void SetBarColorOuter(float r, float g, float b)$/;"	f	class:ParamListGL
+SetFont	helpers/paramgl.h	/^        void SetFont(void *font, int height)$/;"	f	class:ParamListGL
+SetPercentage	helpers/param.h	/^        void SetPercentage(float \/*p*\/) {}$/;"	f	class:ParamList
+SetPercentage	helpers/param.h	/^        void SetPercentage(float p)$/;"	f	class:Param
+SetPrecision	helpers/param.h	/^        void SetPrecision(int x)$/;"	f	class:Param
+SetSelectedColor	helpers/paramgl.h	/^        void SetSelectedColor(float r, float g, float b)$/;"	f	class:ParamListGL
+SetUnSelectedColor	helpers/paramgl.h	/^        void SetUnSelectedColor(float r, float g, float b)$/;"	f	class:ParamListGL
+SetValue	helpers/param.h	/^        T SetValue(const T value)$/;"	f	class:Param
+Special	helpers/paramgl.h	/^        void Special(int key, int x, int y)$/;"	f	class:ParamListGL
+StartTimer	helpers/timer.h	/^void StartTimer()$/;"	f
+StopWatchInterface	helpers/helper_timer.h	/^        StopWatchInterface() {};$/;"	f	class:StopWatchInterface
+StopWatchInterface	helpers/helper_timer.h	/^class StopWatchInterface$/;"	c
+StopWatchLinux	helpers/helper_timer.h	/^        StopWatchLinux() :$/;"	f	class:StopWatchLinux
+StopWatchLinux	helpers/helper_timer.h	/^class StopWatchLinux : public StopWatchInterface$/;"	c
+StopWatchWin	helpers/helper_timer.h	/^        StopWatchWin() :$/;"	f	class:StopWatchWin
+StopWatchWin	helpers/helper_timer.h	/^class StopWatchWin : public StopWatchInterface$/;"	c
+SyncInterval	helpers/dynlink_d3d10.h	/^    UINT32 SyncInterval;$/;"	m	struct:DXUTD3D10DeviceSettings
+TIMER_H	helpers/timer.h	14;"	d
+WIN32_LEAN_AND_MEAN	helpers/timer.h	19;"	d
+WINDOWS_LEAN_AND_MEAN	helpers/helper_timer.h	56;"	d
+Write	helpers/param.h	/^        void Write(std::ostream &stream)$/;"	f	class:Param
+Write	helpers/param.h	/^        void Write(std::ostream &stream)$/;"	f	class:ParamList
+_11	helpers/nvMatrix.h	/^                    T _11, _12, _13, _14;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_12	helpers/nvMatrix.h	/^                    T _11, _12, _13, _14;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_13	helpers/nvMatrix.h	/^                    T _11, _12, _13, _14;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_14	helpers/nvMatrix.h	/^                    T _11, _12, _13, _14;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_21	helpers/nvMatrix.h	/^                    T _21, _22, _23, _24;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_22	helpers/nvMatrix.h	/^                    T _21, _22, _23, _24;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_23	helpers/nvMatrix.h	/^                    T _21, _22, _23, _24;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_24	helpers/nvMatrix.h	/^                    T _21, _22, _23, _24;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_31	helpers/nvMatrix.h	/^                    T _31, _32, _33, _34;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_32	helpers/nvMatrix.h	/^                    T _31, _32, _33, _34;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_33	helpers/nvMatrix.h	/^                    T _31, _32, _33, _34;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_34	helpers/nvMatrix.h	/^                    T _31, _32, _33, _34;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_41	helpers/nvMatrix.h	/^                    T _41, _42, _43, _44;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_42	helpers/nvMatrix.h	/^                    T _41, _42, _43, _44;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_43	helpers/nvMatrix.h	/^                    T _41, _42, _43, _44;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_44	helpers/nvMatrix.h	/^                    T _41, _42, _43, _44;   \/\/ standard names for components$/;"	m	struct:nv::matrix4::__anon6::__anon7
+_ConvertSMVer2Cores	backup/helper_cuda.h	/^inline int _ConvertSMVer2Cores(int major, int minor)$/;"	f
+_ConvertSMVer2Cores	helper_cuda.h	/^inline int _ConvertSMVer2Cores(int major, int minor)$/;"	f
+_ConvertSMVer2Cores	helpers/helper_cuda.h	/^inline int _ConvertSMVer2Cores(int major, int minor)$/;"	f
+_ConvertSMVer2CoresDRV	helpers/helper_cuda_drvapi.h	/^inline int _ConvertSMVer2CoresDRV(int major, int minor)$/;"	f
+_DRVAPI_ERROR_STRING_H_	helpers/drvapi_error_string.h	13;"	d
+_DYNLINK_D3D10_H_	helpers/dynlink_d3d10.h	21;"	d
+_DYNLINK_D3D11_H_	helpers/dynlink_d3d11.h	21;"	d
+_EXCEPTION_H_	helpers/exception.h	14;"	d
+_RENDERCHECK_D3D10_H_	helpers/rendercheck_d3d10.h	15;"	d
+_RENDERCHECK_D3D11_H_	helpers/rendercheck_d3d11.h	16;"	d
+_RENDERCHECK_D3D9_H_	helpers/rendercheck_d3d9.h	15;"	d
+_RENDERCHECK_GL_H_	helpers/rendercheck_gl.h	14;"	d
+__CudaLibName	helpers/cuda_drvapi_dynlink.c	/^static LPCSTR __CudaLibName = "nvcuda.dll";$/;"	v	file:
+__CudaLibName	helpers/cuda_drvapi_dynlink.c	/^static LPCWSTR __CudaLibName = L"nvcuda.dll";$/;"	v	file:
+__CudaLibName	helpers/cuda_drvapi_dynlink.c	/^static char __CudaLibName[] = "\/usr\/local\/cuda\/lib\/libcuda.dylib";$/;"	v	file:
+__CudaLibName	helpers/cuda_drvapi_dynlink.c	/^static char __CudaLibName[] = "libcuda.so";$/;"	v	file:
+__MIN_EPSILON_ERROR	helpers/helper_image.h	606;"	d
+__checkCudaErrors	helpers/helper_cuda_drvapi.h	/^inline void __checkCudaErrors(CUresult err, const char *file, const int line)$/;"	f
+__getLastCudaDrvErrorMsg	helpers/helper_cuda_drvapi.h	/^inline void __getLastCudaDrvErrorMsg(const char *msg, const char *file, const int line)$/;"	f
+__getLastCudaError	backup/helper_cuda.h	/^inline void __getLastCudaError(const char *errorMessage, const char *file, const int line)$/;"	f
+__getLastCudaError	helper_cuda.h	/^inline void __getLastCudaError(const char *errorMessage, const char *file, const int line)$/;"	f
+__getLastCudaError	helpers/helper_cuda.h	/^inline void __getLastCudaError(const char *errorMessage, const char *file, const int line)$/;"	f
+__loadPPM	helpers/helper_image.h	/^__loadPPM(const char *file, unsigned char **data,$/;"	f
+__savePPM	helpers/helper_image.h	/^__savePPM(const char *file, unsigned char *data,$/;"	f
+_array	helpers/nvMatrix.h	/^                T _array[16];     \/\/ array access$/;"	m	union:nv::matrix4::__anon6
+_array	helpers/nvQuaternion.h	/^                T _array[4];$/;"	m	union:nv::quaternion::__anon1
+_array	helpers/nvVector.h	/^                T _array[2];     \/\/ array access$/;"	m	union:nv::vec2::__anon8
+_array	helpers/nvVector.h	/^                T _array[3];     \/\/ array access$/;"	m	union:nv::vec3::__anon11
+_array	helpers/nvVector.h	/^                T _array[4];     \/\/ array access$/;"	m	union:nv::vec4::__anon14
+_cuInit	helpers/cuda_drvapi_dynlink.c	/^tcuInit                               *_cuInit;$/;"	v
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(CUresult error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(NppStatus error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cublasStatus_t error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cudaError_t error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cufftResult error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(curandStatus_t error)$/;"	f
+_cudaGetErrorEnum	backup/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cusparseStatus_t error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(CUresult error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(NppStatus error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(cublasStatus_t error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(cudaError_t error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(cufftResult error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(curandStatus_t error)$/;"	f
+_cudaGetErrorEnum	helper_cuda.h	/^static const char *_cudaGetErrorEnum(cusparseStatus_t error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(CUresult error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(NppStatus error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cublasStatus_t error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cudaError_t error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cufftResult error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(curandStatus_t error)$/;"	f
+_cudaGetErrorEnum	helpers/helper_cuda.h	/^static const char *_cudaGetErrorEnum(cusparseStatus_t error)$/;"	f
+abs	helpers/helper_math.h	/^inline __host__ __device__ int2 abs(int2 v)$/;"	f
+abs	helpers/helper_math.h	/^inline __host__ __device__ int3 abs(int3 v)$/;"	f
+abs	helpers/helper_math.h	/^inline __host__ __device__ int4 abs(int4 v)$/;"	f
+active	helpers/param.h	/^        bool active;$/;"	m	class:ParamList
+allocateMemory	helpers/rendercheck_gl.h	/^        virtual void allocateMemory(unsigned int width, unsigned int height, unsigned int Bpp,$/;"	f	class:CheckRender
+applyRotation	helpers/nvMath.h	/^    inline void applyRotation(const quaternionf &r)$/;"	f	namespace:nv
+attachTexture	helpers/rendercheck_gl.h	/^        void    attachTexture(GLenum texTarget,$/;"	f	class:CFrameBufferObject
+b	helpers/paramgl.h	/^            float r, g, b;$/;"	m	struct:ParamListGL::Color
+beginWinCoords	helpers/paramgl.h	/^inline void beginWinCoords(void)$/;"	f
+bindFragmentProgram	helpers/rendercheck_gl.h	/^        virtual void bindFragmentProgram() {};$/;"	f	class:CheckBackBuffer
+bindFragmentProgram	helpers/rendercheck_gl.h	/^        void bindFragmentProgram()$/;"	f	class:CFrameBufferObject
+bindReadback	helpers/rendercheck_gl.h	/^        virtual void bindReadback()$/;"	f	class:CheckRender
+bindRenderPath	helpers/rendercheck_gl.h	/^        virtual void bindRenderPath() {};$/;"	f	class:CheckBackBuffer
+bindRenderPath	helpers/rendercheck_gl.h	/^        void bindRenderPath()$/;"	f	class:CFrameBufferObject
+bindTexture	helpers/rendercheck_gl.h	/^        virtual void bindTexture() {};$/;"	f	class:CheckBackBuffer
+bindTexture	helpers/rendercheck_gl.h	/^        void bindTexture()$/;"	f	class:CFrameBufferObject
+bits	helpers/rendercheck_gl.h	/^    int bits;$/;"	m	struct:bufferConfig
+bufferConfig	helpers/rendercheck_gl.h	/^struct bufferConfig$/;"	s
+check	backup/helper_cuda.h	/^bool check(T result, char const *const func, const char *const file, int const line)$/;"	f
+check	helper_cuda.h	/^bool check(T result, char const *const func, const char *const file, int const line)$/;"	f
+check	helpers/helper_cuda.h	/^bool check(T result, char const *const func, const char *const file, int const line)$/;"	f
+checkCmdLineFlag	helpers/helper_string.h	/^inline int checkCmdLineFlag(const int argc, const char **argv, const char *string_ref)$/;"	f
+checkCudaCapabilities	backup/helper_cuda.h	/^inline bool checkCudaCapabilities(int major_version, int minor_version)$/;"	f
+checkCudaCapabilities	helper_cuda.h	/^inline bool checkCudaCapabilities(int major_version, int minor_version)$/;"	f
+checkCudaCapabilities	helpers/helper_cuda.h	/^inline bool checkCudaCapabilities(int major_version, int minor_version)$/;"	f
+checkCudaCapabilitiesDRV	helpers/helper_cuda_drvapi.h	/^inline bool checkCudaCapabilitiesDRV(int major_version, int minor_version, int devID)$/;"	f
+checkCudaErrors	backup/helper_cuda.h	714;"	d
+checkCudaErrors	helper_cuda.h	714;"	d
+checkCudaErrors	helpers/helper_cuda.h	714;"	d
+checkCudaErrors	helpers/helper_cuda_drvapi.h	34;"	d
+checkStatus	helpers/rendercheck_gl.h	/^        virtual bool checkStatus(const char *zfile, int line, bool silent)$/;"	f	class:CFrameBufferObject
+checkStatus	helpers/rendercheck_gl.h	/^        virtual bool checkStatus(const char *zfile, int line, bool silent)$/;"	f	class:CheckBackBuffer
+checkStatus	helpers/rendercheck_gl.h	/^        virtual bool checkStatus(const char *zfile, int line, bool silent)$/;"	f	class:CheckFBO
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float clamp(float f, float a, float b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float2 clamp(float2 v, float a, float b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float2 clamp(float2 v, float2 a, float2 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float3 clamp(float3 v, float a, float b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float3 clamp(float3 v, float3 a, float3 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float4 clamp(float4 v, float a, float b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ float4 clamp(float4 v, float4 a, float4 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int clamp(int f, int a, int b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int2 clamp(int2 v, int a, int b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int2 clamp(int2 v, int2 a, int2 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int3 clamp(int3 v, int a, int b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int3 clamp(int3 v, int3 a, int3 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int4 clamp(int4 v, int a, int b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ int4 clamp(int4 v, int4 a, int4 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint clamp(uint f, uint a, uint b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint2 clamp(uint2 v, uint a, uint b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint2 clamp(uint2 v, uint2 a, uint2 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint3 clamp(uint3 v, uint a, uint b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint3 clamp(uint3 v, uint3 a, uint3 b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint4 clamp(uint4 v, uint a, uint b)$/;"	f
+clamp	helpers/helper_math.h	/^inline __device__ __host__ uint4 clamp(uint4 v, uint4 a, uint4 b)$/;"	f
+clock_sessions	helpers/helper_timer.h	/^        int clock_sessions;$/;"	m	class:StopWatchLinux
+clock_sessions	helpers/helper_timer.h	/^        int clock_sessions;$/;"	m	class:StopWatchWin
+colorFormat	helpers/rendercheck_gl.h	/^    GLenum colorFormat;$/;"	m	struct:fboConfig
+colorRB	helpers/rendercheck_gl.h	/^    GLuint colorRB; \/\/color render buffer$/;"	m	struct:fboData
+colorTex	helpers/rendercheck_gl.h	/^    GLuint colorTex; \/\/color texture$/;"	m	struct:fboData
+compareBin2BinFloat	helpers/rendercheck_gl.h	/^        virtual bool compareBin2BinFloat(const char *src_file, const char *ref_file, unsigned int nelements, const float epsilon, const float threshold)$/;"	f	class:CheckRender
+compareBin2BinUint	helpers/rendercheck_gl.h	/^        virtual bool compareBin2BinUint(const char *src_file, const char *ref_file, unsigned int nelements, const float epsilon, const float threshold)$/;"	f	class:CheckRender
+compareData	helpers/helper_image.h	/^compareData(const T *reference, const T *data, const unsigned int len,$/;"	f
+compareDataAsFloatThreshold	helpers/helper_image.h	/^compareDataAsFloatThreshold(const T *reference, const T *data, const unsigned int len,$/;"	f
+conjugate	helpers/nvQuaternion.h	/^            friend quaternion<T> conjugate(const quaternion<T> &q)$/;"	f	class:nv::quaternion
+coverageSamples	helpers/rendercheck_gl.h	/^    int coverageSamples;$/;"	m	struct:fboConfig
+create	helpers/rendercheck_gl.h	/^        bool create(GLuint width, GLuint height, fboConfig &config, fboData &data)$/;"	f	class:CFrameBufferObject
+createTexture	helpers/rendercheck_gl.h	/^        GLuint createTexture(GLenum target, int w, int h, GLint internalformat, GLenum format)$/;"	f	class:CFrameBufferObject
+cross	helpers/helper_math.h	/^inline __host__ __device__ float3 cross(float3 a, float3 b)$/;"	f
+cross	helpers/nvVector.h	/^            friend vec3<T> cross(const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+cuArray3DCreate	helpers/cuda_drvapi_dynlink.c	/^tcuArray3DCreate                      *cuArray3DCreate;$/;"	v
+cuArray3DGetDescriptor	helpers/cuda_drvapi_dynlink.c	/^tcuArray3DGetDescriptor               *cuArray3DGetDescriptor;$/;"	v
+cuArrayCreate	helpers/cuda_drvapi_dynlink.c	/^tcuArrayCreate                        *cuArrayCreate;$/;"	v
+cuArrayDestroy	helpers/cuda_drvapi_dynlink.c	/^tcuArrayDestroy                       *cuArrayDestroy;$/;"	v
+cuArrayGetDescriptor	helpers/cuda_drvapi_dynlink.c	/^tcuArrayGetDescriptor                 *cuArrayGetDescriptor;$/;"	v
+cuCtxAttach	helpers/cuda_drvapi_dynlink.c	/^tcuCtxAttach                          *cuCtxAttach;$/;"	v
+cuCtxCreate	helpers/cuda_drvapi_dynlink.c	/^tcuCtxCreate                          *cuCtxCreate;$/;"	v
+cuCtxDestroy	helpers/cuda_drvapi_dynlink.c	/^tcuCtxDestroy                         *cuCtxDestroy;$/;"	v
+cuCtxDetach	helpers/cuda_drvapi_dynlink.c	/^tcuCtxDetach                          *cuCtxDetach;$/;"	v
+cuCtxGetCurrent	helpers/cuda_drvapi_dynlink.c	/^tcuCtxGetCurrent                      *cuCtxGetCurrent;$/;"	v
+cuCtxGetDevice	helpers/cuda_drvapi_dynlink.c	/^tcuCtxGetDevice                       *cuCtxGetDevice;$/;"	v
+cuCtxGetLimit	helpers/cuda_drvapi_dynlink.c	/^tcuCtxGetLimit                        *cuCtxGetLimit;$/;"	v
+cuCtxPopCurrent	helpers/cuda_drvapi_dynlink.c	/^tcuCtxPopCurrent                      *cuCtxPopCurrent;$/;"	v
+cuCtxPushCurrent	helpers/cuda_drvapi_dynlink.c	/^tcuCtxPushCurrent                     *cuCtxPushCurrent;$/;"	v
+cuCtxSetCurrent	helpers/cuda_drvapi_dynlink.c	/^tcuCtxSetCurrent                      *cuCtxSetCurrent;$/;"	v
+cuCtxSetLimit	helpers/cuda_drvapi_dynlink.c	/^tcuCtxSetLimit                        *cuCtxSetLimit;$/;"	v
+cuCtxSynchronize	helpers/cuda_drvapi_dynlink.c	/^tcuCtxSynchronize                     *cuCtxSynchronize;$/;"	v
+cuD3D10CtxCreate	helpers/cuda_drvapi_dynlink.c	/^tcuD3D10CtxCreate                     *cuD3D10CtxCreate;$/;"	v
+cuD3D10GetDevice	helpers/cuda_drvapi_dynlink.c	/^tcuD3D10GetDevice                     *cuD3D10GetDevice;$/;"	v
+cuD3D11CtxCreate	helpers/cuda_drvapi_dynlink.c	/^tcuD3D11CtxCreate                     *cuD3D11CtxCreate;$/;"	v
+cuD3D11GetDevice	helpers/cuda_drvapi_dynlink.c	/^tcuD3D11GetDevice                     *cuD3D11GetDevice;$/;"	v
+cuD3D9Begin	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9Begin                          *cuD3D9Begin;$/;"	v
+cuD3D9CtxCreate	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9CtxCreate                      *cuD3D9CtxCreate;$/;"	v
+cuD3D9GetDevice	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9GetDevice                      *cuD3D9GetDevice;$/;"	v
+cuD3D9GetDirect3DDevice	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9GetDirect3DDevice              *cuD3D9GetDirect3DDevice;$/;"	v
+cuD3D9MapResources	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9MapResources                   *cuD3D9MapResources;$/;"	v
+cuD3D9MapVertexBuffer	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9MapVertexBuffer                *cuD3D9MapVertexBuffer;$/;"	v
+cuD3D9RegisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9RegisterResource               *cuD3D9RegisterResource;$/;"	v
+cuD3D9RegisterVertexBuffer	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9RegisterVertexBuffer           *cuD3D9RegisterVertexBuffer;$/;"	v
+cuD3D9ResourceGetMappedArray	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceGetMappedArray         *cuD3D9ResourceGetMappedArray;$/;"	v
+cuD3D9ResourceGetMappedPitch	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceGetMappedPitch         *cuD3D9ResourceGetMappedPitch;$/;"	v
+cuD3D9ResourceGetMappedPointer	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceGetMappedPointer       *cuD3D9ResourceGetMappedPointer;$/;"	v
+cuD3D9ResourceGetMappedSize	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceGetMappedSize          *cuD3D9ResourceGetMappedSize;$/;"	v
+cuD3D9ResourceGetSurfaceDimensions	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceGetSurfaceDimensions   *cuD3D9ResourceGetSurfaceDimensions;$/;"	v
+cuD3D9ResourceSetMapFlags	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9ResourceSetMapFlags            *cuD3D9ResourceSetMapFlags;$/;"	v
+cuD3D9UnmapResources	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9UnmapResources                 *cuD3D9UnmapResources;$/;"	v
+cuD3D9UnmapVertexBuffer	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9UnmapVertexBuffer              *cuD3D9UnmapVertexBuffer;$/;"	v
+cuD3D9UnregisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9UnregisterResource             *cuD3D9UnregisterResource;$/;"	v
+cuD3D9UnregisterVertexBuffer	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9UnregisterVertexBuffer         *cuD3D9UnregisterVertexBuffer;$/;"	v
+cuD3DEnd	helpers/cuda_drvapi_dynlink.c	/^tcuD3D9End                            *cuD3DEnd;$/;"	v
+cuDeviceComputeCapability	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceComputeCapability            *cuDeviceComputeCapability;$/;"	v
+cuDeviceGet	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceGet                          *cuDeviceGet;$/;"	v
+cuDeviceGetAttribute	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceGetAttribute                 *cuDeviceGetAttribute;$/;"	v
+cuDeviceGetCount	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceGetCount                     *cuDeviceGetCount;$/;"	v
+cuDeviceGetName	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceGetName                      *cuDeviceGetName;$/;"	v
+cuDeviceGetProperties	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceGetProperties                *cuDeviceGetProperties;$/;"	v
+cuDeviceTotalMem	helpers/cuda_drvapi_dynlink.c	/^tcuDeviceTotalMem                     *cuDeviceTotalMem;$/;"	v
+cuDriverGetVersion	helpers/cuda_drvapi_dynlink.c	/^tcuDriverGetVersion                   *cuDriverGetVersion;$/;"	v
+cuEventCreate	helpers/cuda_drvapi_dynlink.c	/^tcuEventCreate                        *cuEventCreate;$/;"	v
+cuEventDestroy	helpers/cuda_drvapi_dynlink.c	/^tcuEventDestroy                       *cuEventDestroy;$/;"	v
+cuEventElapsedTime	helpers/cuda_drvapi_dynlink.c	/^tcuEventElapsedTime                   *cuEventElapsedTime;$/;"	v
+cuEventQuery	helpers/cuda_drvapi_dynlink.c	/^tcuEventQuery                         *cuEventQuery;$/;"	v
+cuEventRecord	helpers/cuda_drvapi_dynlink.c	/^tcuEventRecord                        *cuEventRecord;$/;"	v
+cuEventSynchronize	helpers/cuda_drvapi_dynlink.c	/^tcuEventSynchronize                   *cuEventSynchronize;$/;"	v
+cuFuncGetAttribute	helpers/cuda_drvapi_dynlink.c	/^tcuFuncGetAttribute                   *cuFuncGetAttribute;$/;"	v
+cuFuncSetBlockShape	helpers/cuda_drvapi_dynlink.c	/^tcuFuncSetBlockShape                  *cuFuncSetBlockShape;$/;"	v
+cuFuncSetCacheConfig	helpers/cuda_drvapi_dynlink.c	/^tcuFuncSetCacheConfig                 *cuFuncSetCacheConfig;$/;"	v
+cuFuncSetSharedSize	helpers/cuda_drvapi_dynlink.c	/^tcuFuncSetSharedSize                  *cuFuncSetSharedSize;$/;"	v
+cuGLCtxCreate	helpers/cuda_drvapi_dynlink.c	/^tcuGLCtxCreate                        *cuGLCtxCreate;$/;"	v
+cuGetExportTable	helpers/cuda_drvapi_dynlink.c	/^tcuGetExportTable                     *cuGetExportTable;$/;"	v
+cuGraphicsD3D10RegisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsD3D10RegisterResource      *cuGraphicsD3D10RegisterResource;$/;"	v
+cuGraphicsD3D11RegisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsD3D11RegisterResource      *cuGraphicsD3D11RegisterResource;$/;"	v
+cuGraphicsD3D9RegisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsD3D9RegisterResource       *cuGraphicsD3D9RegisterResource;$/;"	v
+cuGraphicsGLRegisterBuffer	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsGLRegisterBuffer           *cuGraphicsGLRegisterBuffer;$/;"	v
+cuGraphicsGLRegisterImage	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsGLRegisterImage            *cuGraphicsGLRegisterImage;$/;"	v
+cuGraphicsMapResources	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsMapResources               *cuGraphicsMapResources;$/;"	v
+cuGraphicsResourceGetMappedPointer	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsResourceGetMappedPointer   *cuGraphicsResourceGetMappedPointer;$/;"	v
+cuGraphicsResourceSetMapFlags	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsResourceSetMapFlags        *cuGraphicsResourceSetMapFlags;$/;"	v
+cuGraphicsSubResourceGetMappedArray	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsSubResourceGetMappedArray  *cuGraphicsSubResourceGetMappedArray;$/;"	v
+cuGraphicsUnmapResources	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsUnmapResources             *cuGraphicsUnmapResources;$/;"	v
+cuGraphicsUnregisterResource	helpers/cuda_drvapi_dynlink.c	/^tcuGraphicsUnregisterResource         *cuGraphicsUnregisterResource;$/;"	v
+cuInit	helpers/cuda_drvapi_dynlink.c	/^CUresult CUDAAPI cuInit(unsigned int Flags, int cudaVersion)$/;"	f
+cuLaunch	helpers/cuda_drvapi_dynlink.c	/^tcuLaunch                             *cuLaunch;$/;"	v
+cuLaunchGrid	helpers/cuda_drvapi_dynlink.c	/^tcuLaunchGrid                         *cuLaunchGrid;$/;"	v
+cuLaunchGridAsync	helpers/cuda_drvapi_dynlink.c	/^tcuLaunchGridAsync                    *cuLaunchGridAsync;$/;"	v
+cuLaunchKernel	helpers/cuda_drvapi_dynlink.c	/^tcuLaunchKernel                       *cuLaunchKernel;$/;"	v
+cuMemAlloc	helpers/cuda_drvapi_dynlink.c	/^tcuMemAlloc                           *cuMemAlloc;$/;"	v
+cuMemAllocHost	helpers/cuda_drvapi_dynlink.c	/^tcuMemAllocHost                       *cuMemAllocHost;$/;"	v
+cuMemAllocPitch	helpers/cuda_drvapi_dynlink.c	/^tcuMemAllocPitch                      *cuMemAllocPitch;$/;"	v
+cuMemFree	helpers/cuda_drvapi_dynlink.c	/^tcuMemFree                            *cuMemFree;$/;"	v
+cuMemFreeHost	helpers/cuda_drvapi_dynlink.c	/^tcuMemFreeHost                        *cuMemFreeHost;$/;"	v
+cuMemGetAddressRange	helpers/cuda_drvapi_dynlink.c	/^tcuMemGetAddressRange                 *cuMemGetAddressRange;$/;"	v
+cuMemGetInfo	helpers/cuda_drvapi_dynlink.c	/^tcuMemGetInfo                         *cuMemGetInfo;$/;"	v
+cuMemHostAlloc	helpers/cuda_drvapi_dynlink.c	/^tcuMemHostAlloc                       *cuMemHostAlloc;$/;"	v
+cuMemHostGetDevicePointer	helpers/cuda_drvapi_dynlink.c	/^tcuMemHostGetDevicePointer            *cuMemHostGetDevicePointer;$/;"	v
+cuMemHostGetFlags	helpers/cuda_drvapi_dynlink.c	/^tcuMemHostGetFlags                    *cuMemHostGetFlags;$/;"	v
+cuMemHostRegister	helpers/cuda_drvapi_dynlink.c	/^tcuMemHostRegister                    *cuMemHostRegister;$/;"	v
+cuMemHostUnregister	helpers/cuda_drvapi_dynlink.c	/^tcuMemHostUnregister                  *cuMemHostUnregister;$/;"	v
+cuMemcpy	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy                             *cuMemcpy;$/;"	v
+cuMemcpy2D	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy2D                           *cuMemcpy2D;$/;"	v
+cuMemcpy2DAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy2DAsync                      *cuMemcpy2DAsync;$/;"	v
+cuMemcpy2DUnaligned	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy2DUnaligned                  *cuMemcpy2DUnaligned;$/;"	v
+cuMemcpy3D	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy3D                           *cuMemcpy3D;$/;"	v
+cuMemcpy3DAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpy3DAsync                      *cuMemcpy3DAsync;$/;"	v
+cuMemcpyAtoA	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyAtoA                         *cuMemcpyAtoA;$/;"	v
+cuMemcpyAtoD	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyAtoD                         *cuMemcpyAtoD;$/;"	v
+cuMemcpyAtoH	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyAtoH                         *cuMemcpyAtoH;$/;"	v
+cuMemcpyAtoHAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyAtoHAsync                    *cuMemcpyAtoHAsync;$/;"	v
+cuMemcpyDtoA	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyDtoA                         *cuMemcpyDtoA;$/;"	v
+cuMemcpyDtoD	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyDtoD                         *cuMemcpyDtoD;$/;"	v
+cuMemcpyDtoDAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyDtoDAsync                    *cuMemcpyDtoDAsync;$/;"	v
+cuMemcpyDtoH	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyDtoH                         *cuMemcpyDtoH;$/;"	v
+cuMemcpyDtoHAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyDtoHAsync                    *cuMemcpyDtoHAsync;$/;"	v
+cuMemcpyHtoA	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyHtoA                         *cuMemcpyHtoA;$/;"	v
+cuMemcpyHtoAAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyHtoAAsync                    *cuMemcpyHtoAAsync;$/;"	v
+cuMemcpyHtoD	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyHtoD                         *cuMemcpyHtoD;$/;"	v
+cuMemcpyHtoDAsync	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyHtoDAsync                    *cuMemcpyHtoDAsync;$/;"	v
+cuMemcpyPeer	helpers/cuda_drvapi_dynlink.c	/^tcuMemcpyPeer                         *cuMemcpyPeer;$/;"	v
+cuMemsetD16	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD16                          *cuMemsetD16;$/;"	v
+cuMemsetD2D16	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD2D16                        *cuMemsetD2D16;$/;"	v
+cuMemsetD2D32	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD2D32                        *cuMemsetD2D32;$/;"	v
+cuMemsetD2D8	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD2D8                         *cuMemsetD2D8;$/;"	v
+cuMemsetD32	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD32                          *cuMemsetD32;$/;"	v
+cuMemsetD8	helpers/cuda_drvapi_dynlink.c	/^tcuMemsetD8                           *cuMemsetD8;$/;"	v
+cuModuleGetFunction	helpers/cuda_drvapi_dynlink.c	/^tcuModuleGetFunction                  *cuModuleGetFunction;$/;"	v
+cuModuleGetGlobal	helpers/cuda_drvapi_dynlink.c	/^tcuModuleGetGlobal                    *cuModuleGetGlobal;$/;"	v
+cuModuleGetSurfRef	helpers/cuda_drvapi_dynlink.c	/^tcuModuleGetSurfRef                   *cuModuleGetSurfRef;$/;"	v
+cuModuleGetTexRef	helpers/cuda_drvapi_dynlink.c	/^tcuModuleGetTexRef                    *cuModuleGetTexRef;$/;"	v
+cuModuleLoad	helpers/cuda_drvapi_dynlink.c	/^tcuModuleLoad                         *cuModuleLoad;$/;"	v
+cuModuleLoadData	helpers/cuda_drvapi_dynlink.c	/^tcuModuleLoadData                     *cuModuleLoadData;$/;"	v
+cuModuleLoadDataEx	helpers/cuda_drvapi_dynlink.c	/^tcuModuleLoadDataEx                   *cuModuleLoadDataEx;$/;"	v
+cuModuleLoadFatBinary	helpers/cuda_drvapi_dynlink.c	/^tcuModuleLoadFatBinary                *cuModuleLoadFatBinary;$/;"	v
+cuModuleUnload	helpers/cuda_drvapi_dynlink.c	/^tcuModuleUnload                       *cuModuleUnload;$/;"	v
+cuParamSetSize	helpers/cuda_drvapi_dynlink.c	/^tcuParamSetSize                       *cuParamSetSize;$/;"	v
+cuParamSetTexRef	helpers/cuda_drvapi_dynlink.c	/^tcuParamSetTexRef                     *cuParamSetTexRef;$/;"	v
+cuParamSetf	helpers/cuda_drvapi_dynlink.c	/^tcuParamSetf                          *cuParamSetf;$/;"	v
+cuParamSeti	helpers/cuda_drvapi_dynlink.c	/^tcuParamSeti                          *cuParamSeti;$/;"	v
+cuParamSetv	helpers/cuda_drvapi_dynlink.c	/^tcuParamSetv                          *cuParamSetv;$/;"	v
+cuStreamCreate	helpers/cuda_drvapi_dynlink.c	/^tcuStreamCreate                       *cuStreamCreate;$/;"	v
+cuStreamDestroy	helpers/cuda_drvapi_dynlink.c	/^tcuStreamDestroy                      *cuStreamDestroy;$/;"	v
+cuStreamQuery	helpers/cuda_drvapi_dynlink.c	/^tcuStreamQuery                        *cuStreamQuery;$/;"	v
+cuStreamSynchronize	helpers/cuda_drvapi_dynlink.c	/^tcuStreamSynchronize                  *cuStreamSynchronize;$/;"	v
+cuSurfRefGetArray	helpers/cuda_drvapi_dynlink.c	/^tcuSurfRefGetArray                    *cuSurfRefGetArray;$/;"	v
+cuSurfRefSetArray	helpers/cuda_drvapi_dynlink.c	/^tcuSurfRefSetArray                    *cuSurfRefSetArray;$/;"	v
+cuTexRefCreate	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefCreate                       *cuTexRefCreate;$/;"	v
+cuTexRefDestroy	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefDestroy                      *cuTexRefDestroy;$/;"	v
+cuTexRefGetAddress	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetAddress                   *cuTexRefGetAddress;$/;"	v
+cuTexRefGetAddressMode	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetAddressMode               *cuTexRefGetAddressMode;$/;"	v
+cuTexRefGetArray	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetArray                     *cuTexRefGetArray;$/;"	v
+cuTexRefGetFilterMode	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetFilterMode                *cuTexRefGetFilterMode;$/;"	v
+cuTexRefGetFlags	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetFlags                     *cuTexRefGetFlags;$/;"	v
+cuTexRefGetFormat	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefGetFormat                    *cuTexRefGetFormat;$/;"	v
+cuTexRefSetAddress	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetAddress                   *cuTexRefSetAddress;$/;"	v
+cuTexRefSetAddress2D	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetAddress2D                 *cuTexRefSetAddress2D;$/;"	v
+cuTexRefSetAddressMode	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetAddressMode               *cuTexRefSetAddressMode;$/;"	v
+cuTexRefSetArray	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetArray                     *cuTexRefSetArray;$/;"	v
+cuTexRefSetFilterMode	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetFilterMode                *cuTexRefSetFilterMode;$/;"	v
+cuTexRefSetFlags	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetFlags                     *cuTexRefSetFlags;$/;"	v
+cuTexRefSetFormat	helpers/cuda_drvapi_dynlink.c	/^tcuTexRefSetFormat                    *cuTexRefSetFormat;$/;"	v
+cuWGLGetDevice	helpers/cuda_drvapi_dynlink.c	/^tcuWGLGetDevice                       *cuWGLGetDevice;$/;"	v
+d3d10	helpers/dynlink_d3d10.h	/^        DXUTD3D10DeviceSettings d3d10; \/\/ only valid if ver == DXUT_D3D10_DEVICE$/;"	m	union:DXUTDeviceSettings::__anon5
+d3d9	helpers/dynlink_d3d10.h	/^        DXUTD3D9DeviceSettings d3d9; \/\/ only valid if ver == DXUT_D3D9_DEVICE$/;"	m	union:DXUTDeviceSettings::__anon5
+depthBits	helpers/rendercheck_gl.h	/^    int depthBits;$/;"	m	struct:fboConfig
+depthFormat	helpers/rendercheck_gl.h	/^    GLenum depthFormat;$/;"	m	struct:fboConfig
+depthRB	helpers/rendercheck_gl.h	/^    GLuint depthRB; \/\/ depth render buffer$/;"	m	struct:fboData
+depthSamples	helpers/rendercheck_gl.h	/^    int depthSamples;$/;"	m	struct:fboConfig
+depthTex	helpers/rendercheck_gl.h	/^    GLuint depthTex; \/\/depth texture$/;"	m	struct:fboData
+diff_time	helpers/helper_timer.h	/^        float  diff_time;$/;"	m	class:StopWatchLinux
+diff_time	helpers/helper_timer.h	/^        float  diff_time;$/;"	m	class:StopWatchWin
+dot	helpers/helper_math.h	/^inline __host__ __device__ float dot(float2 a, float2 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ float dot(float3 a, float3 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ float dot(float4 a, float4 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ int dot(int2 a, int2 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ int dot(int3 a, int3 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ int dot(int4 a, int4 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ uint dot(uint2 a, uint2 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ uint dot(uint3 a, uint3 b)$/;"	f
+dot	helpers/helper_math.h	/^inline __host__ __device__ uint dot(uint4 a, uint4 b)$/;"	f
+dot	helpers/nvVector.h	/^    inline typename T::value_type dot(const T &lhs, const T &rhs)$/;"	f	namespace:nv
+dumpBin	helpers/rendercheck_gl.h	/^        virtual void dumpBin(void *data, unsigned int bytes, const char *filename)$/;"	f	class:CheckRender
+dynlinkLoadD3D10API	helpers/dynlink_d3d10.h	/^static bool dynlinkLoadD3D10API(void)$/;"	f
+dynlinkLoadD3D11API	helpers/dynlink_d3d11.h	/^static bool dynlinkLoadD3D11API(void)$/;"	f
+dynlinkUnloadD3D10API	helpers/dynlink_d3d10.h	/^static bool dynlinkUnloadD3D10API(void)$/;"	f
+dynlinkUnloadD3D11API	helpers/dynlink_d3d11.h	/^static bool dynlinkUnloadD3D11API(void)$/;"	f
+element	helpers/nvMatrix.h	/^            T &element(int row, int col)$/;"	f	class:nv::matrix4
+element	helpers/nvMatrix.h	/^            const T &element(int row, int col) const$/;"	f	class:nv::matrix4
+endWinCoords	helpers/paramgl.h	/^inline void endWinCoords(void)$/;"	f
+end_time	helpers/helper_timer.h	/^        LARGE_INTEGER  end_time;$/;"	m	class:StopWatchWin
+error_id	helpers/drvapi_error_string.h	/^    int  error_id;$/;"	m	struct:__anon3
+error_string	helpers/drvapi_error_string.h	/^    char const *error_string;$/;"	m	struct:__anon3
+fabs	helpers/helper_math.h	/^inline __host__ __device__ float2 fabs(float2 v)$/;"	f
+fabs	helpers/helper_math.h	/^inline __host__ __device__ float3 fabs(float3 v)$/;"	f
+fabs	helpers/helper_math.h	/^inline __host__ __device__ float4 fabs(float4 v)$/;"	f
+fb	helpers/rendercheck_gl.h	/^    GLuint fb;      \/\/ render framebuffer$/;"	m	struct:fboData
+fboConfig	helpers/rendercheck_gl.h	/^struct fboConfig$/;"	s
+fboData	helpers/rendercheck_gl.h	/^struct fboData$/;"	s
+filter	backup/filter.h	/^void filter(T data[], size_t dataSize, const T val, char bitvec[], Compare comp)$/;"	f
+filter	filter.h	/^void filter(T data[], size_t dataSize, const T val, char bitvec[], Compare comp)$/;"	f
+findCudaDevice	backup/helper_cuda.h	/^inline int findCudaDevice(int argc, const char **argv)$/;"	f
+findCudaDevice	helper_cuda.h	/^inline int findCudaDevice(int argc, const char **argv)$/;"	f
+findCudaDevice	helpers/helper_cuda.h	/^inline int findCudaDevice(int argc, const char **argv)$/;"	f
+findCudaDeviceDRV	helpers/helper_cuda_drvapi.h	/^inline CUdevice findCudaDeviceDRV(int argc, const char **argv)$/;"	f
+findCudaGLDevice	helpers/helper_cuda_gl.h	/^inline int findCudaGLDevice(int argc, const char **argv)$/;"	f
+findCudaGLDeviceDRV	helpers/helper_cuda_drvapi.h	/^inline CUdevice findCudaGLDeviceDRV(int argc, const char **argv)$/;"	f
+floorf	helpers/helper_math.h	/^inline __host__ __device__ float2 floorf(float2 v)$/;"	f
+floorf	helpers/helper_math.h	/^inline __host__ __device__ float3 floorf(float3 v)$/;"	f
+floorf	helpers/helper_math.h	/^inline __host__ __device__ float4 floorf(float4 v)$/;"	f
+fmaxf	helpers/helper_math.h	/^inline __host__ __device__ float2 fmaxf(float2 a, float2 b)$/;"	f
+fmaxf	helpers/helper_math.h	/^inline __host__ __device__ float3 fmaxf(float3 a, float3 b)$/;"	f
+fmaxf	helpers/helper_math.h	/^inline __host__ __device__ float4 fmaxf(float4 a, float4 b)$/;"	f
+fmaxf	helpers/helper_math.h	/^inline float fmaxf(float a, float b)$/;"	f
+fminf	helpers/helper_math.h	/^inline  __host__ __device__ float2 fminf(float2 a, float2 b)$/;"	f
+fminf	helpers/helper_math.h	/^inline  __host__ __device__ float4 fminf(float4 a, float4 b)$/;"	f
+fminf	helpers/helper_math.h	/^inline __host__ __device__ float3 fminf(float3 a, float3 b)$/;"	f
+fminf	helpers/helper_math.h	/^inline float fminf(float a, float b)$/;"	f
+fmodf	helpers/helper_math.h	/^inline __host__ __device__ float2 fmodf(float2 a, float2 b)$/;"	f
+fmodf	helpers/helper_math.h	/^inline __host__ __device__ float3 fmodf(float3 a, float3 b)$/;"	f
+fmodf	helpers/helper_math.h	/^inline __host__ __device__ float4 fmodf(float4 a, float4 b)$/;"	f
+format	helpers/rendercheck_gl.h	/^    GLenum format;$/;"	m	struct:bufferConfig
+fracf	helpers/helper_math.h	/^inline __host__ __device__ float fracf(float v)$/;"	f
+fracf	helpers/helper_math.h	/^inline __host__ __device__ float2 fracf(float2 v)$/;"	f
+fracf	helpers/helper_math.h	/^inline __host__ __device__ float3 fracf(float3 v)$/;"	f
+fracf	helpers/helper_math.h	/^inline __host__ __device__ float4 fracf(float4 v)$/;"	f
+freeResources	helpers/rendercheck_gl.h	/^        virtual void freeResources()$/;"	f	class:CFrameBufferObject
+freq	helpers/helper_timer.h	/^        double  freq;$/;"	m	class:StopWatchWin
+freq_set	helpers/helper_timer.h	/^        bool  freq_set;$/;"	m	class:StopWatchWin
+g	helpers/paramgl.h	/^            float r, g, b;$/;"	m	struct:ParamListGL::Color
+g_hModD3D10	helpers/dynlink_d3d10.h	/^static HMODULE                              g_hModD3D10 = NULL;$/;"	v
+g_hModD3D101	helpers/dynlink_d3d10.h	/^static HMODULE                              g_hModD3D101 = NULL;$/;"	v
+g_hModD3DX10	helpers/dynlink_d3d10.h	/^static HMODULE                              g_hModD3DX10 = NULL;$/;"	v
+g_hModDXGI	helpers/dynlink_d3d10.h	/^static HMODULE                              g_hModDXGI = NULL;$/;"	v
+getAverageTime	helpers/helper_timer.h	/^StopWatchLinux::getAverageTime()$/;"	f	class:StopWatchLinux
+getAverageTime	helpers/helper_timer.h	/^StopWatchWin::getAverageTime()$/;"	f	class:StopWatchWin
+getCmdLineArgumentFloat	helpers/helper_string.h	/^inline float getCmdLineArgumentFloat(const int argc, const char **argv, const char *string_ref)$/;"	f
+getCmdLineArgumentInt	helpers/helper_string.h	/^inline int getCmdLineArgumentInt(const int argc, const char **argv, const char *string_ref)$/;"	f
+getCmdLineArgumentString	helpers/helper_string.h	/^inline bool getCmdLineArgumentString(const int argc, const char **argv,$/;"	f
+getCudaAttribute	helpers/helper_cuda_drvapi.h	/^inline void getCudaAttribute(T *attribute, CUdevice_attribute device_attribute, int device)$/;"	f
+getCudaDrvErrorString	helpers/drvapi_error_string.h	/^inline const char *getCudaDrvErrorString(CUresult error_id)$/;"	f
+getDepthTex	helpers/rendercheck_gl.h	/^        GLuint getDepthTex()$/;"	f	class:CFrameBufferObject
+getDiffTime	helpers/helper_timer.h	/^StopWatchLinux::getDiffTime()$/;"	f	class:StopWatchLinux
+getFbo	helpers/rendercheck_gl.h	/^        GLuint getFbo()$/;"	f	class:CFrameBufferObject
+getFileExtension	helpers/helper_string.h	/^inline int getFileExtension(char *filename, char **extension)$/;"	f
+getLastCudaDrvErrorMsg	helpers/helper_cuda_drvapi.h	49;"	d
+getLastCudaDrvErrorMsg	helpers/helper_cuda_drvapi.h	52;"	d
+getLastCudaError	backup/helper_cuda.h	717;"	d
+getLastCudaError	helper_cuda.h	717;"	d
+getLastCudaError	helpers/helper_cuda.h	717;"	d
+getPixelFormat	helpers/rendercheck_gl.h	/^        virtual int  getPixelFormat()$/;"	f	class:CheckRender
+getTex	helpers/rendercheck_gl.h	/^        GLuint getTex()$/;"	f	class:CFrameBufferObject
+getTime	helpers/helper_timer.h	/^StopWatchLinux::getTime()$/;"	f	class:StopWatchLinux
+getTime	helpers/helper_timer.h	/^StopWatchWin::getTime()$/;"	f	class:StopWatchWin
+get_column	helpers/nvMatrix.h	/^            vec4<T> get_column(int c) const$/;"	f	class:nv::matrix4
+get_row	helpers/nvMatrix.h	/^            vec4<T> get_row(int r) const$/;"	f	class:nv::matrix4
+get_value	helpers/nvMatrix.h	/^            const T *get_value() const$/;"	f	class:nv::matrix4
+get_value	helpers/nvMatrix.h	/^            void get_value(T *mp) const$/;"	f	class:nv::matrix4
+get_value	helpers/nvQuaternion.h	/^            const T *get_value() const$/;"	f	class:nv::quaternion
+get_value	helpers/nvQuaternion.h	/^            void get_value(T &q0, T &q1, T &q2, T &q3) const$/;"	f	class:nv::quaternion
+get_value	helpers/nvQuaternion.h	/^            void get_value(matrix4<T> &m) const$/;"	f	class:nv::quaternion
+get_value	helpers/nvQuaternion.h	/^            void get_value(vec3<T> &axis, T &radians) const$/;"	f	class:nv::quaternion
+get_value	helpers/nvVector.h	/^            const T *get_value() const$/;"	f	class:nv::vec2
+get_value	helpers/nvVector.h	/^            const T *get_value() const$/;"	f	class:nv::vec3
+get_value	helpers/nvVector.h	/^            const T *get_value() const$/;"	f	class:nv::vec4
+glPrint	helpers/paramgl.h	/^inline void glPrint(int x, int y, const char *s, void *font)$/;"	f
+glPrintShadowed	helpers/paramgl.h	/^inline void glPrintShadowed(int x, int y, const char *s, void *font, float *color)$/;"	f
+gpuDeviceInit	backup/helper_cuda.h	/^inline int gpuDeviceInit(int devID)$/;"	f
+gpuDeviceInit	helper_cuda.h	/^inline int gpuDeviceInit(int devID)$/;"	f
+gpuDeviceInit	helpers/helper_cuda.h	/^inline int gpuDeviceInit(int devID)$/;"	f
+gpuDeviceInitDRV	helpers/helper_cuda_drvapi.h	/^inline int gpuDeviceInitDRV(int ARGC, const char **ARGV)$/;"	f
+gpuGLDeviceInit	helpers/helper_cuda_gl.h	/^inline int gpuGLDeviceInit(int ARGC, const char **ARGV)$/;"	f
+gpuGetMaxGflopsDeviceId	backup/helper_cuda.h	/^inline int gpuGetMaxGflopsDeviceId()$/;"	f
+gpuGetMaxGflopsDeviceId	helper_cuda.h	/^inline int gpuGetMaxGflopsDeviceId()$/;"	f
+gpuGetMaxGflopsDeviceId	helpers/helper_cuda.h	/^inline int gpuGetMaxGflopsDeviceId()$/;"	f
+gpuGetMaxGflopsDeviceIdDRV	helpers/helper_cuda_drvapi.h	/^inline int gpuGetMaxGflopsDeviceIdDRV()$/;"	f
+gpuGetMaxGflopsGLDeviceIdDRV	helpers/helper_cuda_drvapi.h	/^inline int gpuGetMaxGflopsGLDeviceIdDRV()$/;"	f
+handleException	helpers/exception.h	/^handleException(const Exception_Typ &ex)$/;"	f
+imageData	helpers/rendercheck_gl.h	/^        virtual void *imageData()$/;"	f	class:CheckRender
+initialize	helpers/rendercheck_gl.h	/^        bool initialize(unsigned width, unsigned height, fboConfig &rConfigFBO, fboData &rActiveFBO)$/;"	f	class:CFrameBufferObject
+inverse	helpers/nvMatrix.h	/^            friend matrix4 inverse(const matrix4 &m)$/;"	f	class:nv::matrix4
+inverse	helpers/nvQuaternion.h	/^            friend quaternion<T> inverse(const quaternion<T> &q)$/;"	f	class:nv::quaternion
+length	helpers/helper_math.h	/^inline __host__ __device__ float length(float2 v)$/;"	f
+length	helpers/helper_math.h	/^inline __host__ __device__ float length(float3 v)$/;"	f
+length	helpers/helper_math.h	/^inline __host__ __device__ float length(float4 v)$/;"	f
+length	helpers/nvVector.h	/^    inline typename T::value_type length(const T &vec)$/;"	f	namespace:nv
+lerp	helpers/helper_math.h	/^inline __device__ __host__ float lerp(float a, float b, float t)$/;"	f
+lerp	helpers/helper_math.h	/^inline __device__ __host__ float2 lerp(float2 a, float2 b, float t)$/;"	f
+lerp	helpers/helper_math.h	/^inline __device__ __host__ float3 lerp(float3 a, float3 b, float t)$/;"	f
+lerp	helpers/helper_math.h	/^inline __device__ __host__ float4 lerp(float4 a, float4 b, float t)$/;"	f
+m_Bpp	helpers/rendercheck_gl.h	/^        unsigned int  m_Width, m_Height, m_Bpp;$/;"	m	class:CheckRender
+m_ExecPath	helpers/rendercheck_gl.h	/^        char          m_ExecPath[256];$/;"	m	class:CheckRender
+m_Height	helpers/rendercheck_gl.h	/^        GLuint    m_Width, m_Height;$/;"	m	class:CFrameBufferObject
+m_Height	helpers/rendercheck_gl.h	/^        unsigned int  m_Width, m_Height, m_Bpp;$/;"	m	class:CheckRender
+m_PixelFormat	helpers/rendercheck_gl.h	/^        GLenum        m_PixelFormat;$/;"	m	class:CheckRender
+m_Width	helpers/rendercheck_gl.h	/^        GLuint    m_Width, m_Height;$/;"	m	class:CFrameBufferObject
+m_Width	helpers/rendercheck_gl.h	/^        unsigned int  m_Width, m_Height, m_Bpp;$/;"	m	class:CheckRender
+m_active	helpers/paramgl.h	/^        bool m_active;$/;"	m	class:ParamListGL
+m_bQAReadback	helpers/rendercheck_gl.h	/^        bool          m_bQAReadback, m_bUseFBO, m_bUsePBO;$/;"	m	class:CheckRender
+m_bUseFBO	helpers/rendercheck_gl.h	/^        bool          m_bQAReadback, m_bUseFBO, m_bUsePBO;$/;"	m	class:CheckRender
+m_bUseFloat	helpers/rendercheck_gl.h	/^        bool      m_bUseFloat;$/;"	m	class:CFrameBufferObject
+m_bUsePBO	helpers/rendercheck_gl.h	/^        bool          m_bQAReadback, m_bUseFBO, m_bUsePBO;$/;"	m	class:CheckRender
+m_bar_color_inner	helpers/paramgl.h	/^        Color m_bar_color_inner;$/;"	m	class:ParamListGL
+m_bar_color_outer	helpers/paramgl.h	/^        Color m_bar_color_outer;$/;"	m	class:ParamListGL
+m_bar_h	helpers/paramgl.h	/^        int m_bar_h;        \/\/ bar height$/;"	m	class:ParamListGL
+m_bar_offset	helpers/paramgl.h	/^        int m_bar_offset;   \/\/ bar offset in y$/;"	m	class:ParamListGL
+m_bar_w	helpers/paramgl.h	/^        int m_bar_w;        \/\/ bar width$/;"	m	class:ParamListGL
+m_bar_x	helpers/paramgl.h	/^        int m_bar_x;        \/\/ bar start x position$/;"	m	class:ParamListGL
+m_current	helpers/param.h	/^        std::vector<ParamBase *>::const_iterator m_current;$/;"	m	class:ParamList
+m_default	helpers/param.h	/^        T m_default, m_min, m_max, m_step;$/;"	m	class:Param
+m_eGLTarget	helpers/rendercheck_gl.h	/^        GLenum    m_eGLTarget;$/;"	m	class:CFrameBufferObject
+m_fThresholdCompare	helpers/rendercheck_gl.h	/^        float         m_fThresholdCompare;$/;"	m	class:CheckRender
+m_fboConfig	helpers/rendercheck_gl.h	/^        fboConfig m_fboConfig;$/;"	m	class:CFrameBufferObject
+m_fboData	helpers/rendercheck_gl.h	/^        fboData   m_fboData;$/;"	m	class:CFrameBufferObject
+m_font	helpers/paramgl.h	/^        void *m_font;$/;"	m	class:ParamListGL
+m_font_h	helpers/paramgl.h	/^        int m_font_h;       \/\/ font height$/;"	m	class:ParamListGL
+m_map	helpers/param.h	/^        std::map<std::string, ParamBase *> m_map;$/;"	m	class:ParamList
+m_max	helpers/param.h	/^        T m_default, m_min, m_max, m_step;$/;"	m	class:Param
+m_min	helpers/param.h	/^        T m_default, m_min, m_max, m_step;$/;"	m	class:Param
+m_name	helpers/param.h	/^        std::string m_name;$/;"	m	class:ParamBase
+m_overlayProgram	helpers/rendercheck_gl.h	/^        GLuint    m_overlayProgram;$/;"	m	class:CFrameBufferObject
+m_pFrameBufferObject	helpers/rendercheck_gl.h	/^        CFrameBufferObject *m_pFrameBufferObject;$/;"	m	class:CheckFBO
+m_pImageData	helpers/rendercheck_gl.h	/^        unsigned char *m_pImageData;  \/\/ This is the image data stored in system memory$/;"	m	class:CheckRender
+m_params	helpers/param.h	/^        std::vector<ParamBase *> m_params;$/;"	m	class:ParamList
+m_pboReadback	helpers/rendercheck_gl.h	/^        GLuint        m_pboReadback;$/;"	m	class:CheckRender
+m_precision	helpers/param.h	/^        int m_precision;  \/\/ number of digits after decimal point in string output$/;"	m	class:Param
+m_ptr	helpers/param.h	/^        T *m_ptr;         \/\/ pointer to value declared elsewhere$/;"	m	class:Param
+m_separation	helpers/paramgl.h	/^        int m_separation;   \/\/ bar separation in y$/;"	m	class:ParamListGL
+m_start_x	helpers/paramgl.h	/^        int m_start_x, m_start_y;$/;"	m	class:ParamListGL
+m_start_y	helpers/paramgl.h	/^        int m_start_x, m_start_y;$/;"	m	class:ParamListGL
+m_step	helpers/param.h	/^        T m_default, m_min, m_max, m_step;$/;"	m	class:Param
+m_text_color_selected	helpers/paramgl.h	/^        Color m_text_color_selected;$/;"	m	class:ParamListGL
+m_text_color_shadow	helpers/paramgl.h	/^        Color m_text_color_shadow;$/;"	m	class:ParamListGL
+m_text_color_unselected	helpers/paramgl.h	/^        Color m_text_color_unselected;$/;"	m	class:ParamListGL
+m_text_x	helpers/paramgl.h	/^        int m_text_x;       \/\/ text start x position$/;"	m	class:ParamListGL
+m_textureProgram	helpers/rendercheck_gl.h	/^        GLuint    m_textureProgram;$/;"	m	class:CFrameBufferObject
+m_value	helpers/param.h	/^        T m_value;$/;"	m	class:Param
+m_value_x	helpers/paramgl.h	/^        int m_value_x;      \/\/ value text x position$/;"	m	class:ParamListGL
+make_float2	helpers/helper_math.h	/^inline __host__ __device__ float2 make_float2(float s)$/;"	f
+make_float2	helpers/helper_math.h	/^inline __host__ __device__ float2 make_float2(float3 a)$/;"	f
+make_float2	helpers/helper_math.h	/^inline __host__ __device__ float2 make_float2(int2 a)$/;"	f
+make_float2	helpers/helper_math.h	/^inline __host__ __device__ float2 make_float2(uint2 a)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(float s)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(float2 a)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(float2 a, float s)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(float4 a)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(int3 a)$/;"	f
+make_float3	helpers/helper_math.h	/^inline __host__ __device__ float3 make_float3(uint3 a)$/;"	f
+make_float4	helpers/helper_math.h	/^inline __host__ __device__ float4 make_float4(float s)$/;"	f
+make_float4	helpers/helper_math.h	/^inline __host__ __device__ float4 make_float4(float3 a)$/;"	f
+make_float4	helpers/helper_math.h	/^inline __host__ __device__ float4 make_float4(float3 a, float w)$/;"	f
+make_float4	helpers/helper_math.h	/^inline __host__ __device__ float4 make_float4(int4 a)$/;"	f
+make_float4	helpers/helper_math.h	/^inline __host__ __device__ float4 make_float4(uint4 a)$/;"	f
+make_identity	helpers/nvMatrix.h	/^            void make_identity()$/;"	f	class:nv::matrix4
+make_int2	helpers/helper_math.h	/^inline __host__ __device__ int2 make_int2(float2 a)$/;"	f
+make_int2	helpers/helper_math.h	/^inline __host__ __device__ int2 make_int2(int s)$/;"	f
+make_int2	helpers/helper_math.h	/^inline __host__ __device__ int2 make_int2(int3 a)$/;"	f
+make_int2	helpers/helper_math.h	/^inline __host__ __device__ int2 make_int2(uint2 a)$/;"	f
+make_int3	helpers/helper_math.h	/^inline __host__ __device__ int3 make_int3(float3 a)$/;"	f
+make_int3	helpers/helper_math.h	/^inline __host__ __device__ int3 make_int3(int s)$/;"	f
+make_int3	helpers/helper_math.h	/^inline __host__ __device__ int3 make_int3(int2 a)$/;"	f
+make_int3	helpers/helper_math.h	/^inline __host__ __device__ int3 make_int3(int2 a, int s)$/;"	f
+make_int3	helpers/helper_math.h	/^inline __host__ __device__ int3 make_int3(uint3 a)$/;"	f
+make_int4	helpers/helper_math.h	/^inline __host__ __device__ int4 make_int4(float4 a)$/;"	f
+make_int4	helpers/helper_math.h	/^inline __host__ __device__ int4 make_int4(int s)$/;"	f
+make_int4	helpers/helper_math.h	/^inline __host__ __device__ int4 make_int4(int3 a)$/;"	f
+make_int4	helpers/helper_math.h	/^inline __host__ __device__ int4 make_int4(int3 a, int w)$/;"	f
+make_int4	helpers/helper_math.h	/^inline __host__ __device__ int4 make_int4(uint4 a)$/;"	f
+make_uint2	helpers/helper_math.h	/^inline __host__ __device__ uint2 make_uint2(int2 a)$/;"	f
+make_uint2	helpers/helper_math.h	/^inline __host__ __device__ uint2 make_uint2(uint s)$/;"	f
+make_uint2	helpers/helper_math.h	/^inline __host__ __device__ uint2 make_uint2(uint3 a)$/;"	f
+make_uint3	helpers/helper_math.h	/^inline __host__ __device__ uint3 make_uint3(int3 a)$/;"	f
+make_uint3	helpers/helper_math.h	/^inline __host__ __device__ uint3 make_uint3(uint s)$/;"	f
+make_uint3	helpers/helper_math.h	/^inline __host__ __device__ uint3 make_uint3(uint2 a)$/;"	f
+make_uint3	helpers/helper_math.h	/^inline __host__ __device__ uint3 make_uint3(uint2 a, uint s)$/;"	f
+make_uint3	helpers/helper_math.h	/^inline __host__ __device__ uint3 make_uint3(uint4 a)$/;"	f
+make_uint4	helpers/helper_math.h	/^inline __host__ __device__ uint4 make_uint4(int4 a)$/;"	f
+make_uint4	helpers/helper_math.h	/^inline __host__ __device__ uint4 make_uint4(uint s)$/;"	f
+make_uint4	helpers/helper_math.h	/^inline __host__ __device__ uint4 make_uint4(uint3 a)$/;"	f
+make_uint4	helpers/helper_math.h	/^inline __host__ __device__ uint4 make_uint4(uint3 a, uint w)$/;"	f
+matrix4	helpers/nvMatrix.h	/^            matrix4()$/;"	f	class:nv::matrix4
+matrix4	helpers/nvMatrix.h	/^            matrix4(T a00, T a01, T a02, T a03,$/;"	f	class:nv::matrix4
+matrix4	helpers/nvMatrix.h	/^            matrix4(T t)$/;"	f	class:nv::matrix4
+matrix4	helpers/nvMatrix.h	/^            matrix4(const T *m)$/;"	f	class:nv::matrix4
+matrix4	helpers/nvMatrix.h	/^    class matrix4$/;"	c	namespace:nv
+matrix4f	helpers/nvMath.h	/^    typedef matrix4<float> matrix4f;$/;"	t	namespace:nv
+max	helpers/helper_math.h	/^inline __host__ __device__ int2 max(int2 a, int2 b)$/;"	f
+max	helpers/helper_math.h	/^inline __host__ __device__ int3 max(int3 a, int3 b)$/;"	f
+max	helpers/helper_math.h	/^inline __host__ __device__ int4 max(int4 a, int4 b)$/;"	f
+max	helpers/helper_math.h	/^inline __host__ __device__ uint2 max(uint2 a, uint2 b)$/;"	f
+max	helpers/helper_math.h	/^inline __host__ __device__ uint3 max(uint3 a, uint3 b)$/;"	f
+max	helpers/helper_math.h	/^inline __host__ __device__ uint4 max(uint4 a, uint4 b)$/;"	f
+max	helpers/helper_math.h	/^inline int max(int a, int b)$/;"	f
+max	helpers/helper_timer.h	59;"	d
+max	helpers/nvVector.h	/^    inline T max(const T &lhs, const T &rhs)$/;"	f	namespace:nv
+max	helpers/nvVector.h	1025;"	d
+min	helpers/helper_math.h	/^inline __host__ __device__ int2 min(int2 a, int2 b)$/;"	f
+min	helpers/helper_math.h	/^inline __host__ __device__ int3 min(int3 a, int3 b)$/;"	f
+min	helpers/helper_math.h	/^inline __host__ __device__ int4 min(int4 a, int4 b)$/;"	f
+min	helpers/helper_math.h	/^inline __host__ __device__ uint2 min(uint2 a, uint2 b)$/;"	f
+min	helpers/helper_math.h	/^inline __host__ __device__ uint3 min(uint3 a, uint3 b)$/;"	f
+min	helpers/helper_math.h	/^inline __host__ __device__ uint4 min(uint4 a, uint4 b)$/;"	f
+min	helpers/helper_math.h	/^inline int min(int a, int b)$/;"	f
+min	helpers/helper_timer.h	58;"	d
+min	helpers/nvVector.h	/^    inline T min(const T &lhs, const T &rhs)$/;"	f	namespace:nv
+min	helpers/nvVector.h	1022;"	d
+mult_vec	helpers/nvQuaternion.h	/^            void mult_vec(const vec3<T> &src, vec3<T> &dst) const$/;"	f	class:nv::quaternion
+mult_vec	helpers/nvQuaternion.h	/^            void mult_vec(vec3<T> &src_and_dst) const$/;"	f	class:nv::quaternion
+name	helpers/rendercheck_gl.h	/^    string name;$/;"	m	struct:bufferConfig
+name	helpers/rendercheck_gl.h	/^    string name;$/;"	m	struct:fboConfig
+normalize	helpers/helper_math.h	/^inline __host__ __device__ float2 normalize(float2 v)$/;"	f
+normalize	helpers/helper_math.h	/^inline __host__ __device__ float3 normalize(float3 v)$/;"	f
+normalize	helpers/helper_math.h	/^inline __host__ __device__ float4 normalize(float4 v)$/;"	f
+normalize	helpers/nvQuaternion.h	/^            friend quaternion normalize(const quaternion<T> &q)$/;"	f	class:nv::quaternion
+normalize	helpers/nvVector.h	/^    inline T normalize(const T &vec)$/;"	f	namespace:nv
+nv	helpers/nvMath.h	/^namespace nv$/;"	n
+nv	helpers/nvMatrix.h	/^namespace nv$/;"	n
+nv	helpers/nvQuaternion.h	/^namespace nv$/;"	n
+nv	helpers/nvShaderUtils.h	/^namespace nv$/;"	n
+nv	helpers/nvVector.h	/^namespace nv$/;"	n
+operator !=	helpers/nvMatrix.h	/^            friend bool operator != (const matrix4 &lhs, const matrix4 &rhs)$/;"	f	class:nv::matrix4
+operator !=	helpers/nvQuaternion.h	/^            friend bool operator != (const quaternion<T> &lhs, const quaternion<T> &rhs)$/;"	f	class:nv::quaternion
+operator !=	helpers/nvVector.h	/^            friend bool operator != (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator !=	helpers/nvVector.h	/^            friend bool operator != (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator !=	helpers/nvVector.h	/^            friend bool operator != (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator ()	helpers/helper_image.h	/^        float operator()(const unsigned char &val)$/;"	f	struct:__anon4::ConverterFromUByte
+operator ()	helpers/helper_image.h	/^        unsigned char operator()(const float &val)$/;"	f	struct:__anon4::ConverterToUByte
+operator ()	helpers/helper_image.h	/^        unsigned char operator()(const unsigned char &val)$/;"	f	struct:__anon4::ConverterToUByte
+operator ()	helpers/nvMatrix.h	/^            T &operator()(int row, int col)$/;"	f	class:nv::matrix4
+operator ()	helpers/nvMatrix.h	/^            const T &operator()(int row, int col) const$/;"	f	class:nv::matrix4
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float2 operator*(float b, float2 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float2 operator*(float2 a, float b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float2 operator*(float2 a, float2 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float3 operator*(float b, float3 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float3 operator*(float3 a, float b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float3 operator*(float3 a, float3 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float4 operator*(float b, float4 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float4 operator*(float4 a, float b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ float4 operator*(float4 a, float4 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int2 operator*(int b, int2 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int2 operator*(int2 a, int b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int2 operator*(int2 a, int2 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int3 operator*(int b, int3 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int3 operator*(int3 a, int b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int3 operator*(int3 a, int3 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int4 operator*(int b, int4 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int4 operator*(int4 a, int b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ int4 operator*(int4 a, int4 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator*(uint b, uint2 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator*(uint2 a, uint b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator*(uint2 a, uint2 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator*(uint b, uint3 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator*(uint3 a, uint b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator*(uint3 a, uint3 b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator*(uint b, uint4 a)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator*(uint4 a, uint b)$/;"	f
+operator *	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator*(uint4 a, uint4 b)$/;"	f
+operator *	helpers/nvMatrix.h	/^            friend matrix4 operator * (const matrix4 &lhs, const matrix4 &rhs)$/;"	f	class:nv::matrix4
+operator *	helpers/nvMatrix.h	/^            friend vec4<T> operator *(const vec4<T> &lhs, const matrix4 &rhs)$/;"	f	class:nv::matrix4
+operator *	helpers/nvMatrix.h	/^            vec4<T> operator *(const vec4<T> &src) const$/;"	f	class:nv::matrix4
+operator *	helpers/nvQuaternion.h	/^            friend quaternion<T> operator * (const quaternion<T> &lhs, const quaternion<T> &rhs)$/;"	f	class:nv::quaternion
+operator *	helpers/nvVector.h	/^            friend vec2<T> operator * (T lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator *	helpers/nvVector.h	/^            friend vec2<T> operator * (const vec2<T> &lhs, T rhs)$/;"	f	class:nv::vec2
+operator *	helpers/nvVector.h	/^            friend vec2<T> operator * (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator *	helpers/nvVector.h	/^            friend vec3<T> operator * (T lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator *	helpers/nvVector.h	/^            friend vec3<T> operator * (const vec3<T> &lhs, T rhs)$/;"	f	class:nv::vec3
+operator *	helpers/nvVector.h	/^            friend vec3<T> operator * (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator *	helpers/nvVector.h	/^            friend vec4<T> operator * (T lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator *	helpers/nvVector.h	/^            friend vec4<T> operator * (const vec4<T> &lhs, T rhs)$/;"	f	class:nv::vec4
+operator *	helpers/nvVector.h	/^            friend vec4<T> operator * (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float2 &a, float b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float2 &a, float2 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float3 &a, float b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float3 &a, float3 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float4 &a, float b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(float4 &a, float4 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int2 &a, int b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int2 &a, int2 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int3 &a, int b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int3 &a, int3 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int4 &a, int b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(int4 &a, int4 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint2 &a, uint b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint2 &a, uint2 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint3 &a, uint b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint3 &a, uint3 b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint4 &a, uint b)$/;"	f
+operator *=	helpers/helper_math.h	/^inline __host__ __device__ void operator*=(uint4 &a, uint4 b)$/;"	f
+operator *=	helpers/nvMatrix.h	/^            matrix4 &operator *= (const T &r)$/;"	f	class:nv::matrix4
+operator *=	helpers/nvMatrix.h	/^            matrix4 &operator *= (const matrix4 &rhs)$/;"	f	class:nv::matrix4
+operator *=	helpers/nvQuaternion.h	/^            quaternion &operator *= (const quaternion<T> &qr)$/;"	f	class:nv::quaternion
+operator *=	helpers/nvVector.h	/^            friend vec2<T> &operator *= (vec2<T> &lhs, T d)$/;"	f	class:nv::vec2
+operator *=	helpers/nvVector.h	/^            friend vec2<T> &operator *= (vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator *=	helpers/nvVector.h	/^            friend vec3<T> &operator *= (vec3<T> &lhs, T d)$/;"	f	class:nv::vec3
+operator *=	helpers/nvVector.h	/^            friend vec3<T> &operator *= (vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator *=	helpers/nvVector.h	/^            friend vec4<T> &operator *= (vec4<T> &lhs, T d)$/;"	f	class:nv::vec4
+operator *=	helpers/nvVector.h	/^            friend vec4<T> &operator *= (vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float2 operator+(float b, float2 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float2 operator+(float2 a, float b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float2 operator+(float2 a, float2 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float3 operator+(float b, float3 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float3 operator+(float3 a, float b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float3 operator+(float3 a, float3 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float4 operator+(float b, float4 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float4 operator+(float4 a, float b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ float4 operator+(float4 a, float4 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int2 operator+(int b, int2 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int2 operator+(int2 a, int b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int2 operator+(int2 a, int2 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int3 operator+(int b, int3 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int3 operator+(int3 a, int b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int3 operator+(int3 a, int3 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int4 operator+(int b, int4 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int4 operator+(int4 a, int b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ int4 operator+(int4 a, int4 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator+(uint b, uint2 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator+(uint2 a, uint b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator+(uint2 a, uint2 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator+(uint b, uint3 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator+(uint3 a, uint b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator+(uint3 a, uint3 b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator+(uint b, uint4 a)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator+(uint4 a, uint b)$/;"	f
+operator +	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator+(uint4 a, uint4 b)$/;"	f
+operator +	helpers/nvVector.h	/^            friend vec2<T> operator + (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator +	helpers/nvVector.h	/^            friend vec3<T> operator + (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator +	helpers/nvVector.h	/^            friend vec4<T> operator + (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float2 &a, float b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float2 &a, float2 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float3 &a, float b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float3 &a, float3 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float4 &a, float b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(float4 &a, float4 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int2 &a, int b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int2 &a, int2 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int3 &a, int b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int3 &a, int3 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int4 &a, int b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(int4 &a, int4 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint2 &a, uint b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint2 &a, uint2 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint3 &a, uint b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint3 &a, uint3 b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint4 &a, uint b)$/;"	f
+operator +=	helpers/helper_math.h	/^inline __host__ __device__ void operator+=(uint4 &a, uint4 b)$/;"	f
+operator +=	helpers/nvMatrix.h	/^            matrix4 &operator += (const matrix4 &mat)$/;"	f	class:nv::matrix4
+operator +=	helpers/nvVector.h	/^            friend vec2<T> &operator += (vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator +=	helpers/nvVector.h	/^            friend vec3<T> &operator += (vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator +=	helpers/nvVector.h	/^            friend vec4<T> &operator += (vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float2 operator-(float b, float2 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float2 operator-(float2 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float2 operator-(float2 a, float b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float2 operator-(float2 a, float2 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float3 operator-(float b, float3 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float3 operator-(float3 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float3 operator-(float3 a, float b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float3 operator-(float3 a, float3 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float4 operator-(float4 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float4 operator-(float4 a, float b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ float4 operator-(float4 a, float4 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int2 operator-(int b, int2 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int2 operator-(int2 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int2 operator-(int2 a, int b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int2 operator-(int2 a, int2 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int3 operator-(int b, int3 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int3 operator-(int3 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int3 operator-(int3 a, int b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int3 operator-(int3 a, int3 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int4 operator-(int b, int4 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int4 operator-(int4 &a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int4 operator-(int4 a, int b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ int4 operator-(int4 a, int4 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator-(uint b, uint2 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator-(uint2 a, uint b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint2 operator-(uint2 a, uint2 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator-(uint b, uint3 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator-(uint3 a, uint b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint3 operator-(uint3 a, uint3 b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator-(uint b, uint4 a)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator-(uint4 a, uint b)$/;"	f
+operator -	helpers/helper_math.h	/^inline __host__ __device__ uint4 operator-(uint4 a, uint4 b)$/;"	f
+operator -	helpers/nvVector.h	/^            friend vec2<T> operator - (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator -	helpers/nvVector.h	/^            friend vec2<T> operator - (const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator -	helpers/nvVector.h	/^            friend vec3<T> operator - (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator -	helpers/nvVector.h	/^            friend vec3<T> operator - (const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator -	helpers/nvVector.h	/^            friend vec4<T> operator - (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator -	helpers/nvVector.h	/^            friend vec4<T> operator - (const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float2 &a, float b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float2 &a, float2 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float3 &a, float b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float3 &a, float3 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float4 &a, float b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(float4 &a, float4 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int2 &a, int b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int2 &a, int2 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int3 &a, int b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int3 &a, int3 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int4 &a, int b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(int4 &a, int4 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint2 &a, uint b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint2 &a, uint2 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint3 &a, uint b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint3 &a, uint3 b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint4 &a, uint b)$/;"	f
+operator -=	helpers/helper_math.h	/^inline __host__ __device__ void operator-=(uint4 &a, uint4 b)$/;"	f
+operator -=	helpers/nvVector.h	/^            friend vec2<T> &operator -= (vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator -=	helpers/nvVector.h	/^            friend vec3<T> &operator -= (vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator -=	helpers/nvVector.h	/^            friend vec4<T> &operator -= (vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float2 operator\/(float b, float2 a)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float2 operator\/(float2 a, float b)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float2 operator\/(float2 a, float2 b)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float3 operator\/(float b, float3 a)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float3 operator\/(float3 a, float b)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float3 operator\/(float3 a, float3 b)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float4 operator\/(float b, float4 a)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float4 operator\/(float4 a, float b)$/;"	f
+operator /	helpers/helper_math.h	/^inline __host__ __device__ float4 operator\/(float4 a, float4 b)$/;"	f
+operator /	helpers/nvVector.h	/^            friend vec2<T> operator \/ (const vec2<T> &lhs, T rhs)$/;"	f	class:nv::vec2
+operator /	helpers/nvVector.h	/^            friend vec2<T> operator \/ (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator /	helpers/nvVector.h	/^            friend vec3<T> operator \/ (const vec3<T> &lhs, T rhs)$/;"	f	class:nv::vec3
+operator /	helpers/nvVector.h	/^            friend vec3<T> operator \/ (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator /	helpers/nvVector.h	/^            friend vec4<T> operator \/ (const vec4<T> &lhs, T rhs)$/;"	f	class:nv::vec4
+operator /	helpers/nvVector.h	/^            friend vec4<T> operator \/ (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float2 &a, float b)$/;"	f
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float2 &a, float2 b)$/;"	f
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float3 &a, float b)$/;"	f
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float3 &a, float3 b)$/;"	f
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float4 &a, float b)$/;"	f
+operator /=	helpers/helper_math.h	/^inline __host__ __device__ void operator\/=(float4 &a, float4 b)$/;"	f
+operator /=	helpers/nvVector.h	/^            friend vec2<T> &operator \/= (vec2<T> &lhs, T d)$/;"	f	class:nv::vec2
+operator /=	helpers/nvVector.h	/^            friend vec2<T> &operator \/= (vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator /=	helpers/nvVector.h	/^            friend vec3<T> &operator \/= (vec3<T> &lhs, T d)$/;"	f	class:nv::vec3
+operator /=	helpers/nvVector.h	/^            friend vec3<T> &operator \/= (vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator /=	helpers/nvVector.h	/^            friend vec4<T> &operator \/= (vec4<T> &lhs, T d)$/;"	f	class:nv::vec4
+operator /=	helpers/nvVector.h	/^            friend vec4<T> &operator \/= (vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator ==	helpers/nvMatrix.h	/^            friend bool operator == (const matrix4 &lhs, const matrix4 &rhs)$/;"	f	class:nv::matrix4
+operator ==	helpers/nvQuaternion.h	/^            friend bool operator == (const quaternion<T> &lhs, const quaternion<T> &rhs)$/;"	f	class:nv::quaternion
+operator ==	helpers/nvVector.h	/^            friend bool operator == (const vec2<T> &lhs, const vec2<T> &rhs)$/;"	f	class:nv::vec2
+operator ==	helpers/nvVector.h	/^            friend bool operator == (const vec3<T> &lhs, const vec3<T> &rhs)$/;"	f	class:nv::vec3
+operator ==	helpers/nvVector.h	/^            friend bool operator == (const vec4<T> &lhs, const vec4<T> &rhs)$/;"	f	class:nv::vec4
+operator T *	helpers/nvVector.h	/^            operator T *()$/;"	f	class:nv::vec2
+operator T *	helpers/nvVector.h	/^            operator T *()$/;"	f	class:nv::vec3
+operator T *	helpers/nvVector.h	/^            operator T *()$/;"	f	class:nv::vec4
+operator []	helpers/nvQuaternion.h	/^            T &operator [](int i)$/;"	f	class:nv::quaternion
+operator []	helpers/nvQuaternion.h	/^            const T &operator [](int i) const$/;"	f	class:nv::quaternion
+operator []	helpers/nvVector.h	/^            T &operator [](int i)$/;"	f	class:nv::vec2
+operator []	helpers/nvVector.h	/^            T &operator [](int i)$/;"	f	class:nv::vec3
+operator []	helpers/nvVector.h	/^            T &operator [](int i)$/;"	f	class:nv::vec4
+operator []	helpers/nvVector.h	/^            const T &operator [](int i) const$/;"	f	class:nv::vec2
+operator []	helpers/nvVector.h	/^            const T &operator [](int i) const$/;"	f	class:nv::vec3
+operator []	helpers/nvVector.h	/^            const T &operator [](int i) const$/;"	f	class:nv::vec4
+operator const T *	helpers/nvVector.h	/^            operator const T *() const$/;"	f	class:nv::vec2
+operator const T *	helpers/nvVector.h	/^            operator const T *() const$/;"	f	class:nv::vec3
+operator const T *	helpers/nvVector.h	/^            operator const T *() const$/;"	f	class:nv::vec4
+pp	helpers/dynlink_d3d10.h	/^    D3DPRESENT_PARAMETERS pp;$/;"	m	struct:DXUTD3D9DeviceSettings
+q	helpers/nvVector.h	/^                    T s, t, r, q;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon16
+quaternion	helpers/nvQuaternion.h	/^            quaternion() : x(0.0), y(0.0), z(0.0), w(0.0)$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(T q0, T q1, T q2, T q3)$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(const T v[4])$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(const matrix4<T> &m)$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(const vec3<T> &axis, T radians)$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(const vec3<T> &from_look, const vec3<T> &from_up,$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^            quaternion(const vec3<T> &rotateFrom, const vec3<T> &rotateTo)$/;"	f	class:nv::quaternion
+quaternion	helpers/nvQuaternion.h	/^    class quaternion$/;"	c	namespace:nv
+quaternionf	helpers/nvMath.h	/^    typedef quaternion<float> quaternionf;$/;"	t	namespace:nv
+r	helpers/nvVector.h	/^                    T s, t, r, q;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon16
+r	helpers/nvVector.h	/^                    T s, t, r;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon13
+r	helpers/paramgl.h	/^            float r, g, b;$/;"	m	struct:ParamListGL::Color
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height)$/;"	f	class:CheckBackBuffer
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height)$/;"	f	class:CheckFBO
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height, GLuint bufObject)$/;"	f	class:CheckBackBuffer
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height, GLuint bufObject)$/;"	f	class:CheckFBO
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height, unsigned char *memBuf)$/;"	f	class:CheckBackBuffer
+readback	helpers/rendercheck_gl.h	/^        virtual bool readback(GLuint width, GLuint height, unsigned char *memBuf)$/;"	f	class:CheckFBO
+redbits	helpers/rendercheck_gl.h	/^    int redbits;$/;"	m	struct:fboConfig
+reflect	helpers/helper_math.h	/^inline __host__ __device__ float3 reflect(float3 i, float3 n)$/;"	f
+renderQuad	helpers/rendercheck_gl.h	/^        virtual void renderQuad(int width, int height, GLenum eTarget)$/;"	f	class:CFrameBufferObject
+reset	helpers/helper_timer.h	/^StopWatchLinux::reset()$/;"	f	class:StopWatchLinux
+reset	helpers/helper_timer.h	/^StopWatchWin::reset()$/;"	f	class:StopWatchWin
+resolveFB	helpers/rendercheck_gl.h	/^    GLuint resolveFB; \/\/multisample resolve target$/;"	m	struct:fboData
+rsqrtf	helpers/helper_math.h	/^inline float rsqrtf(float x)$/;"	f
+running	helpers/helper_timer.h	/^        bool running;$/;"	m	class:StopWatchLinux
+running	helpers/helper_timer.h	/^        bool running;$/;"	m	class:StopWatchWin
+s	helpers/nvVector.h	/^                    T s, t, r, q;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon16
+s	helpers/nvVector.h	/^                    T s, t, r;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon13
+s	helpers/nvVector.h	/^                    T s,t;          \/\/ standard names for components$/;"	m	struct:nv::vec2::__anon8::__anon10
+sCudaDrvErrorString	helpers/drvapi_error_string.h	/^static s_CudaErrorStr sCudaDrvErrorString[] =$/;"	v
+sFnPtr_CreateDXGIFactory	helpers/dynlink_d3d10.h	/^static LPCREATEDXGIFACTORY                  sFnPtr_CreateDXGIFactory = NULL;$/;"	v
+sFnPtr_CreateDXGIFactory	helpers/dynlink_d3d11.h	/^static LPCREATEDXGIFACTORY                  sFnPtr_CreateDXGIFactory = NULL;$/;"	v
+sFnPtr_D3D10CompileEffectFromMemory	helpers/dynlink_d3d10.h	/^static LPD3D10COMPILEEFFECTFROMMEMORY       sFnPtr_D3D10CompileEffectFromMemory = NULL;$/;"	v
+sFnPtr_D3D10CreateDevice	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEDEVICE                  sFnPtr_D3D10CreateDevice = NULL;$/;"	v
+sFnPtr_D3D10CreateDevice1	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEDEVICE1                 sFnPtr_D3D10CreateDevice1 = NULL;$/;"	v
+sFnPtr_D3D10CreateDeviceAndSwapChain	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEDEVICEANDSWAPCHAIN      sFnPtr_D3D10CreateDeviceAndSwapChain  = NULL;$/;"	v
+sFnPtr_D3D10CreateDeviceAndSwapChain1	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEDEVICEANDSWAPCHAIN1     sFnPtr_D3D10CreateDeviceAndSwapChain1 = NULL;$/;"	v
+sFnPtr_D3D10CreateEffectFromMemory	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEEFFECTFROMMEMORY        sFnPtr_D3D10CreateEffectFromMemory = NULL;$/;"	v
+sFnPtr_D3D10CreateEffectPoolFromMemory	helpers/dynlink_d3d10.h	/^static LPD3D10CREATEEFFECTPOOLFROMMEMORY    sFnPtr_D3D10CreateEffectPoolFromMemory = NULL;$/;"	v
+sFnPtr_D3D10CreateStateBlock	helpers/dynlink_d3d10.h	/^static LPD3D10CREATESTATEBLOCK              sFnPtr_D3D10CreateStateBlock = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskDifference	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKDIFFERENCE      sFnPtr_D3D10StateBlockMaskDifference = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskDisableAll	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKDISABLEALL      sFnPtr_D3D10StateBlockMaskDisableAll = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskDisableCapture	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKDISABLECAPTURE  sFnPtr_D3D10StateBlockMaskDisableCapture = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskEnableAll	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKENABLEALL       sFnPtr_D3D10StateBlockMaskEnableAll = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskEnableCapture	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKENABLECAPTURE   sFnPtr_D3D10StateBlockMaskEnableCapture = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskGetSetting	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKGETSETTING      sFnPtr_D3D10StateBlockMaskGetSetting = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskIntersect	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKINTERSECT       sFnPtr_D3D10StateBlockMaskIntersect = NULL;$/;"	v
+sFnPtr_D3D10StateBlockMaskUnion	helpers/dynlink_d3d10.h	/^static LPD3D10STATEBLOCKMASKUNION           sFnPtr_D3D10StateBlockMaskUnion = NULL;$/;"	v
+sFnPtr_D3D11CreateDevice	helpers/dynlink_d3d11.h	/^static LPD3D11CREATEDEVICE                  sFnPtr_D3D11CreateDevice = NULL;$/;"	v
+sFnPtr_D3D11CreateDeviceAndSwapChain	helpers/dynlink_d3d11.h	/^static LPD3D11CREATEDEVICEANDSWAPCHAIN      sFnPtr_D3D11CreateDeviceAndSwapChain = NULL;$/;"	v
+sFnPtr_D3DX11CompileFromMemory	helpers/dynlink_d3d11.h	/^static LPD3DX11COMPILEFROMMEMORY            sFnPtr_D3DX11CompileFromMemory = NULL;$/;"	v
+sFnPtr_D3DXMatrixLookAtLH	helpers/dynlink_d3d10.h	/^static LPD3DXMATRIXLOOKATLH                 sFnPtr_D3DXMatrixLookAtLH = NULL;$/;"	v
+sFnPtr_D3DXMatrixPerspectiveFovLH	helpers/dynlink_d3d10.h	/^static LPD3DXMATRIXPERSPECTIVEFOVLH         sFnPtr_D3DXMatrixPerspectiveFovLH = NULL;$/;"	v
+s_CudaErrorStr	helpers/drvapi_error_string.h	/^} s_CudaErrorStr;$/;"	t	typeref:struct:__anon3
+s_hModD3D11	helpers/dynlink_d3d11.h	/^static HMODULE                              s_hModD3D11 = NULL;$/;"	v
+s_hModD3DX11	helpers/dynlink_d3d11.h	/^static HMODULE                              s_hModD3DX11 = NULL;$/;"	v
+s_hModDXGI	helpers/dynlink_d3d11.h	/^static HMODULE                              s_hModDXGI = NULL;$/;"	v
+savePGM	helpers/rendercheck_gl.h	/^        virtual void savePGM(const char *zfilename, bool bInvert, void **ppReadBuf)$/;"	f	class:CheckRender
+savePPM	helpers/rendercheck_gl.h	/^        virtual void savePPM(const char *zfilename, bool bInvert, void **ppReadBuf)$/;"	f	class:CheckRender
+scale_angle	helpers/nvQuaternion.h	/^            void scale_angle(T scaleFactor)$/;"	f	class:nv::quaternion
+sd	helpers/dynlink_d3d10.h	/^    DXGI_SWAP_CHAIN_DESC sd;$/;"	m	struct:DXUTD3D10DeviceSettings
+sdkCheckErrorGL	helpers/helper_cuda_gl.h	/^sdkCheckErrorGL(const char *file, const int line)$/;"	f
+sdkCompareBin2BinFloat	helpers/helper_image.h	/^bool sdkCompareBin2BinFloat(const char *src_file, const char *ref_file, unsigned int nelements, const float epsilon, const float threshold, char *exec_path)$/;"	f
+sdkCompareBin2BinUint	helpers/helper_image.h	/^bool sdkCompareBin2BinUint(const char *src_file, const char *ref_file, unsigned int nelements, const float epsilon, const float threshold, char *exec_path)$/;"	f
+sdkCompareL2fe	helpers/helper_image.h	/^sdkCompareL2fe(const float *reference, const float *data,$/;"	f
+sdkComparePGM	helpers/helper_image.h	/^sdkComparePGM(const char *src_file, const char *ref_file,$/;"	f
+sdkComparePPM	helpers/helper_image.h	/^sdkComparePPM(const char *src_file, const char *ref_file,$/;"	f
+sdkCreateTimer	helpers/helper_timer.h	/^sdkCreateTimer(StopWatchInterface **timer_interface)$/;"	f
+sdkDeleteTimer	helpers/helper_timer.h	/^sdkDeleteTimer(StopWatchInterface **timer_interface)$/;"	f
+sdkDumpBin	helpers/helper_image.h	/^void sdkDumpBin(void *data, unsigned int bytes, const char *filename)$/;"	f
+sdkFindFilePath	helpers/helper_string.h	/^inline char *sdkFindFilePath(const char *filename, const char *executable_path)$/;"	f
+sdkGetAverageTimerValue	helpers/helper_timer.h	/^sdkGetAverageTimerValue(StopWatchInterface **timer_interface)$/;"	f
+sdkGetTimerValue	helpers/helper_timer.h	/^sdkGetTimerValue(StopWatchInterface **timer_interface)$/;"	f
+sdkLoadPGM	helpers/helper_image.h	/^sdkLoadPGM(const char *file, T **data, unsigned int *w, unsigned int *h)$/;"	f
+sdkLoadPPM4	helpers/helper_image.h	/^sdkLoadPPM4(const char *file, T **data,$/;"	f
+sdkLoadPPM4ub	helpers/helper_image.h	/^sdkLoadPPM4ub(const char *file, unsigned char **data,$/;"	f
+sdkLoadPPMub	helpers/helper_image.h	/^sdkLoadPPMub(const char *file, unsigned char **data,$/;"	f
+sdkReadFile	helpers/helper_image.h	/^sdkReadFile(const char *filename, T **data, unsigned int *len, bool verbose)$/;"	f
+sdkReadFileBlocks	helpers/helper_image.h	/^sdkReadFileBlocks(const char *filename, T **data, unsigned int *len, unsigned int block_num, unsigned int block_size, bool verbose)$/;"	f
+sdkResetTimer	helpers/helper_timer.h	/^sdkResetTimer(StopWatchInterface **timer_interface)$/;"	f
+sdkSavePGM	helpers/helper_image.h	/^sdkSavePGM(const char *file, T *data, unsigned int w, unsigned int h)$/;"	f
+sdkSavePPM4ub	helpers/helper_image.h	/^sdkSavePPM4ub(const char *file, unsigned char *data,$/;"	f
+sdkStartTimer	helpers/helper_timer.h	/^sdkStartTimer(StopWatchInterface **timer_interface)$/;"	f
+sdkStopTimer	helpers/helper_timer.h	/^sdkStopTimer(StopWatchInterface **timer_interface)$/;"	f
+sdkWriteFile	helpers/helper_image.h	/^sdkWriteFile(const char *filename, const T *data, unsigned int len,$/;"	f
+setExecPath	helpers/rendercheck_gl.h	/^        virtual void setExecPath(char *path)$/;"	f	class:CheckRender
+setPixelFormat	helpers/rendercheck_gl.h	/^        virtual void setPixelFormat(GLenum format)$/;"	f	class:CheckRender
+setThresholdCompare	helpers/rendercheck_gl.h	/^        void    setThresholdCompare(float value)$/;"	f	class:CheckRender
+set_column	helpers/nvMatrix.h	/^            void set_column(int c, const vec4<T> &t)$/;"	f	class:nv::matrix4
+set_row	helpers/nvMatrix.h	/^            void set_row(int r, const vec4<T> &t)$/;"	f	class:nv::matrix4
+set_scale	helpers/nvMatrix.h	/^            void set_scale(T s)$/;"	f	class:nv::matrix4
+set_scale	helpers/nvMatrix.h	/^            void set_scale(const vec3<T> &s)$/;"	f	class:nv::matrix4
+set_translate	helpers/nvMatrix.h	/^            void set_translate(const vec3<T> &t)$/;"	f	class:nv::matrix4
+set_value	helpers/nvMatrix.h	/^            void set_value(T *mp)$/;"	f	class:nv::matrix4
+set_value	helpers/nvMatrix.h	/^            void set_value(T r)$/;"	f	class:nv::matrix4
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(T q0, T q1, T q2, T q3)$/;"	f	class:nv::quaternion
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(const T *qp)$/;"	f	class:nv::quaternion
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(const matrix4<T> &m)$/;"	f	class:nv::quaternion
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(const vec3<T> &axis, T theta)$/;"	f	class:nv::quaternion
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(const vec3<T> &from_look, const vec3<T> &from_up,$/;"	f	class:nv::quaternion
+set_value	helpers/nvQuaternion.h	/^            quaternion &set_value(const vec3<T> &rotateFrom, const vec3<T> &rotateTo)$/;"	f	class:nv::quaternion
+set_value	helpers/nvVector.h	/^            vec2<T> &set_value(const T *rhs)$/;"	f	class:nv::vec2
+set_value	helpers/nvVector.h	/^            vec3<T> &set_value(const T *rhs)$/;"	f	class:nv::vec3
+set_value	helpers/nvVector.h	/^            vec4<T> &set_value(const T *rhs)$/;"	f	class:nv::vec4
+size	helpers/nvVector.h	/^            int size() const$/;"	f	class:nv::vec2
+size	helpers/nvVector.h	/^            int size() const$/;"	f	class:nv::vec3
+size	helpers/nvVector.h	/^            int size() const$/;"	f	class:nv::vec4
+slerp	helpers/nvQuaternion.h	/^            friend quaternion<T> slerp(const quaternion<T> &p, const quaternion<T> &q, T alpha)$/;"	f	class:nv::quaternion
+smoothstep	helpers/helper_math.h	/^inline __device__ __host__ float smoothstep(float a, float b, float x)$/;"	f
+smoothstep	helpers/helper_math.h	/^inline __device__ __host__ float2 smoothstep(float2 a, float2 b, float2 x)$/;"	f
+smoothstep	helpers/helper_math.h	/^inline __device__ __host__ float3 smoothstep(float3 a, float3 b, float3 x)$/;"	f
+smoothstep	helpers/helper_math.h	/^inline __device__ __host__ float4 smoothstep(float4 a, float4 b, float4 x)$/;"	f
+square_norm	helpers/nvVector.h	/^    inline typename T::value_type square_norm(const T &vec)$/;"	f	namespace:nv
+start	helpers/helper_timer.h	/^StopWatchLinux::start()$/;"	f	class:StopWatchLinux
+start	helpers/helper_timer.h	/^StopWatchWin::start()$/;"	f	class:StopWatchWin
+start_time	helpers/helper_timer.h	/^        LARGE_INTEGER  start_time;$/;"	m	class:StopWatchWin
+start_time	helpers/helper_timer.h	/^        struct timeval  start_time;$/;"	m	class:StopWatchLinux	typeref:struct:StopWatchLinux::timeval
+stop	helpers/helper_timer.h	/^StopWatchLinux::stop()$/;"	f	class:StopWatchLinux
+stop	helpers/helper_timer.h	/^StopWatchWin::stop()$/;"	f	class:StopWatchWin
+stringRemoveDelimiter	helpers/helper_string.h	/^inline int stringRemoveDelimiter(char delimiter, const char *string)$/;"	f
+t	helpers/nvVector.h	/^                    T s, t, r, q;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon16
+t	helpers/nvVector.h	/^                    T s, t, r;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon13
+t	helpers/nvVector.h	/^                    T s,t;          \/\/ standard names for components$/;"	m	struct:nv::vec2::__anon8::__anon10
+throw_it	helpers/exception.h	/^throw_it(const char *file, const int line, const char *detailed)$/;"	f	class:Exception
+throw_it	helpers/exception.h	/^throw_it(const char *file, const int line, const std::string &msg)$/;"	f	class:Exception
+timerStart	helpers/timer.h	/^__int64 timerStart = 0;$/;"	v
+timerStart	helpers/timer.h	/^struct timeval timerStart;$/;"	v	typeref:struct:timeval
+total_time	helpers/helper_timer.h	/^        float  total_time;$/;"	m	class:StopWatchLinux
+total_time	helpers/helper_timer.h	/^        float  total_time;$/;"	m	class:StopWatchWin
+transpose	helpers/nvMatrix.h	/^            friend matrix4 transpose(const matrix4 &m)$/;"	f	class:nv::matrix4
+uint	helpers/helper_math.h	/^typedef unsigned int uint;$/;"	t
+unbindReadback	helpers/rendercheck_gl.h	/^        virtual void unbindReadback()$/;"	f	class:CheckRender
+unbindRenderPath	helpers/rendercheck_gl.h	/^        virtual void unbindRenderPath() {};$/;"	f	class:CheckBackBuffer
+unbindRenderPath	helpers/rendercheck_gl.h	/^        void unbindRenderPath()$/;"	f	class:CFrameBufferObject
+unbindTexture	helpers/rendercheck_gl.h	/^        virtual void unbindTexture() {};$/;"	f	class:CheckBackBuffer
+unbindTexture	helpers/rendercheck_gl.h	/^        void unbindTexture()$/;"	f	class:CFrameBufferObject
+ushort	helpers/helper_math.h	/^typedef unsigned short ushort;$/;"	t
+value_type	helpers/nvVector.h	/^            typedef T value_type;$/;"	t	class:nv::vec2
+value_type	helpers/nvVector.h	/^            typedef T value_type;$/;"	t	class:nv::vec3
+value_type	helpers/nvVector.h	/^            typedef T value_type;$/;"	t	class:nv::vec4
+vec2	helpers/nvVector.h	/^            explicit vec2(const vec3<T> &u)$/;"	f	class:nv::vec2
+vec2	helpers/nvVector.h	/^            explicit vec2(const vec4<T> &u)$/;"	f	class:nv::vec2
+vec2	helpers/nvVector.h	/^            vec2(const T &t = T())$/;"	f	class:nv::vec2
+vec2	helpers/nvVector.h	/^            vec2(const T *tp)$/;"	f	class:nv::vec2
+vec2	helpers/nvVector.h	/^            vec2(const T v0, const T v1)$/;"	f	class:nv::vec2
+vec2	helpers/nvVector.h	/^    class vec2$/;"	c	namespace:nv
+vec2f	helpers/nvMath.h	/^    typedef vec2<float> vec2f;$/;"	t	namespace:nv
+vec3	helpers/nvVector.h	/^            explicit vec3(const vec2<T> &u, T v0)$/;"	f	class:nv::vec3
+vec3	helpers/nvVector.h	/^            explicit vec3(const vec4<T> &u)$/;"	f	class:nv::vec3
+vec3	helpers/nvVector.h	/^            vec3(const T &t = T())$/;"	f	class:nv::vec3
+vec3	helpers/nvVector.h	/^            vec3(const T *tp)$/;"	f	class:nv::vec3
+vec3	helpers/nvVector.h	/^            vec3(const T v0, const T v1, const T v2)$/;"	f	class:nv::vec3
+vec3	helpers/nvVector.h	/^    class vec3$/;"	c	namespace:nv
+vec3f	helpers/nvMath.h	/^    typedef vec3<float> vec3f;$/;"	t	namespace:nv
+vec3i	helpers/nvMath.h	/^    typedef vec3<int> vec3i;$/;"	t	namespace:nv
+vec3ui	helpers/nvMath.h	/^    typedef vec3<unsigned int> vec3ui;$/;"	t	namespace:nv
+vec4	helpers/nvVector.h	/^            explicit vec4(const vec2<T> &u, T v0, T v1)$/;"	f	class:nv::vec4
+vec4	helpers/nvVector.h	/^            explicit vec4(const vec3<T> &u, T v0)$/;"	f	class:nv::vec4
+vec4	helpers/nvVector.h	/^            vec4(const T &t = T())$/;"	f	class:nv::vec4
+vec4	helpers/nvVector.h	/^            vec4(const T *tp)$/;"	f	class:nv::vec4
+vec4	helpers/nvVector.h	/^            vec4(const T v0, const T v1, const T v2, const T v3)$/;"	f	class:nv::vec4
+vec4	helpers/nvVector.h	/^    class vec4$/;"	c	namespace:nv
+vec4f	helpers/nvMath.h	/^    typedef vec4<float> vec4f;$/;"	t	namespace:nv
+ver	helpers/dynlink_d3d10.h	/^    DXUTDeviceVersion ver;$/;"	m	struct:DXUTDeviceSettings
+w	helpers/nvQuaternion.h	/^                    T w;$/;"	m	struct:nv::quaternion::__anon1::__anon2
+w	helpers/nvVector.h	/^                    T x, y, z, w;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon15
+x	helpers/nvQuaternion.h	/^                    T x;$/;"	m	struct:nv::quaternion::__anon1::__anon2
+x	helpers/nvVector.h	/^                    T x, y, z, w;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon15
+x	helpers/nvVector.h	/^                    T x, y, z;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon12
+x	helpers/nvVector.h	/^                    T x,y;          \/\/ standard names for components$/;"	m	struct:nv::vec2::__anon8::__anon9
+y	helpers/nvQuaternion.h	/^                    T y;$/;"	m	struct:nv::quaternion::__anon1::__anon2
+y	helpers/nvVector.h	/^                    T x, y, z, w;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon15
+y	helpers/nvVector.h	/^                    T x, y, z;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon12
+y	helpers/nvVector.h	/^                    T x,y;          \/\/ standard names for components$/;"	m	struct:nv::vec2::__anon8::__anon9
+z	helpers/nvQuaternion.h	/^                    T z;$/;"	m	struct:nv::quaternion::__anon1::__anon2
+z	helpers/nvVector.h	/^                    T x, y, z, w;          \/\/ standard names for components$/;"	m	struct:nv::vec4::__anon14::__anon15
+z	helpers/nvVector.h	/^                    T x, y, z;          \/\/ standard names for components$/;"	m	struct:nv::vec3::__anon11::__anon12
+~CFrameBufferObject	helpers/rendercheck_gl.h	/^        virtual ~CFrameBufferObject()$/;"	f	class:CFrameBufferObject
+~CheckBackBuffer	helpers/rendercheck_gl.h	/^        virtual ~CheckBackBuffer()$/;"	f	class:CheckBackBuffer
+~CheckFBO	helpers/rendercheck_gl.h	/^        virtual ~CheckFBO()$/;"	f	class:CheckFBO
+~CheckRender	helpers/rendercheck_gl.h	/^        virtual ~CheckRender()$/;"	f	class:CheckRender
+~Exception	helpers/exception.h	/^Exception<Std_Exception>::~Exception() throw() { }$/;"	f	class:Exception
+~Param	helpers/param.h	/^        ~Param() { }$/;"	f	class:Param
+~ParamBase	helpers/param.h	/^        virtual ~ParamBase() { }$/;"	f	class:ParamBase
+~ParamList	helpers/param.h	/^        ~ParamList() { }$/;"	f	class:ParamList
+~StopWatchInterface	helpers/helper_timer.h	/^        virtual ~StopWatchInterface() {};$/;"	f	class:StopWatchInterface
+~StopWatchLinux	helpers/helper_timer.h	/^        virtual ~StopWatchLinux()$/;"	f	class:StopWatchLinux
+~StopWatchWin	helpers/helper_timer.h	/^        ~StopWatchWin() { };$/;"	f	class:StopWatchWin

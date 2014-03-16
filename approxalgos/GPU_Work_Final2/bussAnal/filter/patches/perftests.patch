@@ -1,0 +1,14 @@
+Index: filter/src/main.cu
+===================================================================
+--- filter.orig/src/main.cu
++++ filter/src/main.cu
+@@ -19,7 +19,8 @@ gettimeofday(endTimer, NULL);			\
+ 
+ 
+ 
+-typedef long long myType;
++//typedef long long myType;
++typedef double myType;
+ 
+ /**
+ * @brief get time difference between timers star and end

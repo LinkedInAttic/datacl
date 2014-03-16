@@ -1,0 +1,4 @@
+rm -f ./ApproxUnique/testSpookyHash.exe
+rm -f ./ApproxUnique/testApproxUnique.exe
+rm -f ./ApproxFrequent/testApproxFrequent.exe
+rm -f ./ApproxQuantile/testApproxQuantile.exe
