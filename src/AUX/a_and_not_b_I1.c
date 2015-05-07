@@ -1,3 +1,4 @@
+//TEST
 #include <stdio.h>
 // START FUNC DECL
 void
