@@ -38,7 +38,7 @@ main()
   long http_code;
   double c_length;  
   FILE *fp = NULL;
-  // char *url = "http://cinco.corp.linkedin.com";
+  // char *url = "http://foo.yahoo.com";
   // char *url = "http://www.google.com";
   char url[1024];
 
@@ -47,16 +47,16 @@ main()
   // char *operation = "LISTSTATUS"; // to list status of file 
   char *operation = "OPEN"; // to read contents of file 
 
-  char *dataptr = "jobs/dsciuser/Plato/Q/ProfileCompleteness/Dim_Country/part-m-00000";
-  // char *dataptr = "user/rsubramo/edu_export/part-r-00000";
+  char *dataptr = "jobs/<username>/Dim_XXXXXX/part-m-00000";
+  // char *dataptr = "user/<username>/XXXXXXX/part-r-00000";
   bool write_to_file = false;
   // MAKE MODS ABOVE 
   
-  sprintf(url, "http://eat1-magicnn01.grid.linkedin.com:50070/webhdfs/v1/%s?op=%s&user.name=rsubramo", dataptr, operation);
+  sprintf(url, "http://<servername>:<portnum>/webhdfs/v1/%s?op=%s&user.name=<username>", dataptr, operation);
   char *username="rsubramo";
 
-  // char *url="http://eat1-magicaz01.grid.linkedin.com:50070/webhdfs/v1/user/dsciuser/Plato/Q/ProfileCompleteness/Data/part-r-00000?op=LISTSTATUS&user.name=dsciuser";
-  // char *username="dsciuser";
+  // char *url="http://<servername>:<portnum>/webhdfs/v1/user/<username>/XXXXXX/Data/part-r-00000?op=LISTSTATUS&user.name=<username>";
+  // char *username="<username>";
 
 
   char chunk[1048576];
