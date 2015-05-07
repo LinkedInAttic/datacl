@@ -38,11 +38,9 @@ main()
   long http_code;
   double c_length;  
   FILE *fp = NULL;
-  // char *url = "http://cinco.corp.linkedin.com";
   // char *url = "http://www.google.com";
-  // char *url="http://eat1-magicnn01.grid.linkedin.com:50070/webhdfs/v1/user/rsubramo/edu_export/part-r-00000?op=LISTSTATUS&user.name=rsubramo";
-  char *url="http://eat1-magicnn01.grid.linkedin.com:50070/webhdfs/v1/user/rsubramo/edu_export/part-r-00000?op=OPEN&user.name=rsubramo";
-  char *username="rsubramo";
+  // char *url="http://<servername>:<portnum>/webhdfs/v1/user/<username>/XXXXX/part-r-00000?op=LISTSTATUS&user.name=<username>";
+  char *username="username";
 
 
   char chunk[16*CURL_MAX_WRITE_SIZE];
