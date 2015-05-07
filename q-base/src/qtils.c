@@ -51,10 +51,10 @@ qtils(
     if ( argc != 11 ) { fprintf(stderr, "argc = %d \n", argc); go_BYE(-1); }
     char url[4096]; zero_string(url, 4096); int port;
 
-    char *username = argv[2]; // rsubramo
-    char *server   = argv[3]; // eat1-magicnn01.grid.linkedin.com
-    char *str_port = argv[4]; // 50070
-    char *from     = argv[5]; // /user/rsubramo/edu_export/part-r-00000
+    char *username = argv[2]; // 
+    char *server   = argv[3]; // 
+    char *str_port = argv[4]; // 
+    char *from     = argv[5]; // /user/<username>/XXXXX/part-r-00000
     if ( *username == '\0' ) { go_BYE(-1); }
     if ( *server   == '\0' ) { go_BYE(-1); }
     if ( *str_port == '\0' ) { go_BYE(-1); }
